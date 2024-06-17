@@ -6,7 +6,7 @@
 #    By: irsander <irsander@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/10 16:36:41 by irsander          #+#    #+#              #
-#    Updated: 2024/05/28 15:22:19 by irsander         ###   ########.fr        #
+#    Updated: 2024/06/17 13:53:03 by irsander         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SRC			=	ft_isalpha.c \
 				ft_isdigit.c \
 				ft_isalnum.c \
 				ft_isascii.c \
+				
 				ft_isprint.c \
 				ft_strlen.c \
 				ft_memset.c \
