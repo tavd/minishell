@@ -6,7 +6,7 @@
 #    By: irsander <irsander@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/17 13:27:31 by irsander          #+#    #+#              #
-#    Updated: 2024/06/20 18:34:53 by irsander         ###   ########.fr        #
+#    Updated: 2024/06/20 19:41:02 by irsander         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ NAME		= minishell
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 
-LIB_DIR = lib
-INCL = -I ./incl -I $(LIB_DIR)/libft/incl
+LIB_DIR = libft
+INCL = -I ./incl -I $(LIB_DIR)/incl
 
 FILES = main.c \
 
@@ -26,7 +26,7 @@ SRC = $(addprefix $(SRC_DIR)/, $(FILES))
 OBJ_DIR = src/obj
 OBJ = $(addprefix $(OBJ_DIR)/, $(FILES:.c=.o))
 
-LIBFT = $(LIB_DIR)/libft/libft.a
+LIBFT = $(LIB_DIR)/libft.a
 
 all: $(NAME)
 
@@ -34,7 +34,7 @@ $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $^ $(INCL) $(CFLAGS) -o $(NAME)
 
 $(LIBFT):
-	make -C $(LIB_DIR)/libft
+	make -C $(LIB_DIR)
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
@@ -44,11 +44,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 
 clean:
 	rm -rf $(OBJ_DIR)
-	$(MAKE) clean -C $(LIB_DIR)/libft
+	$(MAKE) clean -C $(LIB_DIR)
 
 fclean: clean
 	rm -f $(NAME)
-	$(MAKE) fclean -C $(LIB_DIR)/libft
+	$(MAKE) fclean -C $(LIB_DIR)
 
 re: fclean all
 

@@ -6,7 +6,7 @@
 #    By: irsander <irsander@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/10 16:36:41 by irsander          #+#    #+#              #
-#    Updated: 2024/06/20 19:37:19 by irsander         ###   ########.fr        #
+#    Updated: 2024/06/20 19:39:48 by irsander         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ NAME		= libft.a
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 
-LIB_DIR		= lib
-INCL		= -I ./incl -I $(LIB_DIR)/libft
+LIB_DIR		= libft
+INCL		= -I ./incl -I $(LIB_DIR)
 
 FILES		=	char_checks/ft_isalnum.c \
 				char_checks/ft_isalpha.c \
