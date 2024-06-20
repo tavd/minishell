@@ -6,7 +6,7 @@
 #    By: irsander <irsander@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/10 16:36:41 by irsander          #+#    #+#              #
-#    Updated: 2024/06/20 18:22:37 by irsander         ###   ########.fr        #
+#    Updated: 2024/06/20 19:37:19 by irsander         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,17 +78,19 @@ all: $(NAME)
 
 $(NAME): $(OFILES)
 	ar rcs $(NAME) $(OFILES)
-	
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@ mkdir -p $(OBJ_DIR)
-	@ mkdir -p $(OBJ_DIR)/char_checks
-	@ mkdir -p $(OBJ_DIR)/conversions
-	@ mkdir -p $(OBJ_DIR)/get_next_line
-	@ mkdir -p $(OBJ_DIR)/list_ops
-	@ mkdir -p $(OBJ_DIR)/mem_ops
-	@ mkdir -p $(OBJ_DIR)/printf
-	@ mkdir -p $(OBJ_DIR)/put_ops
-	@ mkdir -p $(OBJ_DIR)/str_ops
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)/char_checks
+	mkdir -p $(OBJ_DIR)/conversions
+	mkdir -p $(OBJ_DIR)/get_next_line
+	mkdir -p $(OBJ_DIR)/list_ops
+	mkdir -p $(OBJ_DIR)/mem_ops
+	mkdir -p $(OBJ_DIR)/printf
+	mkdir -p $(OBJ_DIR)/put_ops
+	mkdir -p $(OBJ_DIR)/str_ops
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INCL) -c -o $@ $<
 	
 clean:
