@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 16:35:25 by irsander          #+#    #+#             */
-/*   Updated: 2023/10/10 16:56:58 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:15:06 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_strchr(const char *s, int c)
 {

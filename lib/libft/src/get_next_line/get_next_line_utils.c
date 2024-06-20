@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   get_next_line_utils.c                              :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: irsander <irsander@student.42.fr>            +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/11/14 18:22:24 by irissanders   #+#    #+#                 */
-/*   Updated: 2023/11/21 22:32:46 by irissanders   ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/14 18:22:24 by irissanders       #+#    #+#             */
+/*   Updated: 2024/06/20 18:17:28 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include <libft.h>
 
-void	*ft_free(char **s)
+void	*gnl_free(char **s)
 {
 	free(*s);
 	*s = NULL;
 	return (NULL);
 }
 
-int	ft_strlen(char *s)
+int	gnl_strlen(char *s)
 {
 	int	i;
 
@@ -29,7 +29,7 @@ int	ft_strlen(char *s)
 	return (i);
 }
 
-int	ft_strchr(const char *s, int c)
+int	gnl_strchr(const char *s, int c)
 {
 	int	i;
 
@@ -41,7 +41,7 @@ int	ft_strchr(const char *s, int c)
 	return (i);
 }
 
-char	*ft_strcat(char *s, char *buf)
+char	*gnl_strcat(char *s, char *buf)
 {
 	int				i;
 	int				j;
@@ -49,9 +49,9 @@ char	*ft_strcat(char *s, char *buf)
 
 	i = 0;
 	j = 0;
-	temp = malloc((ft_strlen(s) + ft_strlen(buf) +1) * sizeof(char));
+	temp = malloc((gnl_strlen(s) + gnl_strlen(buf) +1) * sizeof(char));
 	if (!temp)
-		return (ft_free(&s));
+		return (gnl_free(&s));
 	while (s[i])
 		temp[j++] = s[i++];
 	i = 0;

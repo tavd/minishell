@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 15:07:03 by irissanders       #+#    #+#             */
-/*   Updated: 2023/11/07 15:39:59 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:13:58 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 int	ft_lstsize(t_list *lst)
 {

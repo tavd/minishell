@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   ft_split.c                                         :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: irsander <irsander@student.42.fr>            +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/10/12 10:03:17 by irissanders   #+#    #+#                 */
-/*   Updated: 2023/10/15 13:40:22 by irissanders   ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/12 10:03:17 by irissanders       #+#    #+#             */
+/*   Updated: 2024/06/20 18:15:03 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 static int	word_count(char const *s, char c)
 {

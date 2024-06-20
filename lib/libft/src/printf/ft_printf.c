@@ -6,16 +6,16 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 23:07:02 by irsander          #+#    #+#             */
-/*   Updated: 2024/06/17 15:54:04 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:20:25 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include <libft.h>
 
 int	string_conversion(va_list args, char c)
 {
 	if (c == 'c')
-		return (ft_putchar(va_arg(args, int)));
+		return (gnl_putchar(va_arg(args, int)));
 	else if (c == 's')
 		return (printf_putstr(va_arg(args, char *)));
 	else if (c == 'd' || c == 'i')
@@ -29,7 +29,7 @@ int	string_conversion(va_list args, char c)
 	else if (c == 'p')
 		return (printf_putptr(va_arg(args, void *)));
 	else if (c == '%')
-		return (ft_putchar('%'));
+		return (gnl_putchar('%'));
 	return (0);
 }
 
@@ -50,7 +50,7 @@ int	ft_printf(const char *s, ...)
 			length += string_conversion(args, s[i]);
 		}
 		else
-			length += ft_putchar(s[i]);
+			length += gnl_putchar(s[i]);
 		i++;
 	}
 	va_end(args);

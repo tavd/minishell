@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 15:51:57 by irsander          #+#    #+#             */
-/*   Updated: 2023/10/10 16:47:00 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:14:11 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 void	ft_bzero(void *s, size_t n)
 {

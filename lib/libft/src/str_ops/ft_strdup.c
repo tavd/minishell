@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 16:35:32 by irsander          #+#    #+#             */
-/*   Updated: 2023/10/11 19:13:53 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:15:09 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_strdup(const char *s1)
 {

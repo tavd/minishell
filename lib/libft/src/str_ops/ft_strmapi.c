@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   ft_strmapi.c                                       :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: irsander <irsander@student.42.fr>            +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/10/12 10:10:35 by irissanders   #+#    #+#                 */
-/*   Updated: 2023/10/15 12:22:05 by irissanders   ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/12 10:10:35 by irissanders       #+#    #+#             */
+/*   Updated: 2024/06/20 18:15:27 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {

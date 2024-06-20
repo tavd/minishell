@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 16:34:40 by irsander          #+#    #+#             */
-/*   Updated: 2023/10/10 16:49:41 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:12:11 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 int	ft_isprint(int c)
 {

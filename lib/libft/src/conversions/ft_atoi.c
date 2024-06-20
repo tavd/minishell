@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 15:48:17 by irsander          #+#    #+#             */
-/*   Updated: 2023/10/11 19:56:42 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:12:23 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 int	ft_atoi(const char *s)
 {

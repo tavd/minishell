@@ -6,11 +6,16 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 23:06:58 by irsander          #+#    #+#             */
-/*   Updated: 2024/06/17 15:53:08 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:20:07 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
+
+int	gnl_putchar(char c)
+{
+	return (write(1, &c, 1));
+}
 
 int	printf_putstr(char *s)
 {
@@ -43,9 +48,9 @@ int	printf_putptr(void *p)
 		length += printf_putstr("0x");
 	num = num % 16;
 	if (num < 10)
-		length += ft_putchar(num + '0');
+		length += gnl_putchar(num + '0');
 	else
-		length += ft_putchar(num + ('a' - 10));
+		length += gnl_putchar(num + ('a' - 10));
 	return (length);
 }
 
@@ -58,20 +63,20 @@ int	printf_putnbr(long num, int base, int u_nbr, int upcase)
 		num = (unsigned int)num;
 	if (num < 0 && base <= 10)
 	{
-		length += ft_putchar('-');
+		length += gnl_putchar('-');
 		num = -num;
 	}
 	if (num >= base)
 		length += printf_putnbr(num / base, base, u_nbr, upcase);
 	num = num % base;
 	if (num < 10)
-		length += ft_putchar(num + '0');
+		length += gnl_putchar(num + '0');
 	else
 	{
 		if (upcase == 1)
-			length += ft_putchar(num + ('a' - 10));
+			length += gnl_putchar(num + ('a' - 10));
 		else if (upcase == 2)
-			length += ft_putchar(num + ('A' - 10));
+			length += gnl_putchar(num + ('A' - 10));
 	}
 	return (length);
 }

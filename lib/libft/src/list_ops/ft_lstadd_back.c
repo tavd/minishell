@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 16:19:15 by irissanders       #+#    #+#             */
-/*   Updated: 2023/11/07 15:23:11 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:13:11 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 void	ft_lstadd_back(t_list **lst, t_list *new)
 {

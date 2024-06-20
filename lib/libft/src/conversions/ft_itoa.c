@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   ft_itoa.c                                          :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: irsander <irsander@student.42.fr>            +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/10/12 10:07:48 by irissanders   #+#    #+#                 */
-/*   Updated: 2023/10/15 12:24:23 by irissanders   ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/12 10:07:48 by irissanders       #+#    #+#             */
+/*   Updated: 2024/06/20 18:12:29 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 static int	char_counter(int n)
 {

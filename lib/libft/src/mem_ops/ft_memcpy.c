@@ -6,11 +6,11 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 16:35:10 by irsander          #+#    #+#             */
-/*   Updated: 2023/11/07 15:56:18 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:14:36 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
 {

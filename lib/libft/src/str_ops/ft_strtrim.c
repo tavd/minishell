@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   ft_strtrim.c                                       :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: irsander <irsander@student.42.fr>            +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/10/12 08:19:04 by irissanders   #+#    #+#                 */
-/*   Updated: 2023/10/15 12:22:48 by irissanders   ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/12 08:19:04 by irissanders       #+#    #+#             */
+/*   Updated: 2024/06/20 18:15:40 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 
 char	*ft_strtrim(char const *s1, char const *set)
 {

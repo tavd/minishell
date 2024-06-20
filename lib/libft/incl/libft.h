@@ -6,7 +6,7 @@
 /*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 16:36:34 by irsander          #+#    #+#             */
-/*   Updated: 2024/06/17 15:55:51 by irsander         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:20:54 by irsander         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -434,11 +434,13 @@ int		ft_printf(const char *s, ...);
 int		string_conversion(va_list args, char c);
 
 //ft_printf_utils.c
+int		gnl_putchar(char c);
 int		printf_putstr(char *s);
 int		printf_putnbr(long num, int base, int u_nbr, int upcase);
-int		putptr(void *p);
+int		printf_putptr(void *p);
 
-//add description printf
+// add description printf
+
 // check makefile, gnl, printf, includes libft everywhere? 
 // check if changes worked to functionnames of printf, gnl
 // add everything to the makefile
