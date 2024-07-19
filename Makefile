@@ -3,22 +3,36 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: irsander <irsander@student.42.fr>          +#+  +:+       +#+         #
+#    By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/17 13:27:31 by irsander          #+#    #+#              #
-#    Updated: 2024/06/20 19:41:02 by irsander         ###   ########.fr        #
+#    Updated: 2024/07/19 22:13:50 by tavdiiev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= minishell
 
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror #-g -fsanitize=address
+LDFLAGS		= -lreadline
 
 LIB_DIR = libft
 INCL = -I ./incl -I $(LIB_DIR)/incl
 
 FILES = main.c \
+lexer/lexer.c \
+builtins/echo.c \
+builtins/env.c \
+builtins/pwd.c \
+builtins/export.c \
+builtins/unset.c \
+builtins/cd.c \
+env_utils/env_set_unset.c \
+env_utils/env_utils_functions.c \
+execution/execute_command.c \
+execution/execute.c \
+utils/error.c \
+utils/free.c
 
 SRC_DIR = src
 SRC = $(addprefix $(SRC_DIR)/, $(FILES))	
@@ -31,15 +45,21 @@ LIBFT = $(LIB_DIR)/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $^ $(INCL) $(CFLAGS) -o $(NAME)
+	$(CC) $^ $(INCL) $(CFLAGS) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT):
 	make -C $(LIB_DIR)
 
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+# $(OBJ_DIR):
+# 	mkdir -p $(OBJ_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)/lexer
+	mkdir -p $(OBJ_DIR)/builtins
+	mkdir -p $(OBJ_DIR)/env_utils
+	mkdir -p $(OBJ_DIR)/execution
+	mkdir -p $(OBJ_DIR)/utils
 	$(CC) -c $< $(INCL) $(CFLAGS) -o $@ 
 
 clean:
