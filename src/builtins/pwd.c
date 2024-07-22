@@ -6,14 +6,14 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:31:41 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/19 18:41:39 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:19:36 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
 
 //The PATH_MAX constant is commonly used, which defines the maximum length of a path in the system.
-int pwd(t_data *data)//
+int pwd(t_data *data)
 {
 	char buf[PATH_MAX];
 	char *cwd;
@@ -32,8 +32,3 @@ int pwd(t_data *data)//
 	error_msg_command("pwd", NULL, strerror(errno), errno);
 	return (EXIT_FAILURE);
 }
-
-// int main()
-// {
-// 	pwd();
-// }

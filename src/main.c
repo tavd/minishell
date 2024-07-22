@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/07/19 22:04:08 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/07/22 17:22:21 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static bool	init_env(t_data *data, char **env)
 			return (false);
 		i++;
 	}
+	data->cmd = NULL;
 	return (true);
 }
 
@@ -57,7 +58,6 @@ static bool	init_wds(t_data *data)
 
 int main(int argc, char **argv, char **envp)
 {
-    (void)argc;
     (void)argv;
     t_data data;
 
@@ -65,5 +65,14 @@ int main(int argc, char **argv, char **envp)
 	printf("%d\n", error_msg_command("main", NULL, "test message", 2));
 	init_env(&data, envp);
 	init_wds(&data);
+	t_command command;
+	command.args = argv;
+	command.argc = argc;
+	command.name = "cd";
+	printf("res=%d\n",execute_command(&data, &command));
+	pwd(&data);
+	// int i = 0;
+	// 	while (data.env[i])
+	// ft_putendl_fd(data.env[i++], STDOUT_FILENO);
     return (0);
 }

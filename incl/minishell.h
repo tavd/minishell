@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/07/19 22:10:54 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/07/22 17:13:56 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@
 
 typedef struct s_command
 {
-	char				*command;
+	char				*name;
 	char				*path;
 	char				**args;
+	int					argc;
 	bool				pipe_output;
 	int					*pipe_fd;
 	// t_io_fds			*io_fds;
@@ -54,6 +55,7 @@ typedef struct s_data
 	char		**env;
 	char		*working_dir;
 	char		*old_working_dir;
+	t_command	*cmd;
 }	t_data;
 
 // builtins
@@ -62,7 +64,7 @@ int			env(t_data *data, char **args);
 int			pwd(t_data *data);
 int			export(t_data *data, char **args);
 int			unset(t_data *data, char **args);
-int			cd(t_data *data, char ** args);
+int			cd(t_data *data, char ** args, int argc);
 
 bool		is_valid_key(char *key);
 int			get_env_index(char **env, char *key);
