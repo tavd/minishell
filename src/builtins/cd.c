@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/22 17:23:14 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/07/22 19:28:01 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,25 +68,26 @@ static	int change_directory(t_data *data, char *path)
 	return (EXIT_SUCCESS);
 }
 
+
 int	cd(t_data *data, char ** args, int argc)
 {
 	char	*path;
 
-	if (argc == 1 || ft_strncmp(args[1], "--", 2) == 0)
+	if (argc == 1 || ft_strncmp(args[1], "--", 3) == 0)
 	{
 		path = get_env_value(data->env, "HOME");
 		if (!path || path[0] == '\0' || path[0] == ' ')
 			return (error_msg_command("cd", NULL, "HOME not set", EXIT_FAILURE));
 		return (change_directory(data, path));
 	}
-	if (ft_strncmp(args[1], "-", 1) == 0)
+	if (ft_strncmp(args[1], "-", 2) == 0)
 	{
 		path = get_env_value(data->env, "OLDPWD");
 		if (!path)
 			return (error_msg_command("cd", NULL, "OLDPWD not set", EXIT_FAILURE));
 		return (change_directory(data, path));
 	}
-	if (argc > 2)
+	if (argc > 2)//cd arg1 arg2: too many arguments
 		return (error_msg_command("cd", NULL, "too many arguments", EXIT_FAILURE));
 	return (change_directory(data, args[1]));
 }

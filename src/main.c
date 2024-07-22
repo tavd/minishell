@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/07/22 17:22:21 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/07/22 19:31:26 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,6 @@ int main(int argc, char **argv, char **envp)
     (void)argv;
     t_data data;
 
-    //test the error function
-	printf("%d\n", error_msg_command("main", NULL, "test message", 2));
 	init_env(&data, envp);
 	init_wds(&data);
 	t_command command;
