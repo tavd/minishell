@@ -6,7 +6,7 @@
 #    By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/17 13:27:31 by irsander          #+#    #+#              #
-#    Updated: 2024/07/19 22:13:50 by tavdiiev         ###   ########.fr        #
+#    Updated: 2024/08/05 17:39:37 by tavdiiev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,13 @@ env_utils/env_set_unset.c \
 env_utils/env_utils_functions.c \
 execution/execute_command.c \
 execution/execute.c \
+execution/get_path.c \
+execution/utils.c \
+redirections/io.c \
+redirections/pipe.c \
 utils/error.c \
-utils/free.c
+utils/free_close.c \
+utils/exit_shell.c
 
 SRC_DIR = src
 SRC = $(addprefix $(SRC_DIR)/, $(FILES))	

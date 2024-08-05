@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/07/22 17:13:56 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/05 21:12:03 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,25 @@
 #  define PATH_MAX 4096
 # endif
 
+typedef struct s_io
+{
+	char	*infile_name;
+	char	*outfile_name;
+	int		fd_in;
+	int		fd_out;
+	int		stdin_copy;
+	int		stdout_copy;
+}	t_io;
+
 typedef struct s_command
 {
 	char				*name;
 	char				*path;
 	char				**args;
 	int					argc;
-	bool				pipe_output;
+	bool				is_piped;
 	int					*pipe_fd;
-	// t_io_fds			*io_fds;
+	t_io				*io;
 	struct s_command	*next;
 	struct s_command	*prev;
 }	t_command;
@@ -56,6 +66,7 @@ typedef struct s_data
 	char		*working_dir;
 	char		*old_working_dir;
 	t_command	*cmd;
+	pid_t		pid;
 }	t_data;
 
 // builtins
@@ -69,7 +80,7 @@ int			cd(t_data *data, char ** args, int argc);
 bool		is_valid_key(char *key);
 int			get_env_index(char **env, char *key);
 int			env_var_count(char **env);
-char	*get_env_value(char **env, char *key);
+char		*get_env_value(char **env, char *key);
 // env_utils/env_set_unset.c
 bool	set_env(t_data *data, char *key, char *value);
 bool	unset_env(t_data *data, int env_var_index);
@@ -82,10 +93,24 @@ char	*get_env_value(char **env, char *key);
 int			execute(t_data *data);
 int			execute_command(t_data *data, t_command *cmd);
 int			execute_builtin(t_data *data, t_command *cmd);
-
 // error.c
 int	error_msg_command(char *command, char *detail, char *error_message, int error_number);
 //free.c
 void	free_str_arr(char **tab);
 void	free_ptr(void *ptr);
+void	close_fds(t_command *cmd_list, bool close_copies);
+//utils.c
+bool	command_is_dir(char *cmd);
+int		is_command_not_found(t_data *data, t_command *command);
+//execution/get_path.c
+char	*get_command_path(t_data *data, char *command_name);
+//io.c
+bool	is_valid_fd(t_io *io);
+bool	redirect_io_file(t_io *io);
+//pipe.c
+bool	create_pipes(t_data *data);
+void	close_pipe_fds(t_command *cmds, t_command *own_cmd);
+bool	redirect_io_pipe(t_command *cmds, t_command *this_cmd);
+//exit_shell.c
+void	exit_shell(t_data *data, int exit_number);
 #endif

@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/07/22 19:31:26 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/05 20:26:39 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static bool	init_env(t_data *data, char **env)
 {
 	int		i;
 
-	data->env = ft_calloc(env_var_count(env) + 1, sizeof * data->env);
+	data->env = ft_calloc(env_var_count(env) + 1, sizeof(data->env));
 	if (!data->env)
 		return (false);
 	i = 0;
@@ -58,7 +58,6 @@ static bool	init_wds(t_data *data)
 
 int main(int argc, char **argv, char **envp)
 {
-    (void)argv;
     t_data data;
 
 	init_env(&data, envp);
@@ -67,7 +66,7 @@ int main(int argc, char **argv, char **envp)
 	command.args = argv;
 	command.argc = argc;
 	command.name = "cd";
-	printf("res=%d\n",execute_command(&data, &command));
+	printf("res=%d\n", execute_command(&data, &command));
 	pwd(&data);
 	// int i = 0;
 	// 	while (data.env[i])

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   free_close.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:42:17 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/13 20:09:33 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/01 19:40:21 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,19 @@ void	free_ptr(void *ptr)
 		free(ptr);
 		ptr = NULL;
 	}
+}
+
+void	close_fds(t_command *cmd_list, bool close_copies)
+{
+	if (cmd_list->io)
+	{
+		if (cmd_list->io->fd_in != -1)
+			close(cmd_list->io->fd_in);
+		if (cmd_list->io->fd_out != -1)
+			close(cmd_list->io->fd_out);
+		if (close_copies)
+			restore_io(cmd_list->io);
+	}
+	close_pipe_fds(cmd_list, NULL);
 }
 
