@@ -6,7 +6,7 @@
 #    By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/17 13:27:31 by irsander          #+#    #+#              #
-#    Updated: 2024/08/05 17:39:37 by tavdiiev         ###   ########.fr        #
+#    Updated: 2024/08/07 20:16:41 by tavdiiev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,8 @@ redirections/io.c \
 redirections/pipe.c \
 utils/error.c \
 utils/free_close.c \
-utils/exit_shell.c
+utils/exit_shell.c \
+utils/init_data.c
 
 SRC_DIR = src
 SRC = $(addprefix $(SRC_DIR)/, $(FILES))	
@@ -65,6 +66,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(OBJ_DIR)/env_utils
 	mkdir -p $(OBJ_DIR)/execution
 	mkdir -p $(OBJ_DIR)/utils
+	mkdir -p $(OBJ_DIR)/redirections
 	$(CC) -c $< $(INCL) $(CFLAGS) -o $@ 
 
 clean:

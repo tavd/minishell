@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/05 21:12:03 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:22:07 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ typedef struct s_data
 	t_command	*cmd;
 	pid_t		pid;
 }	t_data;
-
+bool	init_data(t_data *data, char **env);
+void	init_io(t_command *cmd);
 // builtins
 int			echo(char **args);
 int			env(t_data *data, char **args);
@@ -107,6 +108,7 @@ char	*get_command_path(t_data *data, char *command_name);
 //io.c
 bool	is_valid_fd(t_io *io);
 bool	redirect_io_file(t_io *io);
+bool	restore_stdin_stdout(t_io *io);
 //pipe.c
 bool	create_pipes(t_data *data);
 void	close_pipe_fds(t_command *cmds, t_command *own_cmd);

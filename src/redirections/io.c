@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:37:08 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/05 21:08:12 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/08 20:23:49 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ bool	redirect_io_file(t_io *io)
 {
 	int	status;
 
+	printf("in redirect_io_file\n");
 	status = true;
 	if (!io)
 		return (status);
@@ -41,6 +42,7 @@ bool	redirect_io_file(t_io *io)
 	if (io->fd_out != -1)
 		if (dup2(io->fd_out, STDOUT_FILENO) == -1)
 			status = error_msg_command("dup2", io->outfile_name, strerror(errno), false);
+	printf("in redirect_io_file end\n");
 	return (status);
 }
 
@@ -49,6 +51,7 @@ bool	restore_stdin_stdout(t_io *io)
 {
 	int	status;
 
+	printf("in restore_stdin\n");
 	status = true;
 	if (!io)
 		return (status);

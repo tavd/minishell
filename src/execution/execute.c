@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:55:18 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/05 20:20:39 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/08 20:25:58 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,15 @@
 
 static int	check_data_create_pipes(t_data *data)
 {
+	printf("data=%p\ndata->cmd=%p\n", data, data->cmd);
 	if (!data || !data->cmd)
+	{
+		printf("!data || !data->cmd\n");
 		return (EXIT_SUCCESS);
+	}
 	if (!data->cmd->name)//no commands only infile or outfile
 	{
+		printf("if (!data->cmd->name)");
 		if (data->cmd->io
 			&& !is_valid_fd(data->cmd->io))
 			return (EXIT_FAILURE);
@@ -50,6 +55,7 @@ static int	wait_children(t_data *data)
 		status = WEXITSTATUS(save_status);
 	else
 		status = save_status;
+			printf("status=%d\n", status);
 	return (status);
 }
 
@@ -57,6 +63,7 @@ static int	create_children(t_data *data)
 {
 	t_command	*current_command;
 
+printf("in create_children\n");
 	current_command = data->cmd;
 	while (data->pid != 0 && current_command)
 	{
@@ -64,7 +71,7 @@ static int	create_children(t_data *data)
 		if (data->pid == -1)
 			return (error_msg_command("fork", NULL, strerror(errno), EXIT_FAILURE));
 		else if (data->pid == 0)
-			execute_command(data, current_command);//not builtins
+			execute_command(data, current_command);
 		current_command = current_command->next;
 	}
 	return (wait_children(data));
@@ -75,15 +82,17 @@ int	execute(t_data *data)
 	int	status;
 
 	status = check_data_create_pipes(data);
+		printf("status=%d\n", status);
 	if (status != CMD_NOT_FOUND)
 		return (status);
 	if (!data->cmd->is_piped && !data->cmd->prev
 	&& is_valid_fd(data->cmd->io))//no pipes, no prev command
 	{
-		redirect_stdin_stdout(data->cmd->io);
+		redirect_io_file(data->cmd->io);
 		status = execute_builtin(data, data->cmd);
 		restore_stdin_stdout(data->cmd->io);
 	}
+	printf("status=%d\n", status);
 	if (status != CMD_NOT_FOUND)//builtin
 		return (status);
 	return (create_children(data));//not builtins

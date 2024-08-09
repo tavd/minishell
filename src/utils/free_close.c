@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:42:17 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/01 19:40:21 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:01:38 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	close_fds(t_command *cmd_list, bool close_copies)
 		if (cmd_list->io->fd_out != -1)
 			close(cmd_list->io->fd_out);
 		if (close_copies)
-			restore_io(cmd_list->io);
+			restore_stdin_stdout(cmd_list->io);
 	}
 	close_pipe_fds(cmd_list, NULL);
 }

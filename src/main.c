@@ -6,68 +6,75 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/05 20:26:39 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:44:01 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static bool	init_env(t_data *data, char **env)
+static void	initialize_cmd(t_command **cmd)
 {
-	int		i;
-
-	data->env = ft_calloc(env_var_count(env) + 1, sizeof(data->env));
-	if (!data->env)
-		return (false);
-	i = 0;
-	while (env[i])
-	{
-		data->env[i] = ft_strdup(env[i]);
-		if (!data->env[i])
-			return (false);
-		i++;
-	}
-	data->cmd = NULL;
-	return (true);
+	(*cmd)->name = NULL;
+	(*cmd)->path = NULL;
+	(*cmd)->args = NULL;
+	(*cmd)->is_piped = false;
+	(*cmd)->pipe_fd = 0;
+	(*cmd)->prev = NULL;
+	(*cmd)->next = NULL;
 }
 
-static bool	init_wds(t_data *data)
+t_command	*lst_new_cmd(bool value)
 {
-	char	buff[PATH_MAX];
-	char	*wd;
+	t_command	*new_node;
 
-	wd = getcwd(buff, PATH_MAX);
-	data->working_dir = ft_strdup(wd);
-	if (!data->working_dir)
-		return (false);
-	if (get_env_index(data->env, "OLDPWD") != -1)
-	{
-		data->old_working_dir = ft_strdup(get_env_value(data->env,
-					"OLDPWD"));
-		if (!data->old_working_dir)
-			return (false);
-	}
-	else
-	{
-		data->old_working_dir = ft_strdup(wd);
-		if (!data->old_working_dir)
-			return (false);
-	}
-	return (true);
+	new_node = (t_command *)malloc(sizeof(t_command));
+	if (!(new_node))
+		return (NULL);
+	ft_memset(new_node, 0, sizeof(t_command));
+	new_node->is_piped = value;
+	initialize_cmd(&new_node);
+	return (new_node);
 }
+
+void	lst_add_back_cmd(t_command **alst, t_command *new_node)//new_node=lst_new_cmd
+{
+	t_command	*start;
+
+	start = *alst;
+	if (start == NULL)
+	{
+		*alst = new_node;
+		return ;
+	}
+	if (alst && *alst && new_node)
+	{
+		while (start->next != NULL)
+			start = start->next;
+		start->next = new_node;
+		new_node->prev = start;
+	}
+}
+
 
 int main(int argc, char **argv, char **envp)
 {
     t_data data;
-
-	init_env(&data, envp);
-	init_wds(&data);
+	// (void)argv;
+ft_memset(&data, 0, sizeof(t_data));
+if (!init_data(&data, envp))
+exit_shell(NULL, EXIT_FAILURE);
 	t_command command;
-	command.args = argv;
-	command.argc = argc;
-	command.name = "cd";
-	printf("res=%d\n", execute_command(&data, &command));
-	pwd(&data);
+	init_io(&command);
+	//printf("res=%d\n", execute_command(&data, &command));
+	lst_add_back_cmd(&data.cmd, lst_new_cmd(false));
+	data.cmd->argc = argc;
+	char *command_args[] = {argv[1], argv[2], NULL};
+		data.cmd->args = command_args;//malloc(sizeof * args * 2);
+		data.cmd->args[0] = command_args[0]; //ft_strdup(args[0]);
+		data.cmd->args[1] = command_args[1];//NULL;
+		data.cmd->name = command_args[0];
+	printf("res=%d\n", execute(&data));
+	// pwd(&data);
 	// int i = 0;
 	// 	while (data.env[i])
 	// ft_putendl_fd(data.env[i++], STDOUT_FILENO);

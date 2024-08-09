@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/05 19:43:23 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/08 21:01:38 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	execute_builtin(t_data *data, t_command *cmd)
 {
+	printf("in execute_builtin\n");
 	if (ft_strncmp(cmd->name, "cd", 3) == 0)
 		return(cd(data, cmd->args, cmd->argc));
 	else if (ft_strncmp(cmd->name, "echo", 5) == 0)
@@ -33,6 +34,8 @@ int	execute_builtin(t_data *data, t_command *cmd)
 
 static int execute_external_command(t_data *data, t_command *cmd)
 {
+	printf("in execute_external_command\n");
+		// printf("cmd->args[0]=%s\n", cmd->args[1]);
 	if (!cmd->name || cmd->name[0] == '\0')
 		return (CMD_NOT_FOUND);
 	if (command_is_dir(cmd->name))
@@ -40,6 +43,8 @@ static int execute_external_command(t_data *data, t_command *cmd)
 	cmd->path = get_command_path(data, cmd->name);
 	if (!cmd->path)
 		return (CMD_NOT_FOUND);
+	printf("in execute_external_command before execve\n");
+	printf("cmd->path=%s\n", cmd->path);
 	if (execve(cmd->path, cmd->args, data->env) == -1)
 		error_msg_command("execve", NULL, strerror(errno), errno);
 	return (EXIT_FAILURE);
@@ -66,20 +71,23 @@ int	execute_command(t_data *data, t_command *command)
 {
 	int	status;
 	
+	printf("in execute_command\n");
 	if (!command || !command->name)
-		exit_shell(data, errmsg_cmd("child", NULL,
+		exit_shell(data, error_msg_command("child", NULL,
 				"parsing error: no command to execute!", EXIT_FAILURE));
 	if (!is_valid_fd(command->io))
 		exit_shell(data, EXIT_FAILURE);
-	redirect_pipe_fds(data->cmd, command);
-	redirect_stdin_stdout(command->io);
+	redirect_io_pipe(data->cmd, command);
+	redirect_io_file(command->io);
 	close_fds(data->cmd, false);
 	if (!ft_strchr(command->name, '/'))
 	{
 		status = execute_builtin(data, command);
+		printf("status after execute_builtin=%d\n", status);
 		if (status != CMD_NOT_FOUND)//if it is a builtin command
 		exit_shell(data, status);
 		status = execute_external_command(data, command);
+		printf("status after execute_external_command=%d\n", status);
 		if (status != CMD_NOT_FOUND)
 		exit_shell(data, status);
 	}

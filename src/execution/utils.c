@@ -21,7 +21,7 @@ int	is_command_not_found(t_data *data, t_command *command)
 	else if (command_is_dir(command->name))
 		return (error_msg_command(command->name, NULL, "Is a directory", CMD_NOT_EXECUTABLE));
 	else if (access(command->name, F_OK | X_OK) != 0)
-		return (errmsg_cmd(command->name, NULL, strerror(errno),
+		return (error_msg_command(command->name, NULL, strerror(errno),
 				CMD_NOT_EXECUTABLE));
 	return (EXIT_SUCCESS);
 }
