@@ -19,7 +19,7 @@ static bool	init_env(t_data *data, char **env)
 	return (true);
 }
 
-static bool	init_wds(t_data *data)
+static bool	init_working_directories(t_data *data)
 {
 	char	buff[PATH_MAX];
 	char	*wd;
@@ -51,7 +51,7 @@ bool	init_data(t_data *data, char **env)
 		error_msg_command("Fatal", NULL, "Could not initialize environment", 1);
 		return (false);
 	}
-	if (!init_wds(data))
+	if (!init_working_directories(data))
 	{
 		error_msg_command("Fatal", NULL, "Could not initialize working directories",
 			1);
@@ -70,12 +70,14 @@ void	init_io(t_command *cmd)
 	{
 		cmd->io = malloc(sizeof * cmd->io);
 		if (!cmd->io)
-			return ;
+			return ;			
 		cmd->io->infile_name = NULL;
 		cmd->io->outfile_name = NULL;
-		cmd->io->fd_in = -1;
-		cmd->io->fd_out = -1;
+		cmd->io->fd_infile = -1;
+		cmd->io->fd_outfile = -1;
 		cmd->io->stdin_copy = -1;
 		cmd->io->stdout_copy = -1;
 	}
+	printf("init_io: cmd->io=%p\n", cmd->io);
+	printf("the end of init_io\n");
 }

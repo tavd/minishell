@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/07 20:22:07 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/10 18:24:52 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ typedef struct s_io
 {
 	char	*infile_name;
 	char	*outfile_name;
-	int		fd_in;
-	int		fd_out;
+	int		fd_infile;
+	int		fd_outfile;
 	int		stdin_copy;
 	int		stdout_copy;
 }	t_io;
@@ -68,6 +68,7 @@ typedef struct s_data
 	t_command	*cmd;
 	pid_t		pid;
 }	t_data;
+
 bool	init_data(t_data *data, char **env);
 void	init_io(t_command *cmd);
 // builtins

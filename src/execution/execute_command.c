@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/08 21:01:38 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:58:05 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static int execute_external_command(t_data *data, t_command *cmd)
 	if (command_is_dir(cmd->name))
 		return (CMD_NOT_FOUND);
 	cmd->path = get_command_path(data, cmd->name);
+	printf("cmd->path=get_command_path=%s\n", cmd->path);
 	if (!cmd->path)
 		return (CMD_NOT_FOUND);
 	printf("in execute_external_command before execve\n");
@@ -87,7 +88,7 @@ int	execute_command(t_data *data, t_command *command)
 		if (status != CMD_NOT_FOUND)//if it is a builtin command
 		exit_shell(data, status);
 		status = execute_external_command(data, command);
-		printf("status after execute_external_command=%d\n", status);
+		printf("status after execute_external_command=%d\n", status);//not printed if successful
 		if (status != CMD_NOT_FOUND)
 		exit_shell(data, status);
 	}

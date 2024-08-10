@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:42:17 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/07 20:01:38 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/10 18:26:26 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ void	close_fds(t_command *cmd_list, bool close_copies)
 {
 	if (cmd_list->io)
 	{
-		if (cmd_list->io->fd_in != -1)
-			close(cmd_list->io->fd_in);
-		if (cmd_list->io->fd_out != -1)
-			close(cmd_list->io->fd_out);
+		if (cmd_list->io->fd_infile != -1)
+			close(cmd_list->io->fd_infile);
+		if (cmd_list->io->fd_outfile != -1)
+			close(cmd_list->io->fd_outfile);
 		if (close_copies)
 			restore_stdin_stdout(cmd_list->io);
 	}

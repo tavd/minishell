@@ -22,7 +22,7 @@ static char	*find_valid_command_path(char *command, char **env_paths_array)
 	while (env_paths_array[i])// /usr/bin
 	{
 		command_path = ft_strjoin(env_paths_array[i], command);// /usr/bin/ls
-				if (!command_path)
+		if (!command_path)
 		{
 			error_msg_command("malloc", NULL,
 				"an unexpected error occured", EXIT_FAILURE);

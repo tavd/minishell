@@ -6,13 +6,13 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/09 18:44:01 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/10 21:01:03 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	initialize_cmd(t_command **cmd)
+void	initialize_cmd(t_command **cmd)
 {
 	(*cmd)->name = NULL;
 	(*cmd)->path = NULL;
@@ -32,7 +32,7 @@ t_command	*lst_new_cmd(bool value)
 		return (NULL);
 	ft_memset(new_node, 0, sizeof(t_command));
 	new_node->is_piped = value;
-	initialize_cmd(&new_node);
+	// initialize_cmd(&new_node);
 	return (new_node);
 }
 
@@ -55,7 +55,28 @@ void	lst_add_back_cmd(t_command **alst, t_command *new_node)//new_node=lst_new_c
 	}
 }
 
-
+t_command	*get_last_cmd(t_command *cmd)
+{
+	printf("get_last_cmd\n");
+	while (cmd->next != NULL)
+		cmd = cmd->next;
+	return (cmd);
+}
+static void	open_infile(t_io *io, char *file_name)
+{
+	io->infile_name = file_name;
+		if (io->infile_name && io->infile_name[0] == '\0')
+	{
+		error_msg_command(file_name, NULL, "ambiguous redirect", false);
+		return ;
+	}
+	io->fd_infile = open(io->infile_name, O_RDONLY);
+	if (io->fd_infile == -1)
+	{
+		printf("in open infile\n");
+		error_msg_command(io->infile_name, NULL, strerror(errno), false);	
+	}
+}
 int main(int argc, char **argv, char **envp)
 {
     t_data data;
@@ -63,8 +84,8 @@ int main(int argc, char **argv, char **envp)
 ft_memset(&data, 0, sizeof(t_data));
 if (!init_data(&data, envp))
 exit_shell(NULL, EXIT_FAILURE);
-	t_command command;
-	init_io(&command);
+	
+	// 		printf("command.io=%p\n", command.io);
 	//printf("res=%d\n", execute_command(&data, &command));
 	lst_add_back_cmd(&data.cmd, lst_new_cmd(false));
 	data.cmd->argc = argc;
@@ -73,7 +94,12 @@ exit_shell(NULL, EXIT_FAILURE);
 		data.cmd->args[0] = command_args[0]; //ft_strdup(args[0]);
 		data.cmd->args[1] = command_args[1];//NULL;
 		data.cmd->name = command_args[0];
-	printf("res=%d\n", execute(&data));
+	t_command *command;
+	command = get_last_cmd(data.cmd);
+	init_io(command);
+	open_infile(command->io, "infie");
+	printf("main: execute=%d\n", execute(&data));
+	printf("data.cmd->path=%s\n", data.cmd->path);
 	// pwd(&data);
 	// int i = 0;
 	// 	while (data.env[i])
