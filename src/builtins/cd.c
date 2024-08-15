@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/22 19:28:01 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/14 19:27:17 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int	cd(t_data *data, char ** args, int argc)
 {
 	char	*path;
 
+printf("in cd\n");
 	if (argc == 1 || ft_strncmp(args[1], "--", 3) == 0)
 	{
 		path = get_env_value(data->env, "HOME");

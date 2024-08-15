@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/10 20:58:05 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:01:23 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ int	execute_builtin(t_data *data, t_command *cmd)
 	else if (ft_strncmp(cmd->name, "echo", 5) == 0)
 		return(echo(cmd->args));
 	else if (ft_strncmp(cmd->name, "env", 4) == 0)
+	{
+		printf("else if (ft_strncmp(cmd->name, env, 4) == 0)\n");
 		return(env(data, cmd->args));
+	}
+
 	else if (ft_strncmp(cmd->name, "export", 7) == 0)
 		return(export(data, cmd->args));
 	else if (ft_strncmp(cmd->name, "pwd", 4) == 0)
@@ -73,6 +77,7 @@ int	execute_command(t_data *data, t_command *command)
 	int	status;
 	
 	printf("in execute_command\n");
+	printf("command->name=%s\n", command->name);
 	if (!command || !command->name)
 		exit_shell(data, error_msg_command("child", NULL,
 				"parsing error: no command to execute!", EXIT_FAILURE));
@@ -84,7 +89,7 @@ int	execute_command(t_data *data, t_command *command)
 	if (!ft_strchr(command->name, '/'))
 	{
 		status = execute_builtin(data, command);
-		printf("status after execute_builtin=%d\n", status);
+		printf("status after execute_builtin=%d\n", status);//in case of a pipe redirection the output goes to the pipe
 		if (status != CMD_NOT_FOUND)//if it is a builtin command
 		exit_shell(data, status);
 		status = execute_external_command(data, command);

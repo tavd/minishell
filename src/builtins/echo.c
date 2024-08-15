@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 19:53:39 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/22 16:40:07 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:30:49 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int	echo(char **args)
 
 	is_n_fl = false;
 	i = 1;
+	// printf("args[1]=%s\n",args[1]);
 	//printf("in echo\n");
 	while (args[i] && is_n(args[i]))//if there is 1 or more -n args in a row, starting from the 1st arg
 	{                               //(echo -n dfg fg, echo -n -n -n -n dfg dg)

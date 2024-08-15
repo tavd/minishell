@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:37:08 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/10 20:45:04 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/15 16:09:51 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ bool	redirect_io_file(t_io *io)
 	int	status;
 
 	printf("in redirect_io_file\n");
+	printf("io->fd_infile=%d\n", io->fd_infile);
+	printf("io->fd_outfile=%d\n", io->fd_outfile);
+
 	status = true;
 	if (!io)
 		return (status);

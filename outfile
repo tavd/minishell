@@ -1,0 +1,11 @@
+the end redirect_io_file
+in execute_builtin
+status after execute_builtin=127
+in execute_external_command
+cmd->path=get_command_path=/usr/bin/grep
+in execute_external_command before execve
+cmd->path=/usr/bin/grep
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+FT_HOOK_PATHNAME=login-user.d
+PATH=/home/tavdiiev/bin:/home/tavdiiev/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/tavdiiev/.dotnet/tools
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0

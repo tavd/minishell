@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 21:03:51 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/10 20:51:03 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/15 16:41:58 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,20 @@ bool	redirect_io_pipe(t_command *cmds, t_command *this_cmd)
 {
 	printf("in redirect_io_pipe\n");
 	if (!this_cmd)
-		return (false);
+	{
+		printf("if (!this_cmd)\n");
+		return (false);		
+	}
 	if (this_cmd->prev && this_cmd->prev->is_piped)
-		dup2(this_cmd->prev->pipe_fd[0], STDIN_FILENO);//Redirect stdin to pipe read end
+	{
+		printf("this_cmd->prev && this_cmd->prev->is_piped\n");
+		dup2(this_cmd->prev->pipe_fd[0], STDIN_FILENO);//Redirect stdin to pipe read end		
+	}
 	if (this_cmd->is_piped)
-		dup2(this_cmd->pipe_fd[1], STDOUT_FILENO);//Redirect stdout to pipe write end
+	{
+		printf("this_cmd->is_piped\n");
+		dup2(this_cmd->pipe_fd[1], STDOUT_FILENO);//Redirect stdout to pipe write end		
+	}
 	close_pipe_fds(cmds, this_cmd);
 	printf("the end of redirect_io_pipe\n");
 	return (true);

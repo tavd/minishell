@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/10 18:24:52 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:40:34 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ typedef struct s_command
 	struct s_command	*next;
 	struct s_command	*prev;
 }	t_command;
-
 
 typedef struct s_data
 {

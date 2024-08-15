@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:55:18 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/10 21:07:14 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/15 16:23:51 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static int	check_data_create_pipes(t_data *data)
 
 static int	wait_children(t_data *data)
 {
+	printf("in wait_children\n");
 	pid_t	wpid;
 	int		status;
 	int		save_status;
@@ -66,7 +67,7 @@ static int	create_children(t_data *data)
 	t_command	*current_command;
 
 printf("in create_children\n");
-int status_execute_command;
+int status_execute_command = 545;
 	current_command = data->cmd;
 	while (data->pid != 0 && current_command)
 	{
@@ -74,10 +75,14 @@ int status_execute_command;
 		if (data->pid == -1)
 			return (error_msg_command("fork", NULL, strerror(errno), EXIT_FAILURE));
 		else if (data->pid == 0)
+		{
+			printf("in child process before execute_command\n");
 			status_execute_command = execute_command(data, current_command);
+		}
 		current_command = current_command->next;
 	}
-	printf("status_execute_command=%d\n", status_execute_command);//not printed if succesfull
+	if (data->pid != 0)
+	printf("parent: status_execute_command = %d\n", status_execute_command);
 	return (wait_children(data));
 }
 
@@ -89,16 +94,16 @@ int	execute(t_data *data)
 		printf("status after check_data_create_pipes=%d\n", status);
 	if (status != CMD_NOT_FOUND)
 		return (status);
-	printf("data->cmd->is_piped=%d\n", data->cmd->is_piped);
+	// printf("data->cmd->is_piped=%d\n", data->cmd->is_piped);
 	if (!data->cmd->is_piped && !data->cmd->prev
-	&& is_valid_fd(data->cmd->io))//no pipes, no prev command
+	&& is_valid_fd(data->cmd->io))//no pipes, no prev command, might be with in/outfile
 	{
 		redirect_io_file(data->cmd->io);
 		status = execute_builtin(data, data->cmd);
 		restore_stdin_stdout(data->cmd->io);
 	}
 	printf("the end of execute, status=%d\n", status);
-	if (status != CMD_NOT_FOUND)//builtin
+	if (status != CMD_NOT_FOUND)//builtin not piped
 		return (status);
-	return (create_children(data));//not builtins
+	return (create_children(data));//not builtins or piped builtins
 }
