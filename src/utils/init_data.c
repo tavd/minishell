@@ -21,11 +21,11 @@ static bool	init_env(t_data *data, char **env)
 
 static bool	init_working_directories(t_data *data)
 {
-	char	buff[PATH_MAX];
-	char	*wd;
+	char	buf[PATH_MAX];
+	char	*working_dir;
 
-	wd = getcwd(buff, PATH_MAX);
-	data->working_dir = ft_strdup(wd);
+	working_dir = getcwd(buf, sizeof(buf));
+	data->working_dir = ft_strdup(working_dir);
 	if (!data->working_dir)
 		return (false);
 	if (get_env_index(data->env, "OLDPWD") != -1)
@@ -37,7 +37,7 @@ static bool	init_working_directories(t_data *data)
 	}
 	else
 	{
-		data->old_working_dir = ft_strdup(wd);
+		data->old_working_dir = ft_strdup(working_dir);
 		if (!data->old_working_dir)
 			return (false);
 	}
@@ -57,8 +57,6 @@ bool	init_data(t_data *data, char **env)
 			1);
 		return (false);
 	}
-	// data->token = NULL;
-	// data->user_input = NULL;
 	data->cmd = NULL;
 	data->pid = -1;
 	return (true);

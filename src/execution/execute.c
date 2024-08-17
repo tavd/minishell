@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:55:18 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/15 16:23:51 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/16 16:00:31 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	check_data_create_pipes(t_data *data)
 			return (EXIT_FAILURE);
 		return (EXIT_SUCCESS);
 	}
-	if (!create_pipes(data))//create pipes if needed
+	if (!create_pipes(data))
 		return (EXIT_FAILURE);
 	return (CMD_NOT_FOUND);
 }

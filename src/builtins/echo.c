@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 19:53:39 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/14 17:30:49 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:47:28 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,28 +27,10 @@ static bool is_n(char *arg)
 	return (false);
 }
 
-void	ft_putchar_fd(char c, int fd)
-{
-	write(fd, &c, 1);
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		write(fd, &s[i], 1);
-		i++;
-	}
-}
-
 static void	print_args(char **args, bool is_n, int i)
 {
 	if (!args[i] && !is_n)//only echo (without args or -n)
 	{
-		// printf("echo print\n");
 	ft_putchar_fd('\n', STDOUT_FILENO);//print '\n' to stdout
 	return ;
 	}
@@ -63,22 +45,39 @@ static void	print_args(char **args, bool is_n, int i)
 	}
 }
 
-int	echo(char **args)
+int	echo(char **args)//cmd->args
 {
 	int		i;
 	bool	is_n_fl;
 
 	is_n_fl = false;
-	i = 1;
-	// printf("args[1]=%s\n",args[1]);
-	//printf("in echo\n");
+	i = 1;//cmd1->args[0]=echo
 	while (args[i] && is_n(args[i]))//if there is 1 or more -n args in a row, starting from the 1st arg
 	{                               //(echo -n dfg fg, echo -n -n -n -n dfg dg)
 		is_n_fl = true;
 		i++;
-		//printf("in echo while\n");
 	}
-	//printf("in echo after while\n");
 	print_args(args, is_n_fl, i);
+	return (EXIT_SUCCESS);
+}
+
+int	echo_simple(char **args)
+{
+	int		i;
+
+	i = 1;
+	if (args[i] && ft_strncmp(args[i], "-n", 3) == 0)
+		i++;
+	else if (!args[i])
+		ft_putchar_fd('\n', STDOUT_FILENO);
+	while (args[i])
+	{
+		ft_putstr_fd(args[i], STDOUT_FILENO);
+		if (args[i + 1])// if there are multiple args separate them by ' '
+			ft_putchar_fd(' ', STDOUT_FILENO);
+		else if (!args[i + 1] && !is_n(args[1]))
+			ft_putchar_fd('\n', STDOUT_FILENO);
+		i++;
+	}
 	return (EXIT_SUCCESS);
 }

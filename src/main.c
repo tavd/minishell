@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/15 20:55:55 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/17 20:29:57 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,17 +101,22 @@ int main(int argc, char **argv, char **envp)
 //./minishell env grep i we can see some of printf output
 	// Add first command (ls -a)
 	t_command *cmd1 = lst_new_cmd(false);
-	cmd1->argc = 2; //for testing a single comand with variable number of arguments: argc - 1 (echo, export);
-	printf("cmd1->argc=%d\n", cmd1->argc);//4
+	//cmd1->argc = 3; //for testing a single comand with variable number of arguments: argc - 1 (echo, export);
+	//printf("cmd1->argc=%d\n", cmd1->argc);//4
 	cmd1->args = malloc(3 * sizeof(char*));
 	init_io(cmd1);
 	// open_infile(cmd1->io, "infile");//argv[1]
-	cmd1->args[0] = argv[1]; // "ls"
-	cmd1->args[1] = NULL;//argv[2]; // "-a"
+
+	//-------test env --------------------
+	cmd1->args[0] = argv[1];
+	cmd1->args[1] = NULL;
+	//-------test commands with 2 args----------------------------
+	// cmd1->args[0] = argv[1]; // "ls"
+	// cmd1->args[1] = argv[2]; // "-a"
 	// cmd1->args[2] = NULL;
-	////for testing echo, export as a single command (cmd1->argc = argc - 1)
+	//-------test echo------------------------------------------
 	// int i = 0;
-	// while (i < cmd1->argc)
+	// while (i < argc - 1)
 	// {
 	// 	cmd1->args[i] = argv[i + 1];
 	// 	printf("args=%s ", cmd1->args[i]);
@@ -121,42 +126,42 @@ int main(int argc, char **argv, char **envp)
 	cmd1->name = argv[1];
 	lst_add_back_cmd(&data.cmd, cmd1);
 //---------------2nd command-----------------------------------
-	// if (argv[3])
-	add_pipe(&data.cmd);
+	// // // if (argv[3])
+	// add_pipe(&data.cmd);
 
-	t_command *cmd2 = lst_new_cmd(false);
-	// int cmd2_start = cmd1->argc + 1;
-    cmd2->argc = 3; //argc - cmd2_start;
-	printf("cmd2->argc=%d\n", cmd2->argc);//2
-	cmd2->args = malloc(3 * sizeof(char*));
-	init_io(cmd2);
+	// t_command *cmd2 = lst_new_cmd(false);
+	// // int cmd2_start = cmd1->argc + 1;
+    // //cmd2->argc = 3; //argc - cmd2_start;
+	// // printf("cmd2->argc=%d\n", cmd2->argc);//2//
+	// cmd2->args = malloc(3 * sizeof(char*));
+	// init_io(cmd2);
 
-	cmd2->args[0] = argv[2]; //argv[3]; // "grep"
-	cmd2->args[1] = argv[3];//argv[4]; // "i"
-	cmd2->args[2] = NULL;
-	// i = 0;
-	// while (i < cmd2->argc)
-	// {
-	// 	cmd2->args[i] = argv[i + 2];//./minishell env grep ^PATH
-	// 	i++;
-	// }
-	// cmd2->args[i] = NULL;
-	cmd2->name = argv[2];
-	if (cmd2->args[0])
-	lst_add_back_cmd(&data.cmd, cmd2);
-	open_outfile(cmd2->io, "outfile");//argv[6]
+	// cmd2->args[0] = argv[2]; //argv[3]; // "grep"
+	// cmd2->args[1] = argv[3];//argv[4]; // "i"
+	// cmd2->args[2] = NULL;
+	// // // i = 0;
+	// // // while (i < cmd2->argc)
+	// // // {
+	// // // 	cmd2->args[i] = argv[i + 2];//./minishell env grep ^PATH
+	// // // 	i++;
+	// // // }
+	// // // cmd2->args[i] = NULL;
+	// cmd2->name = argv[2];
+	// // if (cmd2->args[0])
+	// lst_add_back_cmd(&data.cmd, cmd2);
 //-------------------3rd command----------------------------------
-	add_pipe(&data.cmd);
+	// add_pipe(&data.cmd);
 
-	t_command *cmd3 = lst_new_cmd(false);
-	cmd3->argc = 3;
-	cmd3->args = malloc(3 * sizeof(char*));
-	init_io(cmd3);
-	cmd3->args[0] = argv[4]; // "grep"
-	cmd3->args[1] = argv[5]; // "i"
-	cmd3->args[2] = NULL;
-	cmd3->name = argv[4];
-	lst_add_back_cmd(&data.cmd, cmd3);
+	// t_command *cmd3 = lst_new_cmd(false);
+	// cmd3->argc = 3;
+	// cmd3->args = malloc(3 * sizeof(char*));
+	// init_io(cmd3);
+	// cmd3->args[0] = argv[4]; // "grep"
+	// cmd3->args[1] = argv[5]; // "i"
+	// cmd3->args[2] = NULL;
+	// cmd3->name = argv[4];
+	// lst_add_back_cmd(&data.cmd, cmd3);
+	// open_outfile(cmd2->io, "outfile");
 	// printf("argv[5]=%s\n", argv[5]);
 //-------------------------------------------------------
 	printf("Executing commands:\n");
@@ -167,7 +172,7 @@ int main(int argc, char **argv, char **envp)
 		current_cmd = current_cmd->next;
 	}
 	printf("main: execute = %d\n", execute(&data));
-// 	pwd(&data);
+	pwd(&data);//for cd
 // 	i = 0;
 // 	while (data.env[i])
 // ft_putendl_fd(data.env[i++], STDOUT_FILENO);

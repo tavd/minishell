@@ -6,6 +6,8 @@ cmd->path=get_command_path=/usr/bin/grep
 in execute_external_command before execve
 cmd->path=/usr/bin/grep
 XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+MANDATORY_PATH=/usr/share/gconf/ubuntu.mandatory.path
+DEFAULTS_PATH=/usr/share/gconf/ubuntu.default.path
 FT_HOOK_PATHNAME=login-user.d
 PATH=/home/tavdiiev/bin:/home/tavdiiev/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/tavdiiev/.dotnet/tools
 XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0

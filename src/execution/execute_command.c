@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/15 17:01:23 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/17 14:46:21 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	execute_builtin(t_data *data, t_command *cmd)
 {
 	printf("in execute_builtin\n");
 	if (ft_strncmp(cmd->name, "cd", 3) == 0)
-		return(cd(data, cmd->args, cmd->argc));
+		return(cd(data, cmd->args));//, cmd->argc
 	else if (ft_strncmp(cmd->name, "echo", 5) == 0)
 		return(echo(cmd->args));
 	else if (ft_strncmp(cmd->name, "env", 4) == 0)
@@ -24,7 +24,6 @@ int	execute_builtin(t_data *data, t_command *cmd)
 		printf("else if (ft_strncmp(cmd->name, env, 4) == 0)\n");
 		return(env(data, cmd->args));
 	}
-
 	else if (ft_strncmp(cmd->name, "export", 7) == 0)
 		return(export(data, cmd->args));
 	else if (ft_strncmp(cmd->name, "pwd", 4) == 0)
