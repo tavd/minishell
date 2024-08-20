@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/17 19:58:54 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/19 18:57:14 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,13 @@ static void update_working_dirs(t_data *data, char *current_working_dir)
 		free_ptr(data->old_working_dir);
 		data->old_working_dir = ft_strdup(data->working_dir);
 	}
+	printf("data->old_working_dir=%s\n", data->old_working_dir);
 	if (data->working_dir)
 	{
 		free_ptr(data->working_dir);
 		data->working_dir = ft_strdup(current_working_dir);
 	}
+	printf("data->working_dir=%s\n", data->working_dir);
 	free_ptr(current_working_dir);
 }
 
@@ -53,8 +55,10 @@ static	int change_directory(t_data *data, char *path)
 		return (chdir_error_msg(path));
 	current_working_dir = getcwd(buf, PATH_MAX);
 	printf("change_directory: cwd=%s\n", current_working_dir);
+	//if getcwd fails we manually construct the current_working_dir, that is how bash works
 	if (!current_working_dir)
 	{
+		printf("!current_working_dir\n");
 		error_msg_command("cd: error retrieving current directory",
 	"getcwd: cannot access parent directories",
 	strerror(errno), errno);

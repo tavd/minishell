@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/17 17:11:10 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/20 20:25:31 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <readline/readline.h>
 
 # define CMD_NOT_FOUND 127
 # define CMD_NOT_EXECUTABLE 126
@@ -35,6 +36,8 @@
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
 # endif
+
+# define PROMPT2 "\001\e[45m\002>>> \001\e[0m\e[33m\002 Minishell>$ \001\e[0m\002"
 
 typedef struct s_io
 {
@@ -65,7 +68,9 @@ typedef struct s_data
 	char		*old_working_dir;
 	t_command	*cmd;
 	pid_t		pid;
+	bool		interactive;
 	// t_token		*token;
+	char		*user_input;
 }	t_data;
 
 bool	init_data(t_data *data, char **env);
@@ -77,6 +82,7 @@ int			pwd(t_data *data);
 int			export(t_data *data, char **args);
 int			unset(t_data *data, char **args);
 int			cd(t_data *data, char ** args);
+int			ft_exit(t_data *data, char **args);
 
 bool		is_valid_key(char *key);
 int			get_env_index(char **env, char *key);
@@ -95,7 +101,8 @@ int			execute(t_data *data);
 int			execute_command(t_data *data, t_command *cmd);
 int			execute_builtin(t_data *data, t_command *cmd);
 // error.c
-int	error_msg_command(char *command, char *detail, char *error_message, int error_number);
+int			error_msg_command(char *command, char *detail, char *error_message, int error_number);
+bool		usage_message(bool return_val);
 //free.c
 void	free_str_arr(char **tab);
 void	free_ptr(void *ptr);

@@ -6,7 +6,7 @@
 #    By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/17 13:27:31 by irsander          #+#    #+#              #
-#    Updated: 2024/08/07 20:16:41 by tavdiiev         ###   ########.fr        #
+#    Updated: 2024/08/20 20:24:28 by tavdiiev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ builtins/pwd.c \
 builtins/export.c \
 builtins/unset.c \
 builtins/cd.c \
+builtins/exit.c \
 env_utils/env_set_unset.c \
 env_utils/env_utils_functions.c \
 execution/execute_command.c \

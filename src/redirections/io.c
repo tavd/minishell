@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:37:08 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/15 16:09:51 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:46:59 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ bool	redirect_io_file(t_io *io)
 	printf("in redirect_io_file\n");
 	printf("io->fd_infile=%d\n", io->fd_infile);
 	printf("io->fd_outfile=%d\n", io->fd_outfile);
-
+	printf("io->stdin_copy=%d\n", io->stdin_copy);
+	printf("io->stdout_copy=%d\n", io->stdout_copy);
 	status = true;
 	if (!io)
 		return (status);
@@ -49,6 +50,8 @@ bool	redirect_io_file(t_io *io)
 	if (io->fd_outfile != -1)
 		if (dup2(io->fd_outfile, STDOUT_FILENO) == -1)
 			status = error_msg_command("dup2", io->outfile_name, strerror(errno), false);
+				printf("io->stdin_copy=%d\n", io->stdin_copy);
+	printf("io->stdin_copy=%d\n", io->stdin_copy);
 	printf("the end redirect_io_file\n");
 	return (status);
 }
@@ -58,7 +61,7 @@ bool	restore_stdin_stdout(t_io *io)
 {
 	int	status;
 
-	printf("in restore_stdin_stdout\n");
+	printf("in restore_stdin_stdout!!!!!!!!!!!!!!!!!!\n");
 	status = true;
 	if (!io)
 		return (status);

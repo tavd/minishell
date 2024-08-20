@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:14:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/19 20:09:33 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:42:27 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,8 @@ int	export(t_data *data, char **args)
 {
 	int		i;
 	char	**tmp;
-	int		return_value;
 
 	i = 1;
-	return_value = EXIT_SUCCESS;
 	if (!args[i])//export without args
 	 return (env(data, NULL));
 	while (args[i])
@@ -60,7 +58,7 @@ int	export(t_data *data, char **args)
 		if(!is_valid_key(args[i]))
 		{
 		error_msg_command("export", args[i], "not a valid identifier:", 0);
-		return_value = EXIT_FAILURE;			
+		return(EXIT_FAILURE);			
 		}
 		else if (ft_strchr(args[i], '='))//if there is '=' 
 		{
@@ -70,5 +68,5 @@ int	export(t_data *data, char **args)
 		}
 		i++;
 	}
-	return (return_value);
+	return (EXIT_SUCCESS);
 }

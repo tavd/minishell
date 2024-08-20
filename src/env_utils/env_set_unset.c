@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 19:27:37 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/19 19:22:53 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/19 21:01:51 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ bool	set_env(t_data *data, char *key, char *value)
 	if (!value)//if we want to add a key without a value like "key="
 			value = "";
 		tmp = ft_strjoin("=", value);
-	if (!tmp)
+	if (!tmp)//if malloc in ft_strjoin fails
 		return (false);
 	if (index != -1 && data->env[index])//if the key exists
 	{
@@ -62,21 +62,21 @@ bool	set_env(t_data *data, char *key, char *value)
 bool	unset_env(t_data *data, int env_var_index)
 {
 	int	i;
-	int	count;
+	//int	count;
 
-	if (env_var_index > env_var_count(data->env))
+	if (env_var_index > env_var_count(data->env))//invalid index
 		return (false);
 	free_ptr(data->env[env_var_index]);
 	i = env_var_index;
-	count = env_var_index;
+	//count = env_var_index;
 	while (data->env[i + 1])
 	{
 		data->env[i] = ft_strdup(data->env[i + 1]);
 		free_ptr(data->env[i + 1]);
-		count++;
+		//count++;
 		i++;
 	}
-	data->env = realloc_env_vars(data, count);
+	data->env = realloc_env_vars(data, i);
 	if (!data->env)
 		return (false);
 	return (true);

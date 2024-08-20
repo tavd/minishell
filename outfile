@@ -1,13 +1,14 @@
+io->stdin_copy=5
+io->stdin_copy=5
 the end redirect_io_file
 in execute_builtin
-status after execute_builtin=127
-in execute_external_command
-cmd->path=get_command_path=/usr/bin/grep
-in execute_external_command before execve
-cmd->path=/usr/bin/grep
-XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
-MANDATORY_PATH=/usr/share/gconf/ubuntu.mandatory.path
-DEFAULTS_PATH=/usr/share/gconf/ubuntu.default.path
-FT_HOOK_PATHNAME=login-user.d
-PATH=/home/tavdiiev/bin:/home/tavdiiev/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/tavdiiev/.dotnet/tools
-XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+in cd
+args[1]=libft
+end of cd
+change_directory: cwd=/home/tavdiiev/minishell/libft
+data->old_working_dir=/home/tavdiiev/minishell
+data->working_dir=/home/tavdiiev/minishell/libft
+the end of execute, status=0
+main: execute = 0
+in if data->working_dir
+/home/tavdiiev/minishell/libft

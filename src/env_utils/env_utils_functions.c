@@ -7,7 +7,7 @@ int	get_env_index(char **env, char *key)
 	int		i;
 	char	*tmp;
 
-	tmp = ft_strjoin(key, "=");
+	tmp = ft_strjoin(key, "=");//returns NULL if malloc fails
 	if (!tmp)
 		return (-1);
 	i = 0;

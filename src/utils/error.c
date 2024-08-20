@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 20:15:38 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/07/17 18:44:18 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/20 20:19:27 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,11 @@ int	error_msg_command(char *command, char *detail, char *error_message, int erro
 	ft_putendl_fd(message, STDERR_FILENO);
 	free_ptr(message);
 	return (error_number);
+}
+
+bool	usage_message(bool return_val)
+{
+	ft_putendl_fd("Usage: ./minishell", 2);
+	ft_putendl_fd("Usage: ./minishell -c \"input line\"", 2);
+	return (return_val);
 }
