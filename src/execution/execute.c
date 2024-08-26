@@ -6,11 +6,13 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:55:18 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/20 19:19:59 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:29:09 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
+
+int	g_last_exit_code;
 
 static int	check_data_create_pipes(t_data *data)
 {
@@ -50,7 +52,6 @@ static int	wait_children(t_data *data)
 		wpid = waitpid(-1, &status, 0);
 		if (wpid == data->pid)
 			save_status = status;
-		continue ;
 	}
 	if (WIFSIGNALED(save_status))
 		status = 128 + WTERMSIG(save_status);
@@ -100,7 +101,7 @@ int	execute(t_data *data)
 	{
 		redirect_io_file(data->cmd->io);
 		status = execute_builtin(data, data->cmd);
-		//restore_stdin_stdout(data->cmd->io);
+		restore_stdin_stdout_close_copies(data->cmd->io);
 	}
 	printf("the end of execute, status=%d\n", status);
 	if (status != CMD_NOT_FOUND)//builtin not piped

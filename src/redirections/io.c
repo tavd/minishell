@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:37:08 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/19 14:46:59 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/23 18:31:58 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ bool	redirect_io_file(t_io *io)
 }
 
 //Restore stdin and stdout to their original fds 0 and 1.
-bool	restore_stdin_stdout(t_io *io)
+bool	restore_stdin_stdout_close_copies(t_io *io)
 {
 	int	status;
 

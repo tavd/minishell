@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/20 20:38:25 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/26 20:23:46 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,12 @@ void	lst_add_back_cmd(t_command **alst, t_command *new_node)//new_node=lst_new_c
 t_command	*get_last_cmd(t_command *cmd)
 {
 	printf("get_last_cmd\n");
-	while (cmd->next != NULL)
-		cmd = cmd->next;
+	while (cmd->next != NULL)//segfault
+	{
+		printf("get_last\n");
+		cmd = cmd->next;		
+	}
+
 	return (cmd);
 }
 
@@ -107,98 +111,139 @@ void	add_pipe(t_command **cmd)
 	last_cmd = get_last_cmd(*cmd);
 	last_cmd->is_piped = true;
 }
+void	minishell_interactive(t_data *data)
+{
+	while (1)
+	{
+		printf("minishell_interactive\n");
+		//set_signals_interactive();
+	//	printf("minishell_interactive after set_signals\n");
+		// data->user_input = readline(PROMPT2);//we init data->user_input = NULL;
+		// printf("data->user_input=%s\n", data->user_input);
+		//set_signals_noninteractive();
+		// if (parse_user_input(data) == true)
+			g_last_exit_code = execute(data);//0 on succsess
+		// else
+		// 	g_last_exit_code = 1;
+		// free_data(data, false);
+	}
+}
+
+void	lst_delone_cmd(t_command *lst, void (*del)(void *))
+{
+	if (lst->name)
+		(*del)(lst->name);
+	if (lst->args)
+		free_str_arr(lst->args);
+	// if (lst->pipe_fd)
+	// 	(*del)(lst->pipe_fd);
+	// if (lst->io)
+	// 	free_io(lst->io);
+	(*del)(lst);
+}
+
+void	lst_clear_cmd(t_command **lst, void (*del)(void *))
+{
+	t_command	*temp;
+
+	temp = NULL;
+	while (*lst != NULL)
+	{
+		temp = (*lst)->next;
+		lst_delone_cmd(*lst, del);
+		*lst = temp;
+	}
+}
+
+void	free_data(t_data *data)
+{
+	if (data && data->user_input)
+	{
+		free_ptr(data->user_input);
+		data->user_input = NULL;
+	}
+	if (data && data->cmd)
+		lst_clear_cmd(&data->cmd, &free_ptr);
+}
+
+void lst_add_front_cmd(t_command **list, t_command *cmd1)
+{
+	cmd1->next = *list;
+	*list = cmd1;
+}
 
 int main(int argc, char **argv, char **envp)
 {
-	// while (1)
-	// {
-	t_data data;
-	// data.user_input = readline(PROMPT2);
+    t_data data;
 
-	ft_memset(&data, 0, sizeof(t_data));
+    (void)argc;
 
-	if (!start_check(&data, argc, argv) || !init_data(&data, envp))
-		exit_shell(NULL, EXIT_FAILURE);
-	(void)argc;
-// ./minishell infile grep li grep li outfile or ./minishell grep li grep li grep li
-//if stdout was redirected to a pipe (pipe_fd[0]) all the following printfs go to the pipe read end
-//./minishell env grep i we can see some of printf output
-	// Add first command (ls -a)
-	t_command *cmd1 = lst_new_cmd(false);
-	//cmd1->argc = 3; //for testing a single comand with variable number of arguments: argc - 1 (echo, export);
-	//printf("cmd1->argc=%d\n", cmd1->argc);//4
-	cmd1->args = malloc(3 * sizeof(char*));
-	init_io(cmd1);
-	// open_infile(cmd1->io, "infile");//argv[1]
-
-	//-------test commands with 2 or 1 args----------------------------
-	// cmd1->args[0] = argv[1]; // "ls"
-	// cmd1->args[1] = argv[2]; // "-a"
-	// cmd1->args[2] = NULL;
-	//-------test echo, export------------------------------------------
-	int i = 0;
-	while (i < argc - 1)
+    ft_memset(&data, 0, sizeof(t_data));
+    if (!start_check(&data, argc, argv) || !init_data(&data, envp))
+        exit_shell(NULL, EXIT_FAILURE);
+    while (1)
 	{
-		cmd1->args[i] = argv[i + 1];
-		printf("args=%s ", cmd1->args[i]);
-		i++;
-	}
-	cmd1->args[i] = NULL;
-	cmd1->name = argv[1];
-	lst_add_back_cmd(&data.cmd, cmd1);
-	// open_outfile(cmd1->io, "outfile");
-//---------------2nd command-----------------------------------
-	// // // if (argv[3])
-	// add_pipe(&data.cmd);
+        data.user_input = readline(PROMPT2);
+		printf("data.user_input = %s\n",  data.user_input);
+		char **input_strings = ft_split(data.user_input, ' ');
+        t_command *cmd1 = lst_new_cmd(false);
+		cmd1->args = input_strings;
+		lst_add_front_cmd(&data.cmd, cmd1);
+		// lst_add_back_cmd(&data.cmd, cmd1);
+		        init_io(cmd1);
+			// if (data.cmd->next)
+			// {
+			// 	printf("here\n");
+			// data.cmd = data.cmd->next;				
+			// }
 
-	// t_command *cmd2 = lst_new_cmd(false);
-	// // // int cmd2_start = cmd1->argc + 1;
-    // // //cmd2->argc = 3; //argc - cmd2_start;
-	// // // printf("cmd2->argc=%d\n", cmd2->argc);//2//
-	// cmd2->args = malloc(3 * sizeof(char*));
-	// init_io(cmd2);
+ cmd1->name = cmd1->args[0];
+	// cmd1->args[0] = input_strings[0];//argv[1]; // "ls"
+	// cmd1->args[1] = input_strings[1];//argv[2]; // "-a"
+	// cmd1->args[2] = input_strings[2];
+	// cmd1->args[3] = input_strings[3];
+	// cmd1->args[4] = input_strings[4];
+	// cmd1->args[5] = NULL;
+	// printf("cmd1->args[0]=%s\n", cmd1->args[0]);
+	// printf("cmd1->args[2]=%s\n", cmd1->args[2]);
+	// int i = 0;
+	// while (cmd1->args[i])
+// printf("cmd1->args=%s ", cmd1->args[i++]);
+// printf("\n");
+// 	  free(data.user_input);
+// 		printf("data.cmd->name=%s\n", data.cmd->name);
+// 	//------------------command2-------------------
+// 	add_pipe(&data.cmd);
+// 	t_command *cmd2 = lst_new_cmd(false);
+// 	cmd2->args = &input_strings[2];
+//     lst_add_front_cmd(&data.cmd, cmd2);//need to add back
+// 	init_io(cmd2);
+// 	 cmd2->name = cmd2->args[0];
+//         // printf("Command: %s\n", data.cmd->name);
+//         // printf("Is Piped: %d\n", data.cmd->is_piped);
+// 	int i = 0;
+// 	printf("cmd2->args=%s ", cmd2->args[i++]);
+// printf("\n");
+// 	printf("cmd2->args[0]=%s\n", cmd2->args[0]);
+// 	printf("cmd2->args[1]=%s\n", cmd2->args[1]);
+	//-------------------------------------------
+        if (execute(&data) == -1)
+            printf("Command execution failed\n");
+        // free(data.user_input);
+		// printf("data.cmd->name=%s\n", data.cmd->name);
 
-	// cmd2->args[0] = argv[3]; // "grep"
-	// cmd2->args[1] = argv[4]; // "i"
-	// cmd2->args[2] = NULL;
-	// // // // i = 0;
-	// // // // while (i < cmd2->argc)
-	// // // // {
-	// // // // 	cmd2->args[i] = argv[i + 2];//./minishell env grep ^PATH
-	// // // // 	i++;
-	// // // // }
-	// // // // cmd2->args[i] = NULL;
-	// cmd2->name = argv[3];
-	// // // if (cmd2->args[0])
-	// lst_add_back_cmd(&data.cmd, cmd2);
-//-------------------3rd command----------------------------------
-	// add_pipe(&data.cmd);
+		free(data.cmd->name);
+		// data.cmd->name = NULL;
 
-	// t_command *cmd3 = lst_new_cmd(false);
-	// cmd3->argc = 3;
-	// cmd3->args = malloc(3 * sizeof(char*));
-	// init_io(cmd3);
-	// cmd3->args[0] = argv[4]; // "grep"
-	// cmd3->args[1] = argv[5]; // "i"
-	// cmd3->args[2] = NULL;
-	// cmd3->name = argv[4];
-	// lst_add_back_cmd(&data.cmd, cmd3);
-	// open_outfile(cmd2->io, "outfile");
-	// printf("argv[5]=%s\n", argv[5]);
-//-------------------------------------------------------
-	printf("Executing commands:\n");
-	t_command *current_cmd = data.cmd;
-	while (current_cmd != NULL) {
-		printf("Command: %s\n", current_cmd->name);
-		printf("Is Piped: %d\n", current_cmd->is_piped);
-		current_cmd = current_cmd->next;
-	}
-	printf("main: execute = %d\n", execute(&data));
-// 	pwd(&data);//for cd
-// 	int i2 = 0;//for export
-// 	while (data.env[i2])
-// ft_putendl_fd(data.env[i2++], STDOUT_FILENO);
-	// }
-    return (0);
+
+		
+		// if (cmd1->args)
+		// free_str_arr(cmd1->args);
+		// free_str_arr(input_strings);
+		// free_data(&data);
+
 	
+    }
+
+    return 0;
 }

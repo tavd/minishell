@@ -6,20 +6,18 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:25:40 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/20 20:29:07 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/23 18:27:12 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
 
-int	g_last_exit_code = 0;
-
 static bool	is_out_of_range(int sign, unsigned long long number, bool *error_flag)
 {
-	if ((number > LONG_MAX)
+	if ((sign == 1 && number > LONG_MAX)
 	|| (sign == -1 && number > -(unsigned long)LONG_MIN))
-	*error_flag = true;
-	return(error_flag);
+	*error_flag = true;		
+	return(*error_flag);
 }
 
 static int	ft_atoi_long(const char *str, bool *error_flag)
@@ -32,7 +30,7 @@ static int	ft_atoi_long(const char *str, bool *error_flag)
 	sign = 1;
 	i = 0;
 	while((str[i] && (str[i] >= '\t' && str[i] <= '\r')) || str[i] == ' ')
-		i++;
+			i++;		
 	if (str[i] == '+' || str[i] == '-')
 	{
 		if (str[i] == '-')
@@ -41,14 +39,16 @@ static int	ft_atoi_long(const char *str, bool *error_flag)
 	}
 	while (str[i] && ft_isdigit(str[i]))
 	{
-		number = number * 10 + str[i] - '0';
+		number = number * 10 + (str[i] - '0');
 		if (is_out_of_range(sign, number, error_flag))
-			break ;
+			break ;			
 		i++;
 	}
 	return (number * sign);
 }
-
+    // Exit codes in Unix-like systems (including Bash) are limited to the range of 0-255 because they are stored in an 8-bit value.
+    // When you specify an exit code larger than 255, the value wraps around. This is effectively taking 
+	// the modulo 256 of the specified exit code.
 static int get_exit_code(char *arg, bool *error_flag)
 {
 	unsigned long long	i;
@@ -57,19 +57,20 @@ static int get_exit_code(char *arg, bool *error_flag)
 		return (g_last_exit_code);
 	i = 0;
 	while ((arg[i] >= '\t' && arg[i] <= '\r') || arg[i] == ' ')
-		i++;
+			i++;		
 	if (arg[i] == '\0')
-		*error_flag = true;
+		*error_flag = true;		
 	if (arg[i] == '-' || arg[i] == '+')
-		i++;
+			i++;		
+		if (!ft_isdigit(arg[i]))
+			*error_flag = true;
 	while (arg[i])
 	{
-		if ((!ft_isdigit(arg[i]) && (arg[i] >= '\t' && arg[i] <= '\r')) || arg[i] == ' ')
-			*error_flag = true;
+		if ((!ft_isdigit(arg[i]) && !((arg[i] >= '\t' && arg[i] <= '\r') || arg[i] == ' ')))
+			*error_flag = true;			
 		i++;
 	}
 	i = ft_atoi_long(arg, error_flag);
-	printf("i=%llu\n", i);
 	return (i % 256);
 }
 
@@ -89,14 +90,11 @@ static bool	is_exit_piped(t_data *data)
 
 int	ft_exit(t_data *data, char **args)
 {
-	printf("in exit_builtin\n");
-	printf("in exit, args[1]=%s\n", args[1]);
 	int		exit_code;
 	bool	error_flag;
 	bool	piped;
 
 	piped = is_exit_piped(data);
-	printf("piped=%d\n", piped);
 	error_flag = false;
 	if (!piped && data->interactive)
 		ft_putendl_fd("exit", 2);
@@ -111,7 +109,6 @@ int	ft_exit(t_data *data, char **args)
 		else if (args[2])
 			return (error_msg_command("exit", NULL, "too many arguments", 1));
 	}
-				printf("exit_code=%d\n", exit_code);
 	exit_shell(data, exit_code);
 	return (2);
 }

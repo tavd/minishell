@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/20 20:25:31 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/23 18:32:07 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@
 # endif
 
 # define PROMPT2 "\001\e[45m\002>>> \001\e[0m\e[33m\002 Minishell>$ \001\e[0m\002"
+
+extern int	g_last_exit_code;
 
 typedef struct s_io
 {
@@ -115,7 +117,7 @@ char	*get_command_path(t_data *data, char *command_name);
 //io.c
 bool	is_valid_fd(t_io *io);
 bool	redirect_io_file(t_io *io);
-bool	restore_stdin_stdout(t_io *io);
+bool	restore_stdin_stdout_close_copies(t_io *io);
 //pipe.c
 bool	create_pipes(t_data *data);
 void	close_pipe_fds(t_command *cmds, t_command *own_cmd);
