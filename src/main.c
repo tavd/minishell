@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/26 20:23:46 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/08/27 18:58:38 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,29 +181,22 @@ int main(int argc, char **argv, char **envp)
     ft_memset(&data, 0, sizeof(t_data));
     if (!start_check(&data, argc, argv) || !init_data(&data, envp))
         exit_shell(NULL, EXIT_FAILURE);
+		
     while (1)
 	{
-        data.user_input = readline(PROMPT2);
+        data.user_input = readline(PROMPT);
 		printf("data.user_input = %s\n",  data.user_input);
 		char **input_strings = ft_split(data.user_input, ' ');
         t_command *cmd1 = lst_new_cmd(false);
 		cmd1->args = input_strings;
+		init_io(cmd1);
 		lst_add_front_cmd(&data.cmd, cmd1);
+
 		// lst_add_back_cmd(&data.cmd, cmd1);
-		        init_io(cmd1);
-			// if (data.cmd->next)
-			// {
-			// 	printf("here\n");
-			// data.cmd = data.cmd->next;				
-			// }
+
 
  cmd1->name = cmd1->args[0];
-	// cmd1->args[0] = input_strings[0];//argv[1]; // "ls"
-	// cmd1->args[1] = input_strings[1];//argv[2]; // "-a"
-	// cmd1->args[2] = input_strings[2];
-	// cmd1->args[3] = input_strings[3];
-	// cmd1->args[4] = input_strings[4];
-	// cmd1->args[5] = NULL;
+//  open_outfile(cmd1->io, "outfile");
 	// printf("cmd1->args[0]=%s\n", cmd1->args[0]);
 	// printf("cmd1->args[2]=%s\n", cmd1->args[2]);
 	// int i = 0;
@@ -226,13 +219,25 @@ int main(int argc, char **argv, char **envp)
 // printf("\n");
 // 	printf("cmd2->args[0]=%s\n", cmd2->args[0]);
 // 	printf("cmd2->args[1]=%s\n", cmd2->args[1]);
-	//-------------------------------------------
-        if (execute(&data) == -1)
-            printf("Command execution failed\n");
+	//-------------------if added back------------------------
+		// 	t_command *current_cmd = data.cmd;
+		// 	t_command *cur2 = current_cmd;
+		// 	if (current_cmd)
+		// 	{
+		// printf("Command: %s\n", current_cmd->name);
+		// printf("Is Piped: %d\n", current_cmd->is_piped);
+		// 	   if (execute(&data) == -1)
+    	//         printf("Command execution failed\n");		
+		// 	current_cmd = current_cmd->next;
+		// 	free(cur2->name);
+		// 	}
+				if (execute(&data) == -1)
+    	        printf("Command execution failed\n");
+			free(data.cmd->name);
         // free(data.user_input);
 		// printf("data.cmd->name=%s\n", data.cmd->name);
 
-		free(data.cmd->name);
+		
 		// data.cmd->name = NULL;
 
 
