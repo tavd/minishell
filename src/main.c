@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irsander <irsander@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/06/17 13:34:07 by irsander         ###   ########.fr       */
+/*   Created: 2024/08/27 20:18:26 by tavdiiev          #+#    #+#             */
+/*   Updated: 2024/08/27 20:25:34 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include "../../incl/minishell.h"
+
 
 int main()
 {
-    ft_printf("hello");
+    printf("main\n");
     return (0);
 }
