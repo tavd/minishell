@@ -6,7 +6,7 @@
 #    By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/17 13:27:31 by irsander          #+#    #+#              #
-#    Updated: 2024/08/20 20:24:28 by tavdiiev         ###   ########.fr        #
+#    Updated: 2024/09/04 18:50:09 by tavdiiev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,8 @@ utils/error.c \
 utils/free_close.c \
 utils/exit_shell.c \
 utils/init_data.c
+
+export LIBFT_MODULES = printf
 
 SRC_DIR = src
 SRC = $(addprefix $(SRC_DIR)/, $(FILES))	

@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/19 18:57:14 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/17 16:11:58 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,3 @@ printf("args[1]=%s\n", args[1]);
 			printf("end of cd\n");
 	return (change_directory(data, args[1]));
 }
-

@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:37:08 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/23 18:31:58 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/20 17:51:19 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 bool	is_valid_fd(t_io *io)
 {
 	printf("in is_valid_fd:\n");
-	printf("io->fd_in=%d\n", io->fd_infile);
+	printf("io->fd_infile=%d\n", io->fd_infile);
 	printf("io->infile_name=%s\n", io->infile_name);
 	if (!io || (!io->infile_name && !io->outfile_name))
 		return(true);
-	if ((io->infile_name && io->fd_infile == -1) 
+	if ((io->infile_name && io->fd_infile == -1)
 		|| (io->outfile_name && io->fd_outfile == -1))
 		return(false);
 	printf("the end of is_valid_fd\n");
@@ -41,6 +41,7 @@ bool	redirect_io_file(t_io *io)
 	io->stdin_copy = dup(STDIN_FILENO);
 	if (io->stdin_copy == -1)
 		status = error_msg_command("dup", "stdin_copy", strerror(errno), false);
+	printf("io->stdin_copy=%d\n", io->stdin_copy);
 	io->stdout_copy = dup(STDOUT_FILENO);
 	if (io->stdout_copy == -1)
 		status = error_msg_command("dup", "stdout_copy", strerror(errno), false);
@@ -50,8 +51,6 @@ bool	redirect_io_file(t_io *io)
 	if (io->fd_outfile != -1)
 		if (dup2(io->fd_outfile, STDOUT_FILENO) == -1)
 			status = error_msg_command("dup2", io->outfile_name, strerror(errno), false);
-				printf("io->stdin_copy=%d\n", io->stdin_copy);
-	printf("io->stdin_copy=%d\n", io->stdin_copy);
 	printf("the end redirect_io_file\n");
 	return (status);
 }

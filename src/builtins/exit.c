@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:25:40 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/23 18:27:12 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/18 16:21:57 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static bool	is_out_of_range(int sign, unsigned long long number, bool *error_fla
 {
 	if ((sign == 1 && number > LONG_MAX)
 	|| (sign == -1 && number > -(unsigned long)LONG_MIN))
-	*error_flag = true;		
+	*error_flag = true;
 	return(*error_flag);
 }
 
@@ -30,7 +30,7 @@ static int	ft_atoi_long(const char *str, bool *error_flag)
 	sign = 1;
 	i = 0;
 	while((str[i] && (str[i] >= '\t' && str[i] <= '\r')) || str[i] == ' ')
-			i++;		
+			i++;
 	if (str[i] == '+' || str[i] == '-')
 	{
 		if (str[i] == '-')
@@ -41,7 +41,7 @@ static int	ft_atoi_long(const char *str, bool *error_flag)
 	{
 		number = number * 10 + (str[i] - '0');
 		if (is_out_of_range(sign, number, error_flag))
-			break ;			
+			break ;
 		i++;
 	}
 	return (number * sign);
@@ -57,9 +57,9 @@ static int get_exit_code(char *arg, bool *error_flag)
 		return (g_last_exit_code);
 	i = 0;
 	while ((arg[i] >= '\t' && arg[i] <= '\r') || arg[i] == ' ')
-			i++;		
+			i++;
 	if (arg[i] == '\0')
-		*error_flag = true;		
+		*error_flag = true;
 	if (arg[i] == '-' || arg[i] == '+')
 			i++;		
 		if (!ft_isdigit(arg[i]))
@@ -103,6 +103,7 @@ int	ft_exit(t_data *data, char **args)
 	else
 	{
 		exit_code = get_exit_code(args[1], &error_flag);
+		printf("exit_code=%d\n", exit_code);
 		if (error_flag)
 			exit_code = error_msg_command("exit", args[1],
 					"numeric argument required", 2);

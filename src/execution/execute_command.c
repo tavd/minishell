@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/23 18:29:10 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/18 16:37:09 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ static int execute_external_command(t_data *data, t_command *cmd)
 // /usr/local/bin/mycommand if the command is in /usr/local/bin.
 static int	execute_local_binary_or_absolute_path(t_data *data, t_command *command)
 {
+	printf("in execute_local_binary_or_absolute_path\n");
 	int status;
 
 	status = is_command_not_found(data, command);

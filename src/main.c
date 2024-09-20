@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/27 18:58:38 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/04 18:18:24 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,12 +206,12 @@ int main(int argc, char **argv, char **envp)
 // 	  free(data.user_input);
 // 		printf("data.cmd->name=%s\n", data.cmd->name);
 // 	//------------------command2-------------------
-// 	add_pipe(&data.cmd);
-// 	t_command *cmd2 = lst_new_cmd(false);
-// 	cmd2->args = &input_strings[2];
-//     lst_add_front_cmd(&data.cmd, cmd2);//need to add back
-// 	init_io(cmd2);
-// 	 cmd2->name = cmd2->args[0];
+	// add_pipe(&data.cmd);
+	// t_command *cmd2 = lst_new_cmd(false);
+	// cmd2->args = &input_strings[2];
+    // lst_add_front_cmd(&data.cmd, cmd2);//need to add back
+	// init_io(cmd2);
+	//  cmd2->name = cmd2->args[0];
 //         // printf("Command: %s\n", data.cmd->name);
 //         // printf("Is Piped: %d\n", data.cmd->is_piped);
 // 	int i = 0;

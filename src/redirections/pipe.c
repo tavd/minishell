@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 21:03:51 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/15 16:41:58 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/04 20:17:18 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ bool	redirect_io_pipe(t_command *cmds, t_command *this_cmd)
 	if (this_cmd->prev && this_cmd->prev->is_piped)
 	{
 		printf("this_cmd->prev && this_cmd->prev->is_piped\n");
-		dup2(this_cmd->prev->pipe_fd[0], STDIN_FILENO);//Redirect stdin to pipe read end		
+		dup2(this_cmd->prev->pipe_fd[0], STDIN_FILENO);//Redirect stdin to pipe read end
 	}
 	if (this_cmd->is_piped)
 	{
