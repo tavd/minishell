@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/09/04 18:18:24 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/25 19:43:23 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ t_command	*lst_new_cmd(bool value)
 {
 	t_command	*new_node;
 
-	new_node = (t_command *)malloc(sizeof(t_command));
+	new_node = (t_command *)malloc(sizeof(*new_node));
 	if (!(new_node))
 		return (NULL);
-	ft_memset(new_node, 0, sizeof(t_command));
+	ft_memset(new_node, 0, sizeof(*new_node));
 	new_node->is_piped = value;
 	return (new_node);
 }
@@ -178,7 +178,7 @@ int main(int argc, char **argv, char **envp)
 
     (void)argc;
 
-    ft_memset(&data, 0, sizeof(t_data));
+    ft_memset(&data, 0, sizeof(data));
     if (!start_check(&data, argc, argv) || !init_data(&data, envp))
         exit_shell(NULL, EXIT_FAILURE);
 		
@@ -188,15 +188,15 @@ int main(int argc, char **argv, char **envp)
 		printf("data.user_input = %s\n",  data.user_input);
 		char **input_strings = ft_split(data.user_input, ' ');
         t_command *cmd1 = lst_new_cmd(false);
+		// printf("data=%p\ndata.cmd=%p\n", &data, data.cmd);
 		cmd1->args = input_strings;
 		init_io(cmd1);
 		lst_add_front_cmd(&data.cmd, cmd1);
 
 		// lst_add_back_cmd(&data.cmd, cmd1);
-
-
- cmd1->name = cmd1->args[0];
-//  open_outfile(cmd1->io, "outfile");
+		cmd1->name = cmd1->args[0];
+		// open_outfile(cmd1->io, "outfile");
+	
 	// printf("cmd1->args[0]=%s\n", cmd1->args[0]);
 	// printf("cmd1->args[2]=%s\n", cmd1->args[2]);
 	// int i = 0;

@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/09/18 16:37:09 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/09/28 19:27:54 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ static int execute_external_command(t_data *data, t_command *cmd)
 	if (command_is_dir(cmd->name))
 		return (CMD_NOT_FOUND);
 	cmd->path = get_command_path(data, cmd->name);
-	printf("cmd->path=get_command_path=%s\n", cmd->path);
 	if (!cmd->path)
 		return (CMD_NOT_FOUND);
 	printf("in execute_external_command before execve\n");
@@ -52,19 +51,19 @@ static int execute_external_command(t_data *data, t_command *cmd)
 }
 
 //If the command is in the current directory, you need to use ./command to run it:
-// ./mycommand
+// ./mycommand - exe file in the current directory
 //if mycommand is not a built-in or external shell command but an executable file present 
 //in a specific location on the filesystem:
 // /usr/local/bin/mycommand if the command is in /usr/local/bin.
-static int	execute_local_binary_or_absolute_path(t_data *data, t_command *command)
+static int	execute_local_binary_or_absolute_path(t_data *data, t_command *cmd)
 {
 	printf("in execute_local_binary_or_absolute_path\n");
 	int status;
 
-	status = is_command_not_found(data, command);
+	status = is_command_not_found(data, cmd);
 	if (status)
 		return (status);
-	if (execve(command->name, command->args, data->env) == -1)
+	if (execve(cmd->name, cmd->args, data->env) == -1)
 		return (error_msg_command("execve", NULL, strerror(errno), errno));
 	return (EXIT_FAILURE);
 }

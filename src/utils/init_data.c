@@ -67,9 +67,9 @@ void	init_io(t_command *cmd)
 {
 	if (!cmd->io)
 	{
-		cmd->io = malloc(sizeof * cmd->io);
+		cmd->io = malloc(sizeof(t_io));
 		if (!cmd->io)
-			return ;			
+			return ;
 		cmd->io->infile_name = NULL;
 		cmd->io->outfile_name = NULL;
 		cmd->io->fd_infile = -1;

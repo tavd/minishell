@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/23 20:00:56 by tavdiiev          #+#    #+#             */
+/*   Updated: 2024/09/23 20:01:07 by tavdiiev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../incl/minishell.h"
 
 //Checks if the command is a directory rather than an executable.
@@ -12,7 +24,7 @@ bool	command_is_dir(char *cmd)
 
 int	is_command_not_found(t_data *data, t_command *command)
 {
-	if (!ft_strchr(command->name, '/') 
+	if (!ft_strchr(command->name, '/')
 		&& get_env_index(data->env, "PATH") != -1)
 		return (error_msg_command(command->name, NULL, "command not found", 
 				CMD_NOT_FOUND));

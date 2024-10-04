@@ -1,4 +1,0 @@
-io->stdin_copy=4
-io->stdin_copy=4
-the end redirect_io_file
-in execute_builtin

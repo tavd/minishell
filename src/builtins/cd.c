@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/09/17 16:11:58 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/02 18:32:47 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,7 @@ static	int change_directory(t_data *data, char *path)
 	{
 		printf("!current_working_dir\n");
 		error_msg_command("cd: error retrieving current directory",
-	"getcwd: cannot access parent directories",
-	strerror(errno), errno);
+	"getcwd: cannot access parent directories",	strerror(errno), errno);
 	if (path[0] == '/')
     	current_working_dir = ft_strdup(path);
 	else
@@ -86,7 +85,6 @@ printf("in cd\n");
 printf("args[1]=%s\n", args[1]);
 	if (!args || !args[1] || ft_strncmp(args[1], "--", 3) == 0)
 	{
-		printf("here!!!!!!\n");
 		path = get_env_value(data->env, "HOME");
 		if (!path || path[0] == '\0' || path[0] == ' ')
 			return (error_msg_command("cd", NULL, "HOME not set", EXIT_FAILURE));
