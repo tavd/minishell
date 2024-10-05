@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:42:45 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/01 15:42:57 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 20:19:33 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ int	get_env_index(char **env, char *key)
 	{
 		if (ft_strncmp(tmp, env[i], ft_strlen(tmp)) == 0)//search for strings containing "Key="
 		{
-		free_ptr(tmp);
+		free(tmp);
 		return (i);
 		}
 		i++;
 	}
-	free_ptr(tmp);
+	free(tmp);
 	return (-1);
 }
 
@@ -58,11 +58,11 @@ char	*get_env_value(char **env, char *key)
 	{
 		if (ft_strncmp(tmp, env[i], ft_strlen(tmp)) == 0)
 		{
-			free_ptr(tmp);
+			free(tmp);
 			return (ft_strchr(env[i], '=') + 1);
 		}
 		i++;
 	}
-	free_ptr(tmp);
+	free(tmp);
 	return (NULL);
 }

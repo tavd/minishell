@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/08/23 18:32:07 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:22:32 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int			env_var_count(char **env);
 char		*get_env_value(char **env, char *key);
 // env_utils/env_set_unset.c
 bool	set_env(t_data *data, char *key, char *value);
-bool	unset_env(t_data *data, int env_var_index);
+bool	unset_env(t_data *data, int env_index);
 //env_utils
 int	get_env_index(char **env, char *key);
 int	env_var_count(char **env);

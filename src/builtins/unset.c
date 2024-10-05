@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 15:45:42 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/19 20:43:20 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 19:24:53 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	unset(t_data *data, char **args)
 {
 	int	i;
-	int	env_var_index;
+	int	env_index;
 
 	i = 1;
 	while (args[i])
@@ -24,9 +24,9 @@ int	unset(t_data *data, char **args)
 			return (EXIT_FAILURE);
 		else
 		{
-			env_var_index = get_env_index(data->env, args[i]);
-			if (env_var_index != -1)
-				unset_env(data, env_var_index);
+			env_index = get_env_index(data->env, args[i]);
+			if (env_index != -1)
+				unset_env(data, env_index);
 		}
 		i++;
 	}

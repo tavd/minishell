@@ -30,7 +30,7 @@ static char	*find_valid_command_path(char *command, char **env_paths_array)
 		}
 		if (access(command_path, F_OK | X_OK) == 0)
 			return (command_path);
-		free_ptr(command_path);
+		free(command_path);
 		i++;
 	}
 	return (NULL);
@@ -56,7 +56,7 @@ char	*get_command_path(t_data *data, char *command_name)
 	command_path = find_valid_command_path(command, env_paths_array);
 	if (!command_path)
 	{
-		free_ptr(command);
+		free(command);
 		free_str_arr(env_paths_array);
 		return (NULL);
 	}

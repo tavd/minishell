@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:42:17 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/23 18:34:30 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 19:47:08 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,8 @@ void	free_str_arr(char **arr)
 	{
 		while (arr[i])
 		{
-			if (arr[i])
-			{
-				free_ptr(arr[i]);
-				arr[i] = NULL;
-			}
+			free(arr[i]);
+			arr[i] = NULL;
 			i++;
 		}
 		free(arr);
@@ -55,40 +52,3 @@ void	close_fds(t_command *cmd_list, bool close_copies)
 	}
 	close_pipe_fds(cmd_list, NULL);
 }
-
-// void	free_data(t_data *data)
-// {
-// 	if (data && data->user_input)
-// 	{
-// 		free_ptr(data->user_input);
-// 		data->user_input = NULL;
-// 	}
-// 	if (data && data->cmd)
-// 		lst_clear_cmd(&data->cmd, &free_ptr);
-// }
-
-// void	lst_delone_cmd(t_command *lst, void (*del)(void *))
-// {
-// 	if (lst->name)
-// 		(*del)(lst->name);
-// 	if (lst->args)
-// 		free_str_tab(lst->args);
-// 	if (lst->pipe_fd)
-// 		(*del)(lst->pipe_fd);
-// 	if (lst->io)
-// 		free_io(lst->io);
-// 	(*del)(lst);
-// }
-
-// void	lst_clear_cmd(t_command **lst, void (*del)(void *))
-// {
-// 	t_command	*temp;
-
-// 	temp = NULL;
-// 	while (*lst != NULL)
-// 	{
-// 		temp = (*lst)->next;
-// 		lst_delone_cmd(*lst, del);
-// 		*lst = temp;
-// 	}
-// }

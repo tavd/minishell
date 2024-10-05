@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/02 18:32:47 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 20:19:56 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,17 @@ static void update_working_dirs(t_data *data, char *current_working_dir)
 	set_env(data, "PWD", current_working_dir);
 	if (data->old_working_dir)
 	{
-		free_ptr(data->old_working_dir);
+		free(data->old_working_dir);
 		data->old_working_dir = ft_strdup(data->working_dir);
 	}
 	printf("data->old_working_dir=%s\n", data->old_working_dir);
 	if (data->working_dir)
 	{
-		free_ptr(data->working_dir);
+		free(data->working_dir);
 		data->working_dir = ft_strdup(current_working_dir);
 	}
 	printf("data->working_dir=%s\n", data->working_dir);
-	free_ptr(current_working_dir);
+	free(current_working_dir);
 }
 
 /*
@@ -68,7 +68,7 @@ static	int change_directory(t_data *data, char *path)
 		current_working_dir = ft_strjoin(data->working_dir, "/");
 		tmp = current_working_dir;
 		current_working_dir = ft_strjoin(tmp, path);//previous_directory/new_path
-		free_ptr(tmp);
+		free(tmp);
 	}
 	}
 	else

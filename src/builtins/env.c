@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 18:52:06 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/01 16:31:31 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 19:30:37 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ int	env(t_data *data, char **args)
 		return (EXIT_FAILURE);
 	i = 0;
 	while (data->env[i])
-		ft_putendl_fd(data->env[i++], STDOUT_FILENO);//print each env substring followed by a \n
+		ft_putendl_fd(data->env[i++], STDOUT_FILENO);
 	return (EXIT_SUCCESS);
 }

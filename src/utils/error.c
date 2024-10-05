@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 20:15:38 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/08/20 20:19:27 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/05 20:20:03 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	error_msg_command(char *command, char *detail, char *error_message, int erro
 	}
 	message = ft_strjoin(message, error_message);
 	ft_putendl_fd(message, STDERR_FILENO);
-	free_ptr(message);
+	free(message);
 	return (error_number);
 }
 

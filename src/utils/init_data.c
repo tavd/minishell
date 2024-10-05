@@ -15,7 +15,6 @@ static bool	init_env(t_data *data, char **env)
 			return (false);
 		i++;
 	}
-	data->cmd = NULL;
 	return (true);
 }
 
