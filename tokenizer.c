@@ -23,11 +23,22 @@ struct tokenizer {
 };
 
 typedef struct s_token {
+	// TODO: make it possible for heredoc to set a word as END delimiter...
+	enum e_identifiers
+	{
+		SPACE = ' ',
+		ENV = '$',
+		EXIT_STATUS = '?',
 
-	union {
-		char	*literal_value;
-		uint8_t	identifier;
+
+		REDIRECT_IN,
+		REDIRECT_OUT,
+		REDIRECT_APPEND,
+
+		END = 0,
+		HEREDOC_END = 0, // maybe unnecessary
 	};
+	char	*text;
 	ssize_t	length;
 	bool	valid;
 }	t_token;
@@ -41,13 +52,12 @@ const static	char	delimiters[3] = {
 	' ', '\0', '\n'
 };
 
-enum e_identifiers
-{
-	END = 0,
-	SPACE = ' '
-};
 
-t_token	tokenize_one_at_a_time(struct tokenizer *tokenizer)
+
+// NOTE:
+// all tokens of length 1 are identifiers...
+
+t_token	tokenize_one_token(struct tokenizer *tokenizer)
 {
 	t_token		token;
 	char		*string;
@@ -56,6 +66,7 @@ t_token	tokenize_one_at_a_time(struct tokenizer *tokenizer)
 	string = tokenizer->input;
 	token.literal_value = string;
 	token.valid = true;
+	len = 0;
 	while (*string && !strchr(delimiters, *string))
 	{
 		++string;
@@ -64,7 +75,12 @@ t_token	tokenize_one_at_a_time(struct tokenizer *tokenizer)
 	if (len == 0)
 	{
 		token.literal_value = 0;
-		token.identifier = (enum e_identifiers)*string;
+		token.identifier = *string;
+		token.length = 1;
+	}
+	else if (strncmp(string, "$?", 2) == 0)
+	{
+		token.identifier = EXIT_STATUS;
 		token.length = 1;
 	}
 	else
@@ -84,7 +100,7 @@ int main()
 
 	printf("untokenized string: %s\n", tokenizer.input);
 
-	token = tokenize_one_at_a_time(&tokenizer);
+	token = tokenize_one_token(&tokenizer);
 	printf("%zu\n", token.length);
 
 	printf("%.*s\n", (int)token.length, token.literal_value);
@@ -93,9 +109,15 @@ int main()
 
 	printf("%.*s\n", (int)token.length, token.literal_value);
 
-	token = tokenize_one_at_a_time(&tokenizer);
-	//token = tokenize_one_at_a_time(&tokenizer);
-	//printf("%i", token.identifier);
+	token = tokenize_one_token(&tokenizer);
+
+	token = tokenize_one_token(&tokenizer);
+
+	printf("%.*s\n", (int)token.length, token.literal_value);
+	printf("%i", token.identifier);
+	
+	printf("%s\n", tokenizer.input);
+
 
 
 
