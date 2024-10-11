@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:14:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/05 19:25:33 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 20:41:21 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	export(t_data *data, char **args)
 		{
 		tmp = get_key_value_pair(args[i]);
 		set_env(data, tmp[0], tmp[1]);
-		free_str_arr(tmp);
+		free_char_arr(tmp);
 		}
 		i++;
 	}

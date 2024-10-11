@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/10/05 16:22:32 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 20:31:36 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ typedef struct s_command
 typedef struct s_data
 {
 	char		**env;
-	char		*working_dir;
-	char		*old_working_dir;
 	t_command	*cmd;
 	pid_t		pid;
 	bool		interactive;
@@ -80,7 +78,7 @@ void	init_io(t_command *cmd);
 // builtins
 int			echo(char **args);
 int			env(t_data *data, char **args);
-int			pwd(t_data *data);
+int			pwd(void);
 int			export(t_data *data, char **args);
 int			unset(t_data *data, char **args);
 int			cd(t_data *data, char ** args);
@@ -106,8 +104,7 @@ int			execute_builtin(t_data *data, t_command *cmd);
 int			error_msg_command(char *command, char *detail, char *error_message, int error_number);
 bool		usage_message(bool return_val);
 //free.c
-void	free_str_arr(char **tab);
-void	free_ptr(void *ptr);
+void	free_char_arr(char **tab);
 void	close_fds(t_command *cmd_list, bool close_copies);
 //utils.c
 bool	command_is_dir(char *cmd);

@@ -6,13 +6,13 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:42:17 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/05 19:47:08 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 20:34:37 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
 
-void	free_str_arr(char **arr)
+void	free_char_arr(char **arr)
 {
 	int	i;
 
@@ -30,15 +30,6 @@ void	free_str_arr(char **arr)
 	}
 }
 
-void	free_ptr(void *ptr)
-{
-	if (ptr)
-	{
-		free(ptr);
-		ptr = NULL;
-	}
-}
-
 void	close_fds(t_command *cmd_list, bool close_copies)
 {
 	if (cmd_list->io)
@@ -52,3 +43,4 @@ void	close_fds(t_command *cmd_list, bool close_copies)
 	}
 	close_pipe_fds(cmd_list, NULL);
 }
+

@@ -6,19 +6,24 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:31:41 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/02 18:56:33 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 20:48:19 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
 
-int pwd(t_data *data)
+int pwd(void)
 {
-	if (data->working_dir)
+	char	buf[PATH_MAX];
+	char	*current_working_dir;
+
+	current_working_dir = getcwd(buf, PATH_MAX);
+	if (!current_working_dir)
+		error_msg_command("pwd", NULL, strerror(errno), errno);
+	else
 	{
-		ft_putendl_fd(data->working_dir, STDOUT_FILENO);
-		return (EXIT_SUCCESS);
+		ft_putendl_fd(current_working_dir, STDOUT_FILENO);
+		return (EXIT_SUCCESS);		
 	}
-	error_msg_command("pwd", NULL, strerror(errno), errno);
 	return (EXIT_FAILURE);
 }

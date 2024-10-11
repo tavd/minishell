@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 21:07:52 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/05 20:19:56 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 18:45:34 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,6 @@ static void update_working_dirs(t_data *data, char *current_working_dir)
 {
 	set_env(data, "OLDPWD", get_env_value(data->env, "PWD"));
 	set_env(data, "PWD", current_working_dir);
-	if (data->old_working_dir)
-	{
-		free(data->old_working_dir);
-		data->old_working_dir = ft_strdup(data->working_dir);
-	}
-	printf("data->old_working_dir=%s\n", data->old_working_dir);
-	if (data->working_dir)
-	{
-		free(data->working_dir);
-		data->working_dir = ft_strdup(current_working_dir);
-	}
-	printf("data->working_dir=%s\n", data->working_dir);
 	free(current_working_dir);
 }
 
@@ -47,7 +35,6 @@ static	int	chdir_error_msg(char *path)
 
 static	int change_directory(t_data *data, char *path)
 {
-	char	*tmp;
 	char	buf[PATH_MAX];
 	char	*current_working_dir;
 
@@ -55,21 +42,10 @@ static	int change_directory(t_data *data, char *path)
 		return (chdir_error_msg(path));
 	current_working_dir = getcwd(buf, PATH_MAX);
 	printf("change_directory: cwd=%s\n", current_working_dir);
-	//if getcwd fails we manually construct the current_working_dir, that is how bash works
 	if (!current_working_dir)
 	{
-		printf("!current_working_dir\n");
 		error_msg_command("cd: error retrieving current directory",
 	"getcwd: cannot access parent directories",	strerror(errno), errno);
-	if (path[0] == '/')
-    	current_working_dir = ft_strdup(path);
-	else
-	{
-		current_working_dir = ft_strjoin(data->working_dir, "/");
-		tmp = current_working_dir;
-		current_working_dir = ft_strjoin(tmp, path);//previous_directory/new_path
-		free(tmp);
-	}
 	}
 	else
 		current_working_dir = ft_strdup(buf);

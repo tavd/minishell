@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/09/25 19:43:23 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 20:40:58 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void	lst_delone_cmd(t_command *lst, void (*del)(void *))
 	if (lst->name)
 		(*del)(lst->name);
 	if (lst->args)
-		free_str_arr(lst->args);
+		free_char_arr(lst->args);
 	// if (lst->pipe_fd)
 	// 	(*del)(lst->pipe_fd);
 	// if (lst->io)
@@ -155,16 +155,16 @@ void	lst_clear_cmd(t_command **lst, void (*del)(void *))
 	}
 }
 
-void	free_data(t_data *data)
-{
-	if (data && data->user_input)
-	{
-		free_ptr(data->user_input);
-		data->user_input = NULL;
-	}
-	if (data && data->cmd)
-		lst_clear_cmd(&data->cmd, &free_ptr);
-}
+// void	free_data(t_data *data)
+// {
+// 	if (data && data->user_input)
+// 	{
+// 		free(data->user_input);
+// 		data->user_input = NULL;
+// 	}
+// 	if (data && data->cmd)
+// 		lst_clear_cmd(&data->cmd, &free_ptr);
+// }
 
 void lst_add_front_cmd(t_command **list, t_command *cmd1)
 {
@@ -181,7 +181,6 @@ int main(int argc, char **argv, char **envp)
     ft_memset(&data, 0, sizeof(data));
     if (!start_check(&data, argc, argv) || !init_data(&data, envp))
         exit_shell(NULL, EXIT_FAILURE);
-		
     while (1)
 	{
         data.user_input = readline(PROMPT);

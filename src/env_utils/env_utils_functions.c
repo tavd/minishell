@@ -6,25 +6,24 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:42:45 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/05 20:19:33 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 19:38:18 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
 
-//Searches for the given variable in the environment variables.
 int	get_env_index(char **env, char *key)
 {
 	int		i;
 	char	*tmp;
 
-	tmp = ft_strjoin(key, "=");//returns NULL if malloc fails
+	tmp = ft_strjoin(key, "=");
 	if (!tmp)
 		return (-1);
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(tmp, env[i], ft_strlen(tmp)) == 0)//search for strings containing "Key="
+		if (ft_strncmp(tmp, env[i], ft_strlen(tmp)) == 0)
 		{
 		free(tmp);
 		return (i);

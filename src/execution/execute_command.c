@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/09/28 19:27:54 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/11 19:42:24 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	execute_builtin(t_data *data, t_command *cmd)
 	else if (ft_strncmp(cmd->name, "export", 7) == 0)
 		return(export(data, cmd->args));
 	else if (ft_strncmp(cmd->name, "pwd", 4) == 0)
-		return(pwd(data));
+		return(pwd());
 	else if (ft_strncmp(cmd->name, "unset", 6) == 0)
 		return(unset(data, cmd->args));
 	else if (ft_strncmp(cmd->name, "exit", 5) == 0)
@@ -85,11 +85,11 @@ int	execute_command(t_data *data, t_command *command)
 	if (!ft_strchr(command->name, '/'))
 	{
 		status = execute_builtin(data, command);
-		printf("status after execute_builtin=%d\n", status);//in case of a pipe redirection the output goes to the pipe
+		// printf("status after execute_builtin=%d\n", status);//in case of a pipe redirection the output goes to the pipe
 		if (status != CMD_NOT_FOUND)//if it is a builtin command
 		exit_shell(data, status);
 		status = execute_external_command(data, command);
-		printf("status after execute_external_command=%d\n", status);//not printed if successful
+		// printf("status after execute_external_command=%d\n", status);//not printed if successful
 		if (status != CMD_NOT_FOUND)
 		exit_shell(data, status);
 	}
