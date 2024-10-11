@@ -21,22 +21,47 @@
 enum e_identifiers
 {
 	SPACE = ' ',
-	ENV = '$',
+	SET_ENV = '=',
+	ENV_VAR = '$',
 	EXIT_STATUS = '?',
 	PIPE = '|',
-
 	REDIRECT_IN = '<',
 	REDIRECT_OUT = '>',
 	REDIRECT_APPEND = 'a',
 
 	WORD,
+	SINGLE_QUOTE = 39,
+	DOUBLE_QUOTE = 34,
+
+	HEREDOC_END,
+
 	NEW_LINE = '\n',
 	END = '\0',
-	HEREDOC_END,
 };
 
-const static	char	DELIMITERS[3] = {
-	' ', '\n', '\0'
+// NOTE: Newline?
+const static	char	NORMAL_DELIMS[3] = {
+	SPACE, NEW_LINE, END
+};
+
+const static char	SINGLE_QUOTE_DELIMS[2] = {
+	SINGLE_QUOTE, END
+
+};
+
+const static char	DOUBLE_QUOTE_DELIMS[3] = {
+	ENV_VAR, DOUBLE_QUOTE, END
+};
+
+
+const static char	*DELIMITERS[3] = {
+	NORMAL_DELIMS, SINGLE_QUOTE_DELIMS, DOUBLE_QUOTE_DELIMS
+};
+
+// NOTE: is {} part of subject ???
+const static char	ENV_VAR_DELIMS[3] = {
+	ENV_VAR, SPACE, END
+
 };
 
 typedef struct s_token {
@@ -45,14 +70,20 @@ typedef struct s_token {
 	enum e_identifiers	identifier;
 }	t_token;
 
-
 struct s_tokenizer {
 	char	*input;
 };
 
+enum e_map_quotes
+{
+	NONE = 0,
+	SINGLE = 1,
+	DOUBLE = 2,
+};
+
 //=============================================================================
 
-// NOTE: makes a shallow copy...
+// TODO: makes a shallow copy...can this go wrong?
 void	init_tokenizer(struct s_tokenizer *tokenizer, char *data)
 {
 	tokenizer->input = data;
@@ -62,23 +93,31 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 {
 	char	*str;
 	t_token	token;
-
+	static	int	quote_state;
+arser  (1)!✘ # echo "hello"
 	str = tokenizer->input;
 	token.text = NULL;
 	token.identifier = END;
 	token.length = 0;
-	while (*str && strchr(DELIMITERS, *str) != NULL)
+
+	// NOTE: THIS doesn't work, should stop at quotes
+	while (*str && quote_state == 0 && strchr(DELIMITERS[quote_state], *str) != NULL) // make ft
 		++str;
 	if (*str == '\0')
 		return (token);
 	token.text = str;
-	while (*str && strchr(DELIMITERS, *str) == NULL)
+	while (*str && strchr(DELIMITERS[quote_state], *str) == NULL)
 	{
 		++str;
 		++token.length;
 	}
 	if (token.length == 0 && *str == '\0')
 		return (token);
+	else if (token.length == 0 && *str == SINGLE_QUOTE || *str == DOUBLE_QUOTE)
+	{
+		// TODO: map quote char to quote state ...
+
+	}
 	else if (token.length == 0)
 	{
 		token.text = 0;
