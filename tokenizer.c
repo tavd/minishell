@@ -94,7 +94,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	char	*str;
 	t_token	token;
 	static	int	quote_state;
-arser  (1)!✘ # echo "hello"
+
 	str = tokenizer->input;
 	token.text = NULL;
 	token.identifier = END;
