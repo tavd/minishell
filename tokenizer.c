@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 
-struct tokenizer {
+struct s_tokenizer {
 	char	*input;
 };
 
@@ -50,7 +50,7 @@ const static	char	DELIMITERS[3] = {
 
 //=============================================================================
 
-void	init_tokenizer(struct tokenizer *tokenizer, char *data)
+void	init_tokenizer(struct s_tokenizer *tokenizer, char *data)
 {
 	tokenizer->input = data;
 }
@@ -78,38 +78,41 @@ char	*ft_strtok(char *str, const char *delimiters)
 	return (token);
 }
 
-t_token	tokenize_one_token(struct tokenizer *tokenizer)
+t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 {
-	t_token		token;
+	struct s_token	token;
 	char		*str;
 	int		len;
+	static bool	used;
 
-	str = tokenizer->input;
-	token.text = str;
-	token.valid = true;
-	token.text = ft_strtok(str ,DELIMITERS);
-
-	token.length = strlen(token.text);
-	if (strncmp(str, "$?", 2) == 0)
-	{
-		token.identifier = EXIT_STATUS;
-		token.length = 1;
-	}
+	if (!used)
+		token.text = ft_strtok(tokenizer->input, DELIMITERS);
 	else
-		token.length = len;
-	tokenizer->input += token.length;
+		token.text = ft_strtok(NULL, DELIMITERS);
+	used = true;
+	token.length = strlen(token.text);
+	token.valid = true;
+	// if (strncmp(str, "$?", 2) == 0)
+	// {
+	// 	token.identifier = EXIT_STATUS;
+	// 	token.length = 1;
+	// }
 	return (token);
 }
 
 int main()
 {
 	char str[15] = "hello\nworld! ";
-	char	*token;
+	struct s_tokenizer tokenizer;
+	struct s_token	token;
+	
+	init_tokenizer(&tokenizer, str);
 
-	token = ft_strtok(str, DELIMITERS);
-
-	token = ft_strtok(NULL, DELIMITERS);
-	printf("%s", token);
+	token = tokenize_one_token(&tokenizer);
+	token = tokenize_one_token(&tokenizer);
+	printf("token:%s\n", token.text);
+	
+	printf("str:%s\n", str);
 
 	return 0;
 }
