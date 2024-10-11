@@ -17,8 +17,26 @@
 #include <stdio.h>
 #include <string.h>
 
-struct s_tokenizer {
-	char	*input;
+// TODO: make it possible for heredoc to set a word as END delimiter...
+enum e_identifiers
+{
+	SPACE = ' ',
+	ENV = '$',
+	EXIT_STATUS = '?',
+	PIPE = '|',
+
+	REDIRECT_IN = '<',
+	REDIRECT_OUT = '>',
+	REDIRECT_APPEND = 'a',
+
+	WORD,
+	NEW_LINE = '\n',
+	END = '\0',
+	HEREDOC_END,
+};
+
+const static	char	DELIMITERS[3] = {
+	' ', '\n', '\0'
 };
 
 enum e_identifier
@@ -36,85 +54,74 @@ enum e_identifier
 };
 
 typedef struct s_token {
-	// TODO: make it possible for heredoc to set a word as END delimiter...
-	enum e_identifier identifier;
-	char	*text;
-	ssize_t	length;
-	bool	valid;
+	char			*text;
+	ssize_t			length;
+	enum e_identifiers	identifier;
 }	t_token;
 
 
-const static	char	DELIMITERS[3] = {
-	' ', '\n', '\0'
+struct s_tokenizer {
+	char	*input;
 };
 
 //=============================================================================
 
+// NOTE: makes a shallow copy...
 void	init_tokenizer(struct s_tokenizer *tokenizer, char *data)
 {
 	tokenizer->input = data;
 }
 
-char	*ft_strtok(char *str, const char *delimiters)
-{
-	static char	*str_buf;
-	char		*token;
-	size_t		len;
-
-	if (str)
-		str_buf = str;
-	token = str_buf;
-	len = 0;
-	while (*str_buf && strchr(delimiters, *str_buf) == NULL) // NOTE: make ft_strchr
-	{
-		++str_buf;
-		++len;
-	}
-	if (len == 0)
-		return (NULL);
-	else
-		++str_buf;
-	token[len] = '\0';
-	return (token);
-}
-
 t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 {
-	struct s_token	token;
-	char		*str;
-	int		len;
-	static bool	used;
+	char	*str;
+	t_token	token;
 
-	if (!used)
-		token.text = ft_strtok(tokenizer->input, DELIMITERS);
+	str = tokenizer->input;
+	token.text = NULL;
+	token.identifier = END;
+	token.length = 0;
+	while (*str && strchr(DELIMITERS, *str) != NULL)
+		++str;
+	if (*str == '\0')
+		return (token);
+	token.text = str;
+	while (*str && strchr(DELIMITERS, *str) == NULL)
+	{
+		++str;
+		++token.length;
+	}
+	if (token.length == 0 && *str == '\0')
+		return (token);
+	else if (token.length == 0)
+	{
+		token.text = 0;
+		token.identifier = *str;
+		token.length = 1;
+	}
 	else
-		token.text = ft_strtok(NULL, DELIMITERS);
-	used = true;
-	token.length = strlen(token.text);
-	token.valid = true;
-	// if (strncmp(str, "$?", 2) == 0)
-	// {
-	// 	token.identifier = EXIT_STATUS;
-	// 	token.length = 1;
-	// }
+		token.identifier = WORD;
+	tokenizer->input = str;
 	return (token);
 }
 
 int main()
 {
-	char str[15] = "hello\nworld! ";
 	struct s_tokenizer tokenizer;
-	struct s_token	token;
-	
+	char	*str = strdup(" \n\nhello\n world!");
+	t_token		token;
+
 	init_tokenizer(&tokenizer, str);
+	printf("untokenized str: %s\n", tokenizer.input);
 
-	token = tokenize_one_token(&tokenizer);
-	token = tokenize_one_token(&tokenizer);
-	printf("token:%s\n", token.text);
-	
-	printf("str:%s\n", str);
-
-	return 0;
+	token.text = (char *)1;
+	while (token.text)
+	{
+		token = tokenize_one_token(&tokenizer);
+		if (token.text)
+			printf("[%.*s]", (int)token.length, token.text);
+	}
+	printf("\noriginal string:%s", str);
 }
 
 
