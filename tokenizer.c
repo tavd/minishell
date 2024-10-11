@@ -39,20 +39,6 @@ const static	char	DELIMITERS[3] = {
 	' ', '\n', '\0'
 };
 
-enum e_identifier
-{
-	SPACE,
-	ENV,
-	EXIT_STATUS,
-
-	REDIRECT_IN,
-	REDIRECT_OUT,
-	REDIRECT_APPEND,
-
-	END,
-	HEREDOC_END,
-};
-
 typedef struct s_token {
 	char			*text;
 	ssize_t			length;
