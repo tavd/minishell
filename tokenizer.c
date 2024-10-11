@@ -43,17 +43,17 @@ typedef struct s_token {
 	bool	valid;
 }	t_token;
 
+
+const static	char	DELIMITERS[3] = {
+	' ', '\n', '\0'
+};
+
+//=============================================================================
+
 void	init_tokenizer(struct tokenizer *tokenizer, char *data)
 {
 	tokenizer->input = data;
 }
-
-const static	char	delims[3] = {
-	' ', '\0', '\n'
-};
-
-// NOTE:
-// all tokens of length 1 are identifiers...
 
 char	*ft_strtok(char *str, const char *delimiters)
 {
@@ -65,92 +65,88 @@ char	*ft_strtok(char *str, const char *delimiters)
 		str_buf = str;
 	token = str_buf;
 	len = 0;
-	while (*str_buf && strchr(delimiters, *str_buf) == NULL)
+	while (*str_buf && strchr(delimiters, *str_buf) == NULL) // NOTE: make ft_strchr
 	{
 		++str_buf;
 		++len;
 	}
+	if (len == 0)
+		return (NULL);
+	else
+		++str_buf;
 	token[len] = '\0';
+	return (token);
+}
+
+t_token	tokenize_one_token(struct tokenizer *tokenizer)
+{
+	t_token		token;
+	char		*str;
+	int		len;
+
+	str = tokenizer->input;
+	token.text = str;
+	token.valid = true;
+	token.text = ft_strtok(str ,DELIMITERS);
+
+	token.length = strlen(token.text);
+	if (strncmp(str, "$?", 2) == 0)
+	{
+		token.identifier = EXIT_STATUS;
+		token.length = 1;
+	}
+	else
+		token.length = len;
+	tokenizer->input += token.length;
 	return (token);
 }
 
 int main()
 {
-	char str[14] = "hello\nworld! ";
+	char str[15] = "hello\nworld! ";
 	char	*token;
 
-	token = ft_strtok(str, delims);
+	token = ft_strtok(str, DELIMITERS);
+
+	token = ft_strtok(NULL, DELIMITERS);
 	printf("%s", token);
-	printf("%s", str);
-	
+
 	return 0;
 }
 
-//
-// t_token	tokenize_one_token(struct tokenizer *tokenizer)
-// {
-// 	t_token		token;
-// 	char		*string;
-// 	int		len;
-//
-// 	string = tokenizer->input;
-// 	token.literal_value = string;
-// 	token.valid = true;
-// 	len = 0;
-// 	while (*string && !strchr(delimiters, *string))
-// 	{
-// 		++string;
-// 		++len;
-// 	}
-// 	if (len == 0)
-// 	{
-// 		token.literal_value = 0;
-// 		token.identifier = *string;
-// 		token.length = 1;
-// 	}
-// 	else if (strncmp(string, "$?", 2) == 0)
-// 	{
-// 		token.identifier = EXIT_STATUS;
-// 		token.length = 1;
-// 	}
-// 	else
-// 		token.length = len;
-// 	tokenizer->input += token.length;
-// 	return (token);
-// }
-//
+
 // int main()
 // {
 // 	struct tokenizer tokenizer;
 //
-// 	char *str = "test .... string";
+// 	char *str = "test .... str";
 // 	t_token		token;
 //
 // 	init_tokenizer(&tokenizer, str);
 //
-// 	printf("untokenized string: %s\n", tokenizer.input);
+// 	printf("untokenized str: %s\n", tokenizer.input);
 //
 // 	token = tokenize_one_token(&tokenizer);
 // 	printf("%zu\n", token.length);
 //
-// 	printf("%.*s\n", (int)token.length, token.literal_value);
+// 	printf("%.*s\n", (int)token.length, token.text);
 // 	
 // 	printf("%s\n", tokenizer.input);
 //
-// 	printf("%.*s\n", (int)token.length, token.literal_value);
+// 	printf("%.*s\n", (int)token.length, token.text);
 //
 // 	token = tokenize_one_token(&tokenizer);
 //
 // 	token = tokenize_one_token(&tokenizer);
 //
-// 	printf("%.*s\n", (int)token.length, token.literal_value);
+// 	printf("%.*s\n", (int)token.length, token.text);
 // 	printf("%i", token.identifier);
 // 	
 // 	printf("%s\n", tokenizer.input);
 //
-//
-//
-//
-//
 // 	return 0;
 // }
+//
+// NOTE:
+// all tokens of length 1 are identifiers...
+//
