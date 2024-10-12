@@ -6,31 +6,31 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/10/11 20:40:58 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/12 17:41:28 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // int	g_last_exit_code;
-static bool	start_check(t_data *data, int ac, char **av)
-{
-	(void)ac;
-	(void)av;
-	// if (ac != 1 && ac != 3)
-	// 	return (usage_message(false));
-	// if (ac == 3)
-	// {
-	// 	data->interactive = false;
-	// 	if (!av[1] || (av[1] && ft_strncmp(av[1], "-c", 2) != 0))
-	// 		return (usage_message(false));
-	// 	// else if (!av[2] || (av[2] && av[2][0] == '\0'))//bash -c "" returns a prompt, no usage message
-	// 	// 	return (usage_message(false));
-	// }
-	// else
-		data->interactive = true;
-	return (true);
-}
+// static bool	start_check(t_data *data, int ac, char **av)
+// {
+// 	(void)ac;
+// 	(void)av;
+// 	// if (ac != 1 && ac != 3)
+// 	// 	return (usage_message(false));
+// 	// if (ac == 3)
+// 	// {
+// 	// 	data->interactive = false;
+// 	// 	if (!av[1] || (av[1] && ft_strncmp(av[1], "-c", 2) != 0))
+// 	// 		return (usage_message(false));
+// 	// 	// else if (!av[2] || (av[2] && av[2][0] == '\0'))//bash -c "" returns a prompt, no usage message
+// 	// 	// 	return (usage_message(false));
+// 	// }
+// 	// else
+// 		data->interactive = true;
+// 	return (true);
+// }
 
 t_command	*lst_new_cmd(bool value)
 {
@@ -71,7 +71,6 @@ t_command	*get_last_cmd(t_command *cmd)
 		printf("get_last\n");
 		cmd = cmd->next;		
 	}
-
 	return (cmd);
 }
 
@@ -110,23 +109,6 @@ void	add_pipe(t_command **cmd)
 
 	last_cmd = get_last_cmd(*cmd);
 	last_cmd->is_piped = true;
-}
-void	minishell_interactive(t_data *data)
-{
-	while (1)
-	{
-		printf("minishell_interactive\n");
-		//set_signals_interactive();
-	//	printf("minishell_interactive after set_signals\n");
-		// data->user_input = readline(PROMPT2);//we init data->user_input = NULL;
-		// printf("data->user_input=%s\n", data->user_input);
-		//set_signals_noninteractive();
-		// if (parse_user_input(data) == true)
-			g_last_exit_code = execute(data);//0 on succsess
-		// else
-		// 	g_last_exit_code = 1;
-		// free_data(data, false);
-	}
 }
 
 void	lst_delone_cmd(t_command *lst, void (*del)(void *))
@@ -177,9 +159,10 @@ int main(int argc, char **argv, char **envp)
     t_data data;
 
     (void)argc;
+	(void)argv;
 
     ft_memset(&data, 0, sizeof(data));
-    if (!start_check(&data, argc, argv) || !init_data(&data, envp))
+    if (!init_data(&data, envp))
         exit_shell(NULL, EXIT_FAILURE);
     while (1)
 	{

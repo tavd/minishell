@@ -4,7 +4,7 @@ static char **get_path_dirs(t_data *data)
 {
 	char **paths_array;
 
-	if (get_env_index(data->env, "PATH") == -1)//if the PATH exists in data->env
+	if (get_env_index(data->env, "PATH") == -1)
 		return (NULL);
 	paths_array = ft_split(get_env_value(data->env, "PATH"), ':');
 	if (!paths_array)
@@ -35,7 +35,7 @@ static char	*find_valid_command_path(char *command, char **paths_array)
 	return (NULL);
 }
 
-char	*get_command_path(t_data *data, char *command_name)
+char	*get_valid_command_path(t_data *data, char *command_name)
 {
 	char	**env_paths_array;
 	char	*command;

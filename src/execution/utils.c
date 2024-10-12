@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:00:56 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/09/23 20:01:07 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/12 19:54:20 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,14 @@ bool	command_is_dir(char *cmd)
 
 int	is_command_not_found(t_data *data, t_command *command)
 {
-	if (!ft_strchr(command->name, '/')
-		&& get_env_index(data->env, "PATH") != -1)
+	if (!ft_strchr(command->name, '/') && get_env_index(data->env, "PATH") != -1)
 		return (error_msg_command(command->name, NULL, "command not found", 
 				CMD_NOT_FOUND));
-	if (access(command->name, F_OK) != 0)//check for file existence
+	if (access(command->name, F_OK) != 0)
 		return (error_msg_command(command->name, NULL, strerror(errno), CMD_NOT_FOUND));
 	else if (command_is_dir(command->name))
 		return (error_msg_command(command->name, NULL, "Is a directory", CMD_NOT_EXECUTABLE));
-	else if (access(command->name, F_OK | X_OK) != 0)
-		return (error_msg_command(command->name, NULL, strerror(errno),
-				CMD_NOT_EXECUTABLE));
+	else if (access(command->name, X_OK) != 0)
+		return (error_msg_command(command->name, NULL, strerror(errno),	CMD_NOT_EXECUTABLE));
 	return (EXIT_SUCCESS);
 }
