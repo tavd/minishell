@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:00:56 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/12 19:54:20 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/12 21:12:07 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ bool	command_is_dir(char *cmd)
 	struct stat	cmd_stat;
 
 	ft_memset(&cmd_stat, 0, sizeof(cmd_stat));
-	stat(cmd, &cmd_stat);
+	if (stat(cmd, &cmd_stat) == -1) 
+	{
+        perror("stat error");//todo
+        return (false);
+    }
 	return (S_ISDIR(cmd_stat.st_mode));
 }
 
