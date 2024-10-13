@@ -12,7 +12,7 @@ static char **get_path_dirs(t_data *data)
 	return (paths_array);
 }
 
-static char	*find_valid_command_path(char *command, char **paths_array)
+static char	*find_valid_command_path(char *command_name, char **paths_array)
 {
 	int		i;
 	char	*command_path;
@@ -21,7 +21,7 @@ static char	*find_valid_command_path(char *command, char **paths_array)
 	i = 0;
 	while (paths_array[i])// /usr/bin...
 	{
-		command_path = ft_strjoin(paths_array[i], command);// /usr/bin/ls
+		command_path = ft_strjoin(paths_array[i], command_name);// /usr/bin/ls
 		if (!command_path)
 		{
 			error_msg_command("malloc", NULL, "an unexpected error occured", EXIT_FAILURE);

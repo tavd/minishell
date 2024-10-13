@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/12 20:22:14 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/13 19:20:14 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	execute_command(t_data *data, t_command *command)
 		if (status != CMD_NOT_FOUND)
 		exit_shell(data, status);
 	}
-	status = execute_local_binary_or_absolute_path(data, command);
+	status = execute_local_binary_or_absolute_path(data, command);// contains '/' or doesn't contain '/' (not builtin and not external)
 	exit_shell(data, status);
 	return (status);
 }

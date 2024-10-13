@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/10/12 20:21:27 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/13 18:40:48 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ bool		usage_message(bool return_val);
 void	free_char_arr(char **tab);
 void	close_fds(t_command *cmd_list, bool close_copies);
 //utils.c
-bool	command_is_dir(char *cmd);
+bool	command_is_dir(char *command_name);
 int		is_command_not_found(t_data *data, t_command *command);
 //execution/get_path.c
 char	*get_valid_command_path(t_data *data, char *command_name);
