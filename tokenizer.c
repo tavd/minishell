@@ -20,49 +20,22 @@
 // TODO: make it possible for heredoc to set a word as END delimiter...
 enum e_identifiers
 {
+	END,
+	WORD,
 	SPACE = ' ',
 	SET_ENV = '=',
 	ENV_VAR = '$',
-	EXIT_STATUS = '?',
 	PIPE = '|',
 	REDIRECT_IN = '<',
 	REDIRECT_OUT = '>',
-	REDIRECT_APPEND = 'a',
+	SINGLE_QUOTE = '\"',
+	DOUBLE_QUOTE = '\'',
 
-	WORD,
-	SINGLE_QUOTE = 39,
-	DOUBLE_QUOTE = 34,
-
-	HEREDOC_END,
-
+	// ... not sure about these yet
 	NEW_LINE = '\n',
-	END = '\0',
+	HEREDOC_END,
 };
-
-// NOTE: Newline?
-const static	char	NORMAL_DELIMS[3] = {
-	SPACE, NEW_LINE, END
-};
-
-const static char	SINGLE_QUOTE_DELIMS[2] = {
-	SINGLE_QUOTE, END
-
-};
-
-const static char	DOUBLE_QUOTE_DELIMS[3] = {
-	ENV_VAR, DOUBLE_QUOTE, END
-};
-
-
-const static char	*DELIMITERS[3] = {
-	NORMAL_DELIMS, SINGLE_QUOTE_DELIMS, DOUBLE_QUOTE_DELIMS
-};
-
-// NOTE: is {} part of subject ???
-const static char	ENV_VAR_DELIMS[3] = {
-	ENV_VAR, SPACE, END
-
-};
+// ASCII to identifier map...
 
 typedef struct s_token {
 	char			*text;
@@ -74,77 +47,69 @@ struct s_tokenizer {
 	char	*input;
 };
 
-enum e_map_quotes
-{
-	NONE = 0,
-	SINGLE = 1,
-	DOUBLE = 2,
+// END is also required here since array of chars needs to be null-terminated
+const static char	SINGLE_CHAR_TOKENS[8] = {
+	SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
+	PIPE, SET_ENV, ENV_VAR, END
 };
+
+// combine?...
+const static char	WORD_DELIMITERS[9] = {
+	SPACE, SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
+	PIPE, SET_ENV, ENV_VAR, END
+};
+
 
 //=============================================================================
 
-// TODO: makes a shallow copy...can this go wrong?
 void	init_tokenizer(struct s_tokenizer *tokenizer, char *data)
 {
 	tokenizer->input = data;
 }
 
+// This function returns current token and length and needs to 
 t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 {
-	char	*str;
-	t_token	token;
-	static	int	quote_state;
+	char		*str;
+	t_token		token;
+	static	int	mode;
 
+	if (!tokenizer->input)
+		return ((t_token){.text = NULL,.length = 0, .identifier = 0});
 	str = tokenizer->input;
-	token.text = NULL;
-	token.identifier = END;
-	token.length = 0;
-
-	// NOTE: THIS doesn't work, should stop at quotes
-	while (*str && quote_state == 0 && strchr(DELIMITERS[quote_state], *str) != NULL) // make ft
-		++str;
-	if (*str == '\0')
-		return (token);
 	token.text = str;
-	while (*str && strchr(DELIMITERS[quote_state], *str) == NULL)
-	{
-		++str;
+	token.identifier = *str;
+	token.length = 0;
+	while (str[token.length] && str[token.length] == SPACE)
 		++token.length;
-	}
-	if (token.length == 0 && *str == '\0')
+	if (str[token.length] == END || token.length > 0)
 		return (token);
-	else if (token.length == 0 && *str == SINGLE_QUOTE || *str == DOUBLE_QUOTE)
-	{
-		// TODO: map quote char to quote state ...
-
-	}
-	else if (token.length == 0)
-	{
-		token.text = 0;
-		token.identifier = *str;
-		token.length = 1;
-	}
-	else
-		token.identifier = WORD;
-	tokenizer->input = str;
+	token.length = 1;
+	if (strchr(SINGLE_CHAR_TOKENS, token.identifier))
+		return (token);
+	token.identifier = WORD;
+	while (strchr(WORD_DELIMITERS, str[token.length]) == NULL)
+		++token.length;
 	return (token);
 }
 
 int main()
 {
 	struct s_tokenizer tokenizer;
-	char	*str = strdup(" \n\nhello\n world!");
+	char	*str = "hello_world$H";
 	t_token		token;
 
 	init_tokenizer(&tokenizer, str);
 	printf("untokenized str: %s\n", tokenizer.input);
 
 	token.text = (char *)1;
-	while (token.text)
+	token.identifier = 1;
+	while (token.identifier != END)
 	{
 		token = tokenize_one_token(&tokenizer);
+		tokenizer.input += token.length;
 		if (token.text)
-			printf("[%.*s]", (int)token.length, token.text);
+			printf("[%.*s]:%i,%i", (int)token.length, token.text, token.length, token.identifier);
 	}
 	printf("\noriginal string:%s", str);
 }
