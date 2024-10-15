@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:10:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/13 19:20:14 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/15 19:08:24 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	execute_command(t_data *data, t_command *command)
 	if (!command || !command->name)
 		exit_shell(data, error_msg_command("child", NULL,
 				"parsing error: no command to execute!", EXIT_FAILURE));
-	if (!is_valid_fd(command->io))
+	if (!is_valid_fd_or_no_fd(command->io))
 		exit_shell(data, EXIT_FAILURE);
 	redirect_io_pipe(data->cmd, command);
 	redirect_io_file(command->io);

@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:55:18 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/11 20:39:47 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/15 19:09:25 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	check_data_create_pipes(t_data *data)
 	{
 		//printf("if (!data->cmd->name)\n");
 		//printf("data->cmd->io=%p\n", data->cmd->io);
-		if (data->cmd->io && !is_valid_fd(data->cmd->io))
+		if (data->cmd->io && !is_valid_fd_or_no_fd(data->cmd->io))
 			return (EXIT_FAILURE);
 		return (EXIT_SUCCESS);
 	}
@@ -96,7 +96,7 @@ int	execute(t_data *data)
 		return (status);
 	// printf("data->cmd->is_piped=%d\n", data->cmd->is_piped);
 	if (!data->cmd->is_piped && !data->cmd->prev //todo
-	&& is_valid_fd(data->cmd->io))//no pipes, no prev command, might be with in/outfile
+	&& is_valid_fd_or_no_fd(data->cmd->io))//no pipes, no prev command, might be with in/outfile
 	{
 		redirect_io_file(data->cmd->io);
 		status = execute_builtin(data, data->cmd);

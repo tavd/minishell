@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:30:21 by irsander          #+#    #+#             */
-/*   Updated: 2024/10/12 17:41:28 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:44:33 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,15 +169,15 @@ int main(int argc, char **argv, char **envp)
         data.user_input = readline(PROMPT);
 		printf("data.user_input = %s\n",  data.user_input);
 		char **input_strings = ft_split(data.user_input, ' ');
-        t_command *cmd1 = lst_new_cmd(false);
-		// printf("data=%p\ndata.cmd=%p\n", &data, data.cmd);
+		t_command *cmd1 = lst_new_cmd(false);
 		cmd1->args = input_strings;
+		printf("data=%p\ndata.cmd=%p\n", &data, data.cmd);
 		init_io(cmd1);
+		open_infile(cmd1->io, "infile");//grep li and output it to outfile (works)
 		lst_add_front_cmd(&data.cmd, cmd1);
-
 		// lst_add_back_cmd(&data.cmd, cmd1);
 		cmd1->name = cmd1->args[0];
-		// open_outfile(cmd1->io, "outfile");
+		open_outfile(cmd1->io, "outfile");
 	
 	// printf("cmd1->args[0]=%s\n", cmd1->args[0]);
 	// printf("cmd1->args[2]=%s\n", cmd1->args[2]);

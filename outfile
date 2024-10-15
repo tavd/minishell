@@ -1,0 +1,10 @@
+the end redirect_io_file
+in execute_builtin
+in restore_stdin_stdout!!!!!!!!!!!!!!!!!!
+the end redirect_io_file
+in execute_builtin
+in execute_external_command
+in execute_external_command before execve
+cmd->path=/usr/bin/grep
+dfghj
+dfghj2

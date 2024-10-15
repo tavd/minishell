@@ -6,13 +6,13 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:37:08 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/09/23 19:44:55 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/15 19:08:14 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incl/minishell.h"
 
-bool	is_valid_fd(t_io *io)
+bool	is_valid_fd_or_no_fd(t_io *io)
 {
 	printf("in is_valid_fd:\n");
 	printf("io->fd_infile=%d\n", io->fd_infile);

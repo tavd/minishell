@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/10/13 18:40:48 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/15 19:08:53 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int		is_command_not_found(t_data *data, t_command *command);
 //execution/get_path.c
 char	*get_valid_command_path(t_data *data, char *command_name);
 //io.c
-bool	is_valid_fd(t_io *io);
+bool	is_valid_fd_or_no_fd(t_io *io);
 bool	redirect_io_file(t_io *io);
 bool	restore_stdin_stdout_close_copies(t_io *io);
 //pipe.c

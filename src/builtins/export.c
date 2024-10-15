@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:14:59 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/11 20:41:21 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:18:29 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	export(t_data *data, char **args)
 		if(!is_valid_key(args[i]))
 		{
 		error_msg_command("export", args[i], "not a valid identifier:", 0);
-		return(EXIT_FAILURE);			
+		return(EXIT_FAILURE);
 		}
 		else if (ft_strchr(args[i], '='))
 		{
