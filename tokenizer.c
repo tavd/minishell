@@ -72,44 +72,46 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 {
 	char		*str;
 	t_token		token;
-	static	int	mode;
 
 	if (!tokenizer->input)
-		return ((t_token){.text = NULL,.length = 0, .identifier = 0});
+		return ((t_token){.text = NULL, .length = 0, .identifier = 0});
 	str = tokenizer->input;
 	token.text = str;
-	token.identifier = *str;
+	token.identifier = (enum e_identifiers)*str;
 	token.length = 0;
 	while (str[token.length] && str[token.length] == SPACE)
 		++token.length;
 	if (str[token.length] == END || token.length > 0)
+	{
+		tokenizer->input += token.length;
 		return (token);
-	token.length = 1;
+	}
 	if (strchr(SINGLE_CHAR_TOKENS, token.identifier))
+	{
+		tokenizer->input += 1;
 		return (token);
+	}
 	token.identifier = WORD;
 	while (strchr(WORD_DELIMITERS, str[token.length]) == NULL)
 		++token.length;
+	tokenizer->input += token.length;
 	return (token);
 }
 
 int main()
 {
 	struct s_tokenizer tokenizer;
-	char	*str = "hello_world$H";
+	char	*str = "hel $lo_world$H";
 	t_token		token;
 
 	init_tokenizer(&tokenizer, str);
-	printf("untokenized str: %s\n", tokenizer.input);
+	printf("untokenized str:%s\n", tokenizer.input);
 
-	token.text = (char *)1;
 	token.identifier = 1;
-	while (token.identifier != END)
+	while (tokenizer.input != NULL && token.identifier != END)
 	{
 		token = tokenize_one_token(&tokenizer);
-		tokenizer.input += token.length;
-		if (token.text)
-			printf("[%.*s]:%i,%i", (int)token.length, token.text, token.length, token.identifier);
+		printf("[%.*s]:%zi,%i", (int)token.length, token.text, token.length, token.identifier);
 	}
 	printf("\noriginal string:%s", str);
 }
