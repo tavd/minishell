@@ -13,6 +13,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
+
+#include <limits.h>
+#include <unistd.h>
+
+
+#include <stdlib.h>
+
 // remove eventually
 #include <stdio.h>
 #include <string.h>
@@ -37,15 +45,21 @@ enum e_identifiers
 };
 // ASCII to identifier map...
 
+struct s_tokenizer {
+	char	*input;
+};
+
 typedef struct s_token {
 	char			*text;
 	ssize_t			length;
 	enum e_identifiers	identifier;
 }	t_token;
 
-struct s_tokenizer {
-	char	*input;
-};
+typedef struct s_tok_node
+{
+	t_token			*token;
+	struct s_tok_node	*next;
+} t_tok_node;
 
 // END is also required here since array of chars needs to be null-terminated
 const static char	SINGLE_CHAR_TOKENS[8] = {
@@ -58,7 +72,6 @@ const static char	WORD_DELIMITERS[9] = {
 	SPACE, SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
 	PIPE, SET_ENV, ENV_VAR, END
 };
-
 
 //=============================================================================
 
@@ -98,57 +111,70 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	return (token);
 }
 
+// void	lst_add_node(t_tok_node	**head, t_token token)
+// {
+// 	if (*head == NULL)
+// 	{
+// 		*head = token;
+// 		return ;
+// 	}
+// }
+
+//In Zsh, the maximum length of a command line is 256 KB (262144 characters).
+// ARG_MAX
+
+// TODO: Tokenize once, get the count, then malloc for that count
 int main()
 {
 	struct s_tokenizer tokenizer;
 	char	*str = "hel $lo_world$H";
 	t_token		token;
+	int		tokens;
+	t_token		*tok_array;
+	//t_token		tok_arr[ARG_MAX];
+
+
 
 	init_tokenizer(&tokenizer, str);
 	printf("untokenized str:%s\n", tokenizer.input);
-
+	printf("max_chars: %i\n", ARG_MAX);
 	token.identifier = 1;
-	while (tokenizer.input != NULL && token.identifier != END)
+	tokens = 0;
+	while (token.identifier != END)
 	{
 		token = tokenize_one_token(&tokenizer);
-		printf("[%.*s]:%zi,%i", (int)token.length, token.text, token.length, token.identifier);
+ 		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
+		++tokens;
 	}
-	printf("\noriginal string:%s", str);
+	printf("%i", tokens);
+	// NOTE:
+	// argmax = 2097152
+	// is this values always same for all codam computers?
+	// NOTE: Is this necessary or is ARG_MAX not to big for most or this system?
+	tok_array = malloc(tokens * sizeof(t_token));
+
+
+	return 0;
 }
 
-
-// int main()
-// {
-// 	struct tokenizer tokenizer;
 //
-// 	char *str = "test .... str";
-// 	t_token		token;
 //
-// 	init_tokenizer(&tokenizer, str);
 //
-// 	printf("untokenized str: %s\n", tokenizer.input);
 //
-// 	token = tokenize_one_token(&tokenizer);
-// 	printf("%zu\n", token.length);
 //
-// 	printf("%.*s\n", (int)token.length, token.text);
-// 	
-// 	printf("%s\n", tokenizer.input);
 //
-// 	printf("%.*s\n", (int)token.length, token.text);
+// 	token.identifier = 1;
+// 	while (tokenizer.input != NULL && token.identifier != END)
+// 	{
+// 		new_node = (t_tok_node *)malloc(sizeof(t_token));
+// 		new_node->token = tokenize_one_token(&tokenizer);
+// 		new_node->next = NULL;
+// 		lst_add_node(&head, new_node);
 //
-// 	token = tokenize_one_token(&tokenizer);
 //
-// 	token = tokenize_one_token(&tokenizer);
-//
-// 	printf("%.*s\n", (int)token.length, token.text);
-// 	printf("%i", token.identifier);
-// 	
-// 	printf("%s\n", tokenizer.input);
-//
-// 	return 0;
+// 		add_node(&head, token);
+// 		printf("[%.*s]:%zi,%i", (int)token.length, token.text, token.length, token.identifier);
+// 	}
+// 	printf("\nhead node:%s", head.token.text);
 // }
-//
-// NOTE:
-// all tokens of length 1 are identifiers...
-//
+
