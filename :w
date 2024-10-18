@@ -102,7 +102,6 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	}
 	if (strchr(SINGLE_CHAR_TOKENS, token.identifier))
 	{
-		token.length += 1;
 		tokenizer->input += 1;
 		return (token);
 	}
@@ -157,7 +156,7 @@ t_token_node	*lst_traverse(t_token_node *lst, int	count)
 {
 	if (!lst || count < 0)
 		return(NULL);
-	while (lst->next != NULL && count > 1)
+	while (lst->next != NULL && count > 0)
 	{
 		lst = lst->next;
 		--count;
@@ -165,6 +164,7 @@ t_token_node	*lst_traverse(t_token_node *lst, int	count)
 	return (lst);
 
 }
+
 
 // TODO: Tokenize once, get the count, then malloc for that count
 int main()
@@ -193,9 +193,7 @@ int main()
 	}
 	printf("%i", tokens);
 
-	t_token	test = lst_traverse(head, 4)->token;
-
-	printf("\ntok:%.*s", test.length, test.text);
+	printf("\n%zi", head->token.length);
 
 	// NOTE:
 	// argmax = 2097152
