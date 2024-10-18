@@ -113,47 +113,36 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	return (token);
 }
 
-// void	lst_add_node(t_tok_node	**head, t_token token)
-// {
-// 	if (*head == NULL)
-// 	{
-// 		*head = token;
-// 		return ;
-// 	}
-// }
-
-//In Zsh, the maximum length of a command line is 256 KB (262144 characters).
-
-t_token_node	*lst_last(t_token_node *lst)
+void	free_data(void *data)
 {
-	if (!lst)
-		return(NULL);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
+	free(data);
 }
 
-t_token_node	*lst_add_node(t_token_node **head, t_token token)
+t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 {
-	t_token_node	*new_node;
-	t_token_node	*last_node;
+	t_list	head;
+	t_list	new_node;
+	t_token	token;
+	t_token	*tok_ptr;
 
-	new_node = (t_token_node *)malloc(sizeof(t_token_node));
-	if (!new_node)
-		return (NULL);
-	new_node->token = token;
-	new_node->next = NULL;
-	if (*head == NULL)
-		*head = new_node;
-	else
+	head	= NULL;
+	token.identifier = 1;
+	while (token.identifier != END)
 	{
-		last_node = lst_last(*head);
-		last_node->next = new_node;
+		new_node = (t_list *)malloc(sizeof(t_list));
+		tok_ptr = (t_token *)malloc(sizeof(t_token));
+		if (!new_node || !tok_ptr)
+		{
+			ft_lstclear(&head, &free_data);
+			return (NULL);
+		}
+		token = tokenize_one_token(tokenizer);
+		*tok_ptr = token;
 	}
-	return (new_node);
+	return (NULL);
 }
 
-t_token_node	*lst_traverse(t_token_node *lst, int	count)
+t_token_node	*ft_lst_traverse(t_list *lst, int count)
 {
 	if (!lst || count < 0)
 		return(NULL);
@@ -163,17 +152,16 @@ t_token_node	*lst_traverse(t_token_node *lst, int	count)
 		--count;
 	}
 	return (lst);
-
 }
 
 // TODO: Tokenize once, get the count, then malloc for that count
-int main()
+int main(int argc, char **argv)
 {
 	struct s_tokenizer tokenizer;
 	char	*str = "hel $lo_world$H";
 	t_token		token;
 	int		tokens;
-	t_token_node	*head;
+	t_token_node	*lst;
 
 
 
@@ -182,18 +170,26 @@ int main()
 	token.identifier = 1;
 	tokens = 0;
 
-	head = NULL;
+	lst = NULL;
 
 	while (token.identifier != END)
 	{
+		t_list	*token_ptr = malloc(sizeof(t_token));
+		if (!token_ptr)
+			return (0);
+		new_node = ft_lstnew((void *)token_ptr);
+		if (!new_node)
+			return (0);
+		ft_lstadd_front(head, new_node);
+
 		token = tokenize_one_token(&tokenizer);
-		lst_add_node(&head, token);
+		lst_add_node(&lst, token);
  		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
 		++tokens;
 	}
 	printf("%i", tokens);
 
-	t_token	test = lst_traverse(head, 4)->token;
+	t_token	test = lst_traverse(lst, 5)->token;
 
 	printf("\ntok:%.*s", test.length, test.text);
 
@@ -216,12 +212,12 @@ int main()
 // 		new_node = (t_tok_node *)malloc(sizeof(t_token));
 // 		new_node->token = tokenize_one_token(&tokenizer);
 // 		new_node->next = NULL;
-// 		lst_add_node(&head, new_node);
+// 		lst_add_node(&lst, new_node);
 //
 //
-// 		add_node(&head, token);
+// 		add_node(&lst, token);
 // 		printf("[%.*s]:%zi,%i", (int)token.length, token.text, token.length, token.identifier);
 // 	}
-// 	printf("\nhead node:%s", head.token.text);
+// 	printf("\nhead node:%s", lst.token.text);
 // }
 
