@@ -10,14 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdint.h>
-#include <stdbool.h>
-
-
+#include "libft/bool.h"
+#include "libft/libft.h"
 
 #include <limits.h>
 #include <unistd.h>
-
 
 #include <stdlib.h>
 
@@ -43,8 +40,6 @@ enum e_identifiers
 	NEW_LINE = '\n',
 	HEREDOC_END,
 };
-
-// ASCII to identifier map...
 
 struct s_tokenizer {
 	char	*input;
@@ -113,15 +108,15 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	return (token);
 }
 
-void	free_ptr(void *data)
+void	free_data(void *data)
 {
 	free(data);
 }
 
 t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 {
-	t_list	head;
-	t_list	new_node;
+	t_list	*head;
+	t_list	*new_node;
 	t_token	token;
 	t_token	*tok_ptr;
 
@@ -129,17 +124,17 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 	token.identifier = 1;
 	while (token.identifier != END)
 	{
-		new_node = (t_list *)malloc(sizeof(t_list));
 		tok_ptr = (t_token *)malloc(sizeof(t_token));
+		new_node = ft_lstnew(NULL);
 		if (!new_node || !tok_ptr)
 		{
-			ft_lstclear(&head, &free_ptr);
+			ft_lstclear(&head, &free_data);
 			return (NULL);
 		}
 		token = tokenize_one_token(tokenizer);
 		*tok_ptr = token;
+		new_node->content = (void *)tok_ptr;
 	}
-
 	return (NULL);
 }
 
@@ -176,24 +171,11 @@ int main(int argc, char **argv)
 
 	while (token.identifier != END)
 	{
-		t_list	*token_ptr = malloc(sizeof(t_token));
-		if (!token_ptr)
-			return (0);
-		new_node = ft_lstnew((void *)token_ptr);
-		if (!new_node)
-			return (0);
-		ft_lstadd_front(head, new_node);
-
 		token = tokenize_one_token(&tokenizer);
-		lst_add_node(&lst, token);
  		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
 		++tokens;
 	}
 	printf("%i", tokens);
-
-	t_token	test = lst_traverse(lst, 5)->token;
-
-	printf("\ntok:%.*s", test.length, test.text);
 
 	// NOTE:
 	// argmax = 2097152
