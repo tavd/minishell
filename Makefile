@@ -17,7 +17,7 @@ CFLAGS		= -Wall -Wextra -Werror #-g -fsanitize=address
 LDFLAGS		= -lreadline
 
 LIB_DIR = libft
-INCL = -I ./incl -I $(LIB_DIR)/incl
+INCL = -I ./incl -I libft/include
 
 FILES = main.c \
 lexer/lexer.c \
@@ -41,7 +41,7 @@ utils/free_close.c \
 utils/exit_shell.c \
 utils/init_data.c
 
-export LIBFT_MODULES = printf
+export LIBFT_MODULES = bool string stdio stdlib
 
 SRC_DIR = src
 SRC = $(addprefix $(SRC_DIR)/, $(FILES))	
