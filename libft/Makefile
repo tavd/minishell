@@ -1,104 +1,183 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: irsander <irsander@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/10/10 16:36:41 by irsander          #+#    #+#              #
-#    Updated: 2024/06/20 19:39:48 by irsander         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+# ------------------------------ configurable -----------------------------------
+# -MMD generates makefile dependencies that tell make which source file depend
+#  on what headers. These get generated at the same time when the source files are compiled
+DEP_FLAGS = -MMD -MP
+CFLAGS = -Wall -Wextra -Werror
+CC = cc
+INCLUDE_PATHS = ./include
 
-NAME		= libft.a
+# (not used by gcc)
+BUILD_PATH = ./build
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror
+# [c] do not warn about creation of file
+# [r] eplace existing or insert new file(s) into the archive
+# [U] set time stamps needed for replacement using make's archive(member) function
+ARFLAGS = rcU
+NAME := libft.a
 
-LIB_DIR		= libft
-INCL		= -I ./incl -I $(LIB_DIR)
+LIBFT_MODULES ?= bool string stdio stdlib
+# use 'export' in other makefile to set this. or use flag: -e SUB_MODULES="list of sub modules here ..."
+# This can be used to change the module make will compile when recursively calling this Makefile.
 
-FILES		=	char_checks/ft_isalnum.c \
-				char_checks/ft_isalpha.c \
-				char_checks/ft_isascii.c \
-				char_checks/ft_isdigit.c \
-				char_checks/ft_isprint.c \
-				conversions/ft_atoi.c \
-				conversions/ft_itoa.c \
-				conversions/ft_tolower.c \
-				conversions/ft_toupper.c \
-				get_next_line/get_next_line_utils.c \
-				get_next_line/get_next_line.c \
-				list_ops/ft_lstadd_back.c \
-				list_ops/ft_lstadd_front.c \
-				list_ops/ft_lstclear.c \
-				list_ops/ft_lstdelone.c \
-				list_ops/ft_lstiter.c \
-				list_ops/ft_lstlast.c \
-				list_ops/ft_lstmap.c \
-				list_ops/ft_lstnew.c \
-				list_ops/ft_lstsize.c \
-				mem_ops/ft_bzero.c \
-				mem_ops/ft_calloc.c \
-				mem_ops/ft_memchr.c \
-				mem_ops/ft_memcmp.c \
-				mem_ops/ft_memcpy.c \
-				mem_ops/ft_memmove.c \
-				mem_ops/ft_memset.c \
-				printf/ft_printf_utils.c \
-				printf/ft_printf.c \
-				put_ops/ft_putchar_fd.c \
-				put_ops/ft_putchar.c \
-				put_ops/ft_putendl_fd.c \
-				put_ops/ft_putnbr_fd.c \
-				put_ops/ft_putstr_fd.c \
-				put_ops/ft_putstr.c \
-				str_ops/ft_split.c \
-				str_ops/ft_strchr.c \
-				str_ops/ft_strdup.c \
-				str_ops/ft_striteri.c \
-				str_ops/ft_strjoin.c \
-				str_ops/ft_strlcat.c \
-				str_ops/ft_strlcpy.c \
-				str_ops/ft_strlen.c \
-				str_ops/ft_strmapi.c \
-				str_ops/ft_strncmp.c \
-				str_ops/ft_strnstr.c \
-				str_ops/ft_strrchr.c \
-				str_ops/ft_strtrim.c \
-				str_ops/ft_substr.c \
+# ---------------------------------- Files --------------------------------------
+BOOL_SRC := \
+    ft_isalnum.c \
+    ft_isalpha.c \
+    ft_isdigit.c \
+    ft_isprint.c \
+    ft_isascii.c \
+    ft_is_int.c \
+    ft_isdecimal.c \
 
-SRC_DIR		= src
-SRC			= $(addprefix $(SRC_DIR)/, $(FILES))
+BOOL_SRC := $(addprefix bool/, $(BOOL_SRC))
+BOOL_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(BOOL_SRC))
 
-OBJ_DIR		= src/obj
-OFILES		= $(addprefix $(OBJ_DIR)/, $(FILES:.c=.o))
+CTYPE_SRC := \
+    ft_tolower.c \
+    ft_toupper.c \
 
-all: $(NAME)
+CTYPE_SRC := $(addprefix ctype/, $(CTYPE_SRC))
+CTYPE_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(CTYPE_SRC))
 
-$(NAME): $(OFILES)
-	ar rcs $(NAME) $(OFILES)
+STRING_SRC := \
+    ft_strlen.c \
+    ft_strrchr.c \
+    ft_strchr.c \
+    ft_strlcat.c \
+    ft_strlcpy.c \
+    ft_strncmp.c \
+    ft_strnstr.c \
+    ft_strdup.c \
+    ft_substr.c \
+    ft_strjoin.c \
+    ft_strtrim.c \
+    ft_striteri.c \
+    ft_strmapi.c \
+    ft_memset.c \
+    ft_bzero.c \
+    ft_memcpy.c \
+    ft_memcmp.c \
+    ft_memmove.c \
+    ft_memchr.c \
 
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-	mkdir -p $(OBJ_DIR)/char_checks
-	mkdir -p $(OBJ_DIR)/conversions
-	mkdir -p $(OBJ_DIR)/get_next_line
-	mkdir -p $(OBJ_DIR)/list_ops
-	mkdir -p $(OBJ_DIR)/mem_ops
-	mkdir -p $(OBJ_DIR)/printf
-	mkdir -p $(OBJ_DIR)/put_ops
-	mkdir -p $(OBJ_DIR)/str_ops
+STRING_SRC := $(addprefix string/, $(STRING_SRC))
+STRING_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STRING_SRC))
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCL) -c -o $@ $<
-	
+STDLIB_SRC := \
+    ft_atoi.c \
+    ft_itoa.c \
+    ft_calloc.c \
+    ft_atof.c \
+    ft_split.c \
+
+STDLIB_SRC := $(addprefix stdlib/, $(STDLIB_SRC))
+STDLIB_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STDLIB_SRC))
+
+MORE_STUFF = \
+    ft_split.c \
+
+LST_SRC := \
+    ft_lstnew.c \
+    ft_lstadd_front.c \
+    ft_lstlast.c \
+    ft_lstsize.c \
+    ft_lstadd_back.c \
+    ft_lstdelone.c \
+    ft_lstclear.c \
+    ft_lstiter.c \
+    ft_lstmap.c \
+
+LST_SRC := $(addprefix lst/, $(LST_SRC))
+LST_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(LST_SRC))
+
+PRINTF_SRC  := \
+    char_specifiers.c \
+    int_specifiers.c \
+    ft_printf.c \
+
+PRINTF_SRC := $(addprefix ft_printf/, $(PRINTF_SRC))
+PRINTF_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(PRINTF_SRC))
+
+STDIO_SRC := \
+    ft_putchar_fd.c \
+    ft_putendl_fd.c \
+    ft_putstr_fd.c \
+    ft_putnbr_fd.c \
+    ft_putnbr_base.c \
+
+STDIO_SRC := $(addprefix stdio/, $(STDIO_SRC))
+STDIO_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STDIO_SRC))
+
+# -------------------------------------------------------------------------
+INCLUDE_FLAGS = $(addprefix -I, $(INCLUDE_PATHS))
+CFLAGS += $(INCLUDE_FLAGS)
+
+# This does NOT create, but lists the names of the dependency files which 'Make' uses to know
+# when an obj dpending on a header needs to be rebuild, when that header file has changed.
+ALL_OBJ_VARS := $(filter %_OBJ, $(.VARIABLES))
+ALL_DEPS := $(patsubst %.o, %.d, $(foreach var, $(ALL_OBJ_VARS), $($(var))))
+# -------------------------------------------------------------------------
+
+all: $(LIBFT_MODULES)
+
+# NOTE: on error delete the archive file ?
+$(NAME):
+	$(AR) $(ARFLAGS) $(NAME)
+
+$(BUILD_PATH)/%.o: %.c
+	@echo -n $(GREEN)
+	@mkdir -p $(dir $@)
+	$(CC) $(DEP_FLAGS) $(CFLAGS) -c $< -o $@
+	@echo -n $(CYAN)
+
+bool: $(BOOL_OBJ) $(NAME)($(BOOL_OBJ))
+	@echo $(YELLOW)bool.h module done. $(GREEN)
+
+ctype: bool $(CTYPE_OBJ) $(NAME)($(CTYPE_OBJ))
+	@echo $(YELLOW)ctype.h module done. $(GREEN)
+
+string: $(STRING_OBJ) $(NAME)($(STRING_OBJ))
+	@echo $(YELLOW)string.h module done. $(GREEN)
+
+printf: bool $(PRINTF_OBJ) $(NAME)($(PRINTF_OBJ))
+	@echo $(YELLOW)ft_printf.h module done. $(GREEN)
+
+stdio: printf $(STDIO_OBJ) $(NAME)($(STDIO_OBJ))
+	@echo $(YELLOW)stdio.h module done. $(GREEN)
+
+# TODO: add more subdivisions to stdlib
+stdlib: bool $(STDLIB_OBJ) $(NAME)($(STDLIB_OBJ))
+	@echo $(YELLOW)stdlib.h module done. $(GREEN)
+
+lst: $(LST_OBJ) $(NAME)($(LST_OBJ))
+	@echo $(YELLOW)lst.h module done. $(GREEN)
+
 clean:
-	rm -rf $(OBJ_DIR)
+	@echo -n $(RED)
+	rm -rf $(BUILD_PATH)
+	@echo -n $(RESET)
 
 fclean: clean
+	@echo -n $(RED)
 	rm -f $(NAME)
+	@echo -n $(RESET)
 
 re: fclean all
 
-.PHONY: all clean make fclean re
+-include $(ALL_DEPS)
+
+.PHONY:	clean fclean re all $(LIBFT_MODULES) string
+
+.NOTPARALLEL: all
+
+# --------------------------------- COLORS --------------------------------------
+RED := $(shell tput -T xterm setaf 1)
+GREEN := $(shell tput -T xterm setaf 2)
+YELLOW := $(shell tput -T xterm setaf 3)
+BLUE := $(shell tput -T xterm setaf 4)
+PURPLE := $(shell tput -T xterm setaf 5)
+CYAN := $(shell tput -T xterm setaf 6)
+WHITE := $(shell tput -T xterm setaf 7)
+RESET := $(shell tput -T xterm setaf 7)
+# TODO: Reset doesn't work
+#RESET := $(shell tput -T xterm setaf sgr0)
