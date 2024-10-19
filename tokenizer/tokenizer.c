@@ -139,31 +139,6 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 	return (head);
 }
 
-t_list	*ft_node_at_count(t_list *lst, int	count)
-{
-	if (!lst || count < 0)
-		return(NULL);
-	while (lst->next != NULL && count > 1)
-	{
-		lst = lst->next;
-		--count;
-	}
-	return (lst);
-}
-
-t_list	*ft_lstfind(t_list *lst, bool (*compare_fn)(void *content))
-{
-	if (compare_fn == NULL)
-		return (NULL);
-	while (lst)
-	{
-		if (compare_fn(lst->content))
-			return (lst);
-		lst = lst->next;
-	}
-	return (NULL);
-}
-
 // TODO: Tokenize once, get the count, then malloc for that count
 int main(int argc, char **argv)
 {
@@ -207,25 +182,3 @@ int main(int argc, char **argv)
 	// NOTE: Is this necessary or is ARG_MAX not to big for most or this system?
 	return 0;
 }
-
-//
-//
-//
-//
-//
-//
-// 	token.identifier = 1;
-// 	while (tokenizer.input != NULL && token.identifier != END)
-// 	{
-// 		new_node = (t_tok_node *)malloc(sizeof(t_token));
-// 		new_node->token = tokenize_one_token(&tokenizer);
-// 		new_node->next = NULL;
-// 		lst_add_node(&lst, new_node);
-//
-//
-// 		add_node(&lst, token);
-// 		printf("[%.*s]:%zi,%i", (int)token.length, token.text, token.length, token.identifier);
-// 	}
-// 	printf("\nhead node:%s", lst.token.text);
-// }
-

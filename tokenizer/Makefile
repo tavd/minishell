@@ -2,11 +2,13 @@ FLAGS =
 
 CC = cc
 
+
+NAME = main
 INCLUDES = -Iinclude
 
 all: main
 
-main: tokenizer.o
+$(NAME): tokenizer.o
 	$(CC) $(INCLUDES) $^ libft.a -o $@
 
 %.o: %.c
@@ -15,4 +17,7 @@ main: tokenizer.o
 clean:
 	$(RM) tokenizer.o
 
-re: clean all
+fclean: clean
+	$(RM) $(NAME)
+
+re: fclean all
