@@ -57,6 +57,11 @@ typedef struct s_token_node
 	struct s_token_node	*next;
 } t_token_node;
 
+// NOTE: White space should only be reduced after all other subtitutions
+const static char	WHITE_SPACE[4] = {
+	SPACE, TAB, NEWLINE, END
+};
+
 // END is also required here since array of chars needs to be null-terminated
 const static char	SINGLE_CHAR_TOKENS[8] = {
 	SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
@@ -88,7 +93,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	token.text = str;
 	token.identifier = (enum e_identifiers)*str;
 	token.length = 0;
-	while (str[token.length] && str[token.length] == SPACE)
+	while (ft_strchr(WHITE_SPACE, str[token.length]))
 		++token.length;
 	if (str[token.length] == END || token.length > 0)
 	{
@@ -139,7 +144,14 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 	return (head);
 }
 
-// TODO: Tokenize once, get the count, then malloc for that count
+char	*parser_simple(t_list *tokens)
+{
+	char	*parsed_str;
+
+	return (parsed_str);
+}
+
+// NOTE : optoions is to  Tokenize once, get the count, then malloc for that count
 int main(int argc, char **argv)
 {
 	struct s_tokenizer tokenizer;
