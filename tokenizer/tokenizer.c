@@ -76,7 +76,7 @@ void	init_tokenizer(struct s_tokenizer *tokenizer, char *data)
 	tokenizer->input = data;
 }
 
-// This function returns current token and length and needs to 
+// NOTE: Is it needed to add identifier for double character token_count?
 t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 {
 	char		*str;
@@ -117,8 +117,8 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 {
 	t_list	*head;
 	t_list	*new_node;
-	t_token	token;
 	t_token	*tok_ptr;
+	t_token	token;
 
 	head	= NULL;
 	token.identifier = 1;
@@ -134,11 +134,12 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 		token = tokenize_one_token(tokenizer);
 		*tok_ptr = token;
 		new_node->content = (void *)tok_ptr;
+		ft_lstadd_back(&head, new_node);
 	}
-	return (NULL);
+	return (head);
 }
 
-t_token_node	*ft_lst_traverse(t_token_node *lst, int	count)
+t_list	*ft_node_at_count(t_list *lst, int	count)
 {
 	if (!lst || count < 0)
 		return(NULL);
@@ -148,35 +149,58 @@ t_token_node	*ft_lst_traverse(t_token_node *lst, int	count)
 		--count;
 	}
 	return (lst);
+}
 
+t_list	*ft_lstfind(t_list *lst, bool (*compare_fn)(void *content))
+{
+	if (compare_fn == NULL)
+		return (NULL);
+	while (lst)
+	{
+		if (compare_fn(lst->content))
+			return (lst);
+		lst = lst->next;
+	}
+	return (NULL);
 }
 
 // TODO: Tokenize once, get the count, then malloc for that count
 int main(int argc, char **argv)
 {
 	struct s_tokenizer tokenizer;
-	char	*str = "hel $lo_world$H";
 	t_token		token;
-	int		tokens;
-	t_token_node	*lst;
+	int		token_count;
+	t_list	*lst;
+	int	i;
+	int	size;
 
-
-
-	init_tokenizer(&tokenizer, str);
-	printf("untokenized str:%s\n", tokenizer.input);
-	token.identifier = 1;
-	tokens = 0;
-
-	lst = NULL;
-
-	while (token.identifier != END)
+	char	*buf = malloc(256);
+	i = 1;
+	size = 0;
+	while (i < argc)
 	{
-		token = tokenize_one_token(&tokenizer);
- 		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
-		++tokens;
+		size += ft_strlen(argv[i]);
+		ft_strlcat(buf, argv[i], size + 1);
+		++i;
+		if (i < argc)
+		{
+			buf[size] = ' ';
+			size += 1;
+		}
 	}
-	printf("%i", tokens);
 
+	init_tokenizer(&tokenizer, buf);
+	lst = tokenize_all_tokens(&tokenizer);
+	token.identifier = 1;
+	token_count = 0;
+	while (lst != NULL)
+	{
+		token = *((t_token *)lst->content);
+ 		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
+		lst = lst->next;
+		++token_count;
+	}
+	printf("Total Token count:%i\n", token_count);
 	// NOTE:
 	// argmax = 2097152
 	// is this values always same for all codam computers?
