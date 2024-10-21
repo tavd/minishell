@@ -28,16 +28,17 @@ enum e_identifiers
 	END,
 	WORD,
 	SPACE = ' ',
+	NEW_LINE = '\n',
+	TAB = '\t',
 	SET_ENV = '=',
 	ENV_VAR = '$',
 	PIPE = '|',
 	REDIRECT_IN = '<',
 	REDIRECT_OUT = '>',
-	SINGLE_QUOTE = '\"',
-	DOUBLE_QUOTE = '\'',
+	SINGLE_QUOTE = '\'',
+	DOUBLE_QUOTE = '\"',
 
 	// ... not sure about these yet
-	NEW_LINE = '\n',
 	HEREDOC_END,
 };
 
@@ -51,15 +52,9 @@ typedef struct s_token {
 	enum e_identifiers	identifier;
 }	t_token;
 
-typedef struct s_token_node
-{
-	t_token			token;
-	struct s_token_node	*next;
-} t_token_node;
-
 // NOTE: White space should only be reduced after all other subtitutions
 const static char	WHITE_SPACE[4] = {
-	SPACE, TAB, NEWLINE, END
+	SPACE, TAB, NEW_LINE, END
 };
 
 // END is also required here since array of chars needs to be null-terminated
@@ -69,8 +64,9 @@ const static char	SINGLE_CHAR_TOKENS[8] = {
 };
 
 // combine?...
-const static char	WORD_DELIMITERS[9] = {
-	SPACE, SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
+const static char	WORD_DELIMITERS[11] = {
+	SPACE, TAB, NEW_LINE,
+	SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
 	PIPE, SET_ENV, ENV_VAR, END
 };
 
@@ -144,9 +140,36 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 	return (head);
 }
 
+void	expand_var(void *content)
+{
+	t_token	token;
+
+	token = *((t_token *)content);
+	if (token.identifier == ENV_VAR)
+		printf("%.*s\n", (int)token.length, token.text);
+}
+
+void	with_quotes(void *content)
+{
+	static bool	in_quotes = 0;
+	t_token	token;
+
+	token = *((t_token *)content);
+	if (token.identifier == SINGLE_QUOTE)
+	{
+		in_quotes = !in_quotes;
+		printf("quote\n");
+	}
+	else if (in_quotes)
+		printf("word\n");
+}
+
 char	*parser_simple(t_list *tokens)
 {
-	char	*parsed_str;
+	char	*parsed_str = "";
+
+	ft_lstiter(tokens, &with_quotes);
+	//ft_lstiter(tokens, &expand_var);
 
 	return (parsed_str);
 }
@@ -158,6 +181,7 @@ int main(int argc, char **argv)
 	t_token		token;
 	int		token_count;
 	t_list	*lst;
+	t_list	*head;
 	int	i;
 	int	size;
 
@@ -177,7 +201,8 @@ int main(int argc, char **argv)
 	}
 
 	init_tokenizer(&tokenizer, buf);
-	lst = tokenize_all_tokens(&tokenizer);
+	head = tokenize_all_tokens(&tokenizer);
+	lst = head;
 	token.identifier = 1;
 	token_count = 0;
 	while (lst != NULL)
@@ -188,9 +213,11 @@ int main(int argc, char **argv)
 		++token_count;
 	}
 	printf("Total Token count:%i\n", token_count);
-	// NOTE:
-	// argmax = 2097152
-	// is this values always same for all codam computers?
-	// NOTE: Is this necessary or is ARG_MAX not to big for most or this system?
-	return 0;
+
+	printf("parser:\n");
+	parser_simple(head);
+	return (0);
 }
+// argmax = 2097152
+// is this values always same for all codam computers?
+// NOTE: Is this necessary or is ARG_MAX not to big for most or this system?

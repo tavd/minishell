@@ -1,4 +1,4 @@
-FLAGS = 
+CFLAGS = -g
 
 CC = cc
 
@@ -9,7 +9,7 @@ INCLUDES = -Iinclude
 all: main
 
 $(NAME): tokenizer.o
-	$(CC) $(INCLUDES) $^ libft.a -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $^ libft.a -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
