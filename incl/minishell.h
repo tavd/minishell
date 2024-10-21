@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:26:32 by irsander          #+#    #+#             */
-/*   Updated: 2024/10/15 19:08:53 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/21 18:01:40 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ bool	redirect_io_file(t_io *io);
 bool	restore_stdin_stdout_close_copies(t_io *io);
 //pipe.c
 bool	create_pipes(t_data *data);
-void	close_pipe_fds(t_command *cmds, t_command *own_cmd);
+void	close_pipe_fds(t_command *cmds, t_command *this_cmd);
 bool	redirect_io_pipe(t_command *cmds, t_command *this_cmd);
 //exit_shell.c
 void	exit_shell(t_data *data, int exit_number);

@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:42:17 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/11 20:34:37 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/21 18:28:13 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,3 @@ void	close_fds(t_command *cmd_list, bool close_copies)
 	}
 	close_pipe_fds(cmd_list, NULL);
 }
-

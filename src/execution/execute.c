@@ -6,7 +6,7 @@
 /*   By: tavdiiev <tavdiiev@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 17:55:18 by tavdiiev          #+#    #+#             */
-/*   Updated: 2024/10/15 19:09:25 by tavdiiev         ###   ########.fr       */
+/*   Updated: 2024/10/21 19:10:15 by tavdiiev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static int	create_children(t_data *data)
 	t_command	*current_command;
 
 printf("in create_children\n");
-int status_execute_command = 545;
+// int status_execute_command = 545;
 	current_command = data->cmd;
 	while (data->pid != 0 && current_command)
 	{
@@ -77,12 +77,12 @@ int status_execute_command = 545;
 		else if (data->pid == 0)
 		{
 			printf("in child process before execute_command\n");
-			status_execute_command = execute_command(data, current_command);
+			execute_command(data, current_command);//status_execute_command = 
 		}
 		current_command = current_command->next;
 	}
-	if (data->pid != 0)
-	printf("parent: status_execute_command = %d\n", status_execute_command);
+	// if (data->pid != 0)
+	// printf("parent: status_execute_command = %d\n", status_execute_command);
 	return (wait_children(data));
 }
 
@@ -95,7 +95,7 @@ int	execute(t_data *data)
 	if (status != CMD_NOT_FOUND)
 		return (status);
 	// printf("data->cmd->is_piped=%d\n", data->cmd->is_piped);
-	if (!data->cmd->is_piped && !data->cmd->prev //todo
+	if (!data->cmd->next && !data->cmd->prev //todo !data->cmd->is_piped && !data->cmd->prev
 	&& is_valid_fd_or_no_fd(data->cmd->io))//no pipes, no prev command, might be with in/outfile
 	{
 		redirect_io_file(data->cmd->io);
