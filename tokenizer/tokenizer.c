@@ -154,30 +154,15 @@ t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 	return (head);
 }
 
-void	expand_var(void *content)
+void	expand_env_var(void *content)
 {
 	t_token	token;
 
 	token = *((t_token *)content);
 	if (token.identifier == ENV_VAR)
 		printf("%.*s\n", (int)token.length, token.text);
+
 }
-
-void	with_quotes(void *content)
-{
-	static bool	in_single_quotes = 0;
-	t_token	token;
-
-	token = *((t_token *)content);
-	if (token.identifier == SINGLE_QUOTE)
-	{
-		in_single_quotes = !in_single_quotes;
-
-	}
-	else if (in_single_quotes)
-		printf("word\n");
-}
-
 
 // NOTE: WHY does this make it possible for indirect pointer to change head node?
 typedef struct	s_linked_list {
@@ -212,6 +197,22 @@ bool	parse_single_quotes(t_linked_list *lst)
 	return (in_single_quotes);
 }
 
+int	single_quote(t_list **node)
+{
+	static bool	in_single_quotes = false;
+	t_token *token;
+	
+	token = (t_token *)(*node)->content;
+	if (token->identifier == SINGLE_QUOTE)
+	{
+		next_node = (*node)->next;
+		ft_lstdelone(*node, free_data);
+		*node = next_node;
+		in_single_quotes = !in_single_quotes;
+	}
+	return (in_single_quotes);
+}
+
 enum	e_errors
 {
 	UNCLOSED_QUOTE_ERROR,
@@ -227,10 +228,30 @@ int	parser_simple(t_linked_list *lst)
 	parsed_str = "";
 	if (parse_single_quotes(lst) == 1)
 		return (UNCLOSED_QUOTE_ERROR);
+	ft_lst_iter(lst->head, expand_env_var);
 
 	//ft_lstiter(tokens, &expand_var); Enough ???
 	return (0);
 }
+
+// NOTE: NOT GENERIC ENOUGH TO BE WORTH IT?
+int	ft_lstiter_andor_modify(t_list **lst, int (*f)(t_list **))
+{
+	t_list	**list_item;
+	int	fn_return;
+
+	if (!lst || !f)
+		return ;
+	lst_item = lst;
+	fn_return = 0;
+	while (*lst_item != NULL)
+	{
+		fn_return = f(lst_item);
+		lst_item = &(*lst_item)->next;
+	}
+	return (fn_return);
+}
+
 
 // NOTE : optoions is to  Tokenize once, get the count, then malloc for that count
 int main(int argc, char **argv)
