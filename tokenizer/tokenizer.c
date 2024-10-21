@@ -22,6 +22,10 @@
 #include <stdio.h>
 #include <string.h>
 
+/*
+*	An enum for more readable code. "ENV_VAR" is not an accurate name for '$',
+*	but in the case of minishell it is exhaustive of the chars function. Right?
+*/
 // TODO: make it possible for heredoc to set a word as END delimiter...
 enum e_identifiers
 {
@@ -30,13 +34,18 @@ enum e_identifiers
 	SPACE = ' ',
 	NEW_LINE = '\n',
 	TAB = '\t',
-	SET_ENV = '=',
 	ENV_VAR = '$',
+	SET_ENV_VAR = '=',
+// WHAT IS it doing:
+//	 x echo= ="hello = wi"
+//	=hello = wi: command not found
 	PIPE = '|',
 	REDIRECT_IN = '<',
 	REDIRECT_OUT = '>',
 	SINGLE_QUOTE = '\'',
 	DOUBLE_QUOTE = '\"',
+	OPEN_BRACE = '{',
+	CLOSE_BRACE = '}',
 
 	// ... not sure about these yet
 	HEREDOC_END,
@@ -52,23 +61,28 @@ typedef struct s_token {
 	enum e_identifiers	identifier;
 }	t_token;
 
-// NOTE: White space should only be reduced after all other subtitutions
+// NOTE: Whitespace should only be reduced while or after all subtitutions?
+#define WHITE_SPACE_CHARS SPACE, TAB, NEW_LINE
+
 const static char	WHITE_SPACE[4] = {
-	SPACE, TAB, NEW_LINE, END
+	WHITE_SPACE_CHARS, '\0'
 };
 
-// END is also required here since array of chars needs to be null-terminated
-const static char	SINGLE_CHAR_TOKENS[8] = {
-	SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
-	PIPE, SET_ENV, ENV_VAR, END
+# define SINGLE_TOKEN_CHARS SINGLE_QUOTE, DOUBLE_QUOTE, \
+	OPEN_BRACE, CLOSE_BRACE, REDIRECT_IN, REDIRECT_OUT, \
+	PIPE, ENV_VAR, SET_ENV_VAR
+
+const static char	SINGLE_TOKENS[10] = {
+	  SINGLE_TOKEN_CHARS, '\0'
 };
 
-// combine?...
-const static char	WORD_DELIMITERS[11] = {
-	SPACE, TAB, NEW_LINE,
-	SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
-	PIPE, SET_ENV, ENV_VAR, END
+// Maybe combining is too inflexible for some cases?
+const static char	WORD_DELIMITERS[14] = {
+	WHITE_SPACE_CHARS, SINGLE_TOKEN_CHARS, '\0'
 };
+	// SPACE, TAB, NEW_LINE,
+	// SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
+	// PIPE, SET_ENV, ENV_VAR, END
 
 //=============================================================================
 
@@ -96,7 +110,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 		tokenizer->input += token.length;
 		return (token);
 	}
-	if (strchr(SINGLE_CHAR_TOKENS, token.identifier))
+	if (strchr(SINGLE_TOKENS, token.identifier))
 	{
 		token.length += 1;
 		tokenizer->input += 1;
@@ -151,27 +165,71 @@ void	expand_var(void *content)
 
 void	with_quotes(void *content)
 {
-	static bool	in_quotes = 0;
+	static bool	in_single_quotes = 0;
 	t_token	token;
 
 	token = *((t_token *)content);
 	if (token.identifier == SINGLE_QUOTE)
 	{
-		in_quotes = !in_quotes;
-		printf("quote\n");
+		in_single_quotes = !in_single_quotes;
+
 	}
-	else if (in_quotes)
+	else if (in_single_quotes)
 		printf("word\n");
 }
 
-char	*parser_simple(t_list *tokens)
+
+// NOTE: WHY does this make it possible for indirect pointer to change head node?
+typedef struct	s_linked_list {
+	t_list	*head;
+}	t_linked_list;
+
+// Removes the single_quote tokens and
+// Makes all the token identifiers in between single quotes words and removes.
+bool	parse_single_quotes(t_linked_list *lst)
 {
-	char	*parsed_str = "";
+	static bool	in_single_quotes = false;
+	t_list		**lst_address;
+	t_list		*next_node;
+	t_token		*token;
 
-	ft_lstiter(tokens, &with_quotes);
-	//ft_lstiter(tokens, &expand_var);
+	lst_address = &lst->head;
+	while (*lst_address != NULL)
+	{
+		token = (t_token *)(*lst_address)->content;
+		if (token->identifier == SINGLE_QUOTE)
+		{
+			next_node = (*lst_address)->next;
+			ft_lstdelone(*lst_address, free_data);
+			*lst_address = next_node;
+			in_single_quotes = !in_single_quotes;
+			continue;
+		}
+		else if (in_single_quotes)
+			token->identifier = WORD;
+		lst_address = &(*lst_address)->next;
+	}
+	return (in_single_quotes);
+}
 
-	return (parsed_str);
+enum	e_errors
+{
+	UNCLOSED_QUOTE_ERROR,
+};
+
+// If there is a good way to handle errors we could also return ptr to place where
+// error occured
+int	parser_simple(t_linked_list *lst)
+{
+	char	*parsed_str;
+	t_token	*token;
+
+	parsed_str = "";
+	if (parse_single_quotes(lst) == 1)
+		return (UNCLOSED_QUOTE_ERROR);
+
+	//ft_lstiter(tokens, &expand_var); Enough ???
+	return (0);
 }
 
 // NOTE : optoions is to  Tokenize once, get the count, then malloc for that count
@@ -180,10 +238,10 @@ int main(int argc, char **argv)
 	struct s_tokenizer tokenizer;
 	t_token		token;
 	int		token_count;
-	t_list	*lst;
-	t_list	*head;
 	int	i;
 	int	size;
+	t_linked_list	lst;
+	t_list	*lst_item;
 
 	char	*buf = malloc(256);
 	i = 1;
@@ -201,21 +259,23 @@ int main(int argc, char **argv)
 	}
 
 	init_tokenizer(&tokenizer, buf);
-	head = tokenize_all_tokens(&tokenizer);
-	lst = head;
+	printf("unparsed: %s\n", buf);
+	lst.head = tokenize_all_tokens(&tokenizer);
+	parser_simple(&lst);
+
 	token.identifier = 1;
 	token_count = 0;
-	while (lst != NULL)
+	lst_item = lst.head;
+	while (lst_item != NULL)
 	{
-		token = *((t_token *)lst->content);
+		token = *((t_token *)lst_item->content);
  		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
-		lst = lst->next;
+		lst_item = lst_item->next;
 		++token_count;
 	}
 	printf("Total Token count:%i\n", token_count);
 
 	printf("parser:\n");
-	parser_simple(head);
 	return (0);
 }
 // argmax = 2097152
