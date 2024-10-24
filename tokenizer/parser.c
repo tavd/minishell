@@ -27,6 +27,13 @@ typedef struct	s_linked_list {
 	t_list	*head;
 }	t_linked_list;
 
+// If there is a good way to handle errors we could also return ptr to place where
+// error occured
+enum	e_errors
+{
+	UNCLOSED_QUOTE_ERROR,
+};
+
 // ================================================================================
 
 void	expand_env_var(void *content)
@@ -72,8 +79,10 @@ bool	single_q_parser(t_linked_list *lst)
 	return (in_single_quotes);
 }
 
-// NOTE: NOT GENERIC ENOUGH TO BE WORTH IT?
-int	lst_itermod(t_linked_list *lst, int (*mod_fn)(t_list **))
+// iterates over linked list and applies a fn to every linked list node.
+// the fn gets passed an indirect pointer of a node to allow for easy modification
+// of the linked list itself. (it makes it so you dont need a ptr to previous node ).
+int	ft_lstiter_mod(t_list **lst, int (*mod_fn)(t_list **))
 {
 	t_list	**lst_item;
 	int	fn_return;
@@ -81,7 +90,7 @@ int	lst_itermod(t_linked_list *lst, int (*mod_fn)(t_list **))
 	if (!lst || !mod_fn)
 		return 0;
 	fn_return = 0;
-	lst_item = &(lst->head);
+	lst_item = lst;
 	while (*lst_item != NULL)
 	{
 		fn_return = mod_fn(lst_item);
@@ -107,20 +116,13 @@ int	parse_single_quotes(t_list **node)
 	return (in_single_quotes);
 }
 
-enum	e_errors
-{
-	UNCLOSED_QUOTE_ERROR,
-};
-
-// If there is a good way to handle errors we could also return ptr to place where
-// error occured
 int	parser_simple(t_linked_list *lst)
 {
 	char	*parsed_str;
 	t_token	*token;
 
 	parsed_str = "";
-	if (lst_itermod(lst, &parse_single_quotes) == 1)
+	if (ft_lstiter_mod(&(lst->head), &parse_single_quotes) == 1)
 		return (UNCLOSED_QUOTE_ERROR);
 	ft_lstiter(lst->head, expand_env_var);
 
