@@ -7,6 +7,9 @@
 *	but in the case of minishell it is exhaustive of the chars function. Right?
 */
 // TODO: make it possible for heredoc to set a word as END delimiter...
+// TODO: INVESTIGATE:
+//	 x echo= ="hello = wi"
+//	=hello = wi: command not found
 enum e_identifiers
 {
 	END,
@@ -16,9 +19,7 @@ enum e_identifiers
 	TAB = '\t',
 	ENV_VAR = '$',
 	SET_ENV_VAR = '=',
-// WHAT IS it doing:
-//	 x echo= ="hello = wi"
-//	=hello = wi: command not found
+	QUESTION_MARK = '?',
 	PIPE = '|',
 	REDIRECT_IN = '<',
 	REDIRECT_OUT = '>',
@@ -38,11 +39,12 @@ const static char	WHITE_SPACE[4] = {
 	WHITE_SPACE_CHARS, '\0'
 };
 
-# define SINGLE_TOKEN_CHARS SINGLE_QUOTE, DOUBLE_QUOTE, \
+# define SINGLE_TOKEN_CHARS \
+	SINGLE_QUOTE, DOUBLE_QUOTE, \
 	OPEN_BRACE, CLOSE_BRACE, REDIRECT_IN, REDIRECT_OUT, \
-	PIPE, ENV_VAR, SET_ENV_VAR
+	PIPE, ENV_VAR, SET_ENV_VAR, QUESTION_MARK
 
-const static char	SINGLE_TOKENS[10] = {
+const static char	SINGLE_TOKENS[11] = {
 	  SINGLE_TOKEN_CHARS, '\0'
 };
 

@@ -15,7 +15,6 @@
 
 // remove eventually
 #include <stdio.h>
-#include <string.h>
 
 #include <stdlib.h>
 #include "tokenizer.h"
@@ -32,27 +31,16 @@ typedef struct	s_linked_list {
 enum	e_errors
 {
 	UNCLOSED_QUOTE_ERROR,
+	MALLOC_FAIL_ENV_EXPANSION,
 };
-
 // ================================================================================
-
-void	expand_env_var(void *content)
-{
-	t_token	token;
-
-	token = *((t_token *)content);
-	if (token.identifier == ENV_VAR)
-		printf("%.*s\n", (int)token.length, token.text);
-
-}
 
 void	free_data(void *data)
 {
 	free(data);
 }
 
-// Removes the single_quote tokens and
-// Makes all the token identifiers in between single quotes a WORD and removes '.
+// BUG: why did this not work with **lst
 bool	single_q_parser(t_linked_list *lst)
 {
 	static bool	in_single_quotes = false;
@@ -99,6 +87,55 @@ int	ft_lstiter_mod(t_list **lst, int (*mod_fn)(t_list **))
 	return (fn_return);
 }
 
+ssize_t	ft_secure_strlen(char *str)
+{
+	if (!str)
+		return (-1);
+	else
+		return ((ssize_t)ft_strlen(str));
+}
+
+char	*ft_strndup(char *str, size_t len)
+{
+	return (NULL);
+
+}
+
+	//NOTE: maybe add more context to list_item for whether a var is expanded
+int	expand_env_var(t_list **current_node) // How to acces exit_status?
+{
+	t_token	*token;
+	t_token	*next_token;
+	t_list	*next_node;
+	char	*variable_name;
+	char	temp_for_swap;
+
+	next_node = (*current_node)->next;
+	token = (t_token *)(*current_node)->content;
+	if (token->identifier)
+	if (token->identifier == ENV_VAR)
+	{
+		token->text = NULL;
+		if (!next_node)
+			return (0);
+		next_token = next_node->content;
+		if (next_token->identifier == QUESTION_MARK)
+		{
+			token->text = "exit_status";// ft_itoa(exit_status); // exit_statues
+			token->length = ft_strlen(token->text);
+		}
+		else if (next_token->identifier == WORD)
+		{
+			temp_for_swap = next_token->text[next_token->length];
+			next_token->text[next_token->length] = '\0';
+			token->text = getenv(next_token->text);
+			next_token->text[next_token->length] = temp_for_swap;
+			//token->length = ft_strlen(token->text);
+		}
+	}
+	return (0);
+}
+
 int	parse_single_quotes(t_list **current_node)
 {
 	static bool	in_single_quotes = false;
@@ -118,15 +155,17 @@ int	parse_single_quotes(t_list **current_node)
 	return (in_single_quotes);
 }
 
-int	parser_simple(t_linked_list *lst)
+
+int	parser_simple(t_list **lst)
 {
 	char	*parsed_str;
 	t_token	*token;
 
 	parsed_str = "";
-	if (ft_lstiter_mod(&(lst->head), &parse_single_quotes) == 1)
+	if (ft_lstiter_mod(lst, &parse_single_quotes))
 		return (UNCLOSED_QUOTE_ERROR);
-	ft_lstiter(lst->head, expand_env_var);
+	if (ft_lstiter_mod(lst, &expand_env_var))
+		return (MALLOC_FAIL_ENV_EXPANSION);
 
 	return (0);
 }
@@ -159,20 +198,21 @@ int main(int argc, char **argv)
 	struct s_tokenizer tokenizer;
 	t_token		token;
 	int		token_count;
-	t_linked_list	lst;
 	t_list	*lst_item;
 	char	*buf;
+	t_list	*lst;
+	//t_linked_list	lst;
 
 	buf = simple_word_unifier(argc, argv);
 	init_tokenizer(&tokenizer, buf);
 	printf("unparsed: %s\n", buf);
 	printf("after parsing pass: \n");
-	lst.head = tokenize_all_tokens(&tokenizer);
+	lst = tokenize_all_tokens(&tokenizer);
 	parser_simple(&lst);
 
 	token.identifier = 1;
 	token_count = 0;
-	lst_item = lst.head;
+	lst_item = lst;
 	while (lst_item != NULL)
 	{
 		token = *((t_token *)lst_item->content);
