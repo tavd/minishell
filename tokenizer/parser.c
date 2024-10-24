@@ -99,20 +99,22 @@ int	ft_lstiter_mod(t_list **lst, int (*mod_fn)(t_list **))
 	return (fn_return);
 }
 
-int	parse_single_quotes(t_list **node)
+int	parse_single_quotes(t_list **current_node)
 {
 	static bool	in_single_quotes = false;
 	t_token *token;
 	t_list	*next_node;
 	
-	token = (t_token *)(*node)->content;
+	token = (t_token *)(*current_node)->content;
 	if (token->identifier == SINGLE_QUOTE)
 	{
-		next_node = (*node)->next;
-		ft_lstdelone(*node, free_data);
-		*node = next_node;
+		next_node = (*current_node)->next;
+		ft_lstdelone(*current_node, free_data);
+		*current_node = next_node;
 		in_single_quotes = !in_single_quotes;
 	}
+	else if (in_single_quotes)
+		token->identifier = WORD;
 	return (in_single_quotes);
 }
 
