@@ -1,21 +1,24 @@
 CFLAGS = -g
-
 CC = cc
+INCLUDE_FLAGS = -I. -Iinclude
+LIB_FLAGS = -L. -lft
 
+
+SRC = tokenizer.c parser.c
+OBJ = $(SRC:.c=.o)
 
 NAME = main
-INCLUDES = -Iinclude
 
 all: main
 
-$(NAME): tokenizer.o
-	$(CC) $(CFLAGS) $(INCLUDES) $^ libft.a -o $@
+$(NAME): $(OBJ)
+	$(CC) $(INCLUDE_FLAGS) $^ $(LIB_FLAGS) -o $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -c $< -o $@
 
 clean:
-	$(RM) tokenizer.o
+	$(RM) $(OBJ)
 
 fclean: clean
 	$(RM) $(NAME)
