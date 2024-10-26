@@ -28,11 +28,17 @@ typedef struct	s_linked_list {
 
 // If there is a good way to handle errors we could also return ptr to place where
 // error occured
-enum	e_errors
+enum	e_parsing_errors
 {
 	UNCLOSED_QUOTE_ERROR,
-	MALLOC_FAIL_ENV_EXPANSION,
 };
+
+enum e_parser_context
+{
+	EXIT_STATUS = 256,
+	HEREDOC_EOF = 257,
+
+}
 // ================================================================================
 
 void	free_data(void *data)
@@ -95,45 +101,48 @@ ssize_t	ft_secure_strlen(char *str)
 		return ((ssize_t)ft_strlen(str));
 }
 
-char	*ft_strndup(char *str, size_t len)
-{
-	return (NULL);
-
-}
-
 	//NOTE: maybe add more context to list_item for whether a var is expanded
 int	expand_env_var(t_list **current_node) // How to acces exit_status?
 {
+	t_list	*next_node;
 	t_token	*token;
 	t_token	*next_token;
-	t_list	*next_node;
-	char	*variable_name;
 	char	temp_for_swap;
 
 	next_node = (*current_node)->next;
 	token = (t_token *)(*current_node)->content;
-	if (token->identifier)
 	if (token->identifier == ENV_VAR)
 	{
 		token->text = NULL;
 		if (!next_node)
 			return (0);
-		next_token = next_node->content;
+		next_token = (t_token *)next_node->content;
 		if (next_token->identifier == QUESTION_MARK)
-		{
-			token->text = "exit_status";// ft_itoa(exit_status); // exit_statues
-			token->length = ft_strlen(token->text);
-		}
+			token->identifier = EXIT_STATUS;
 		else if (next_token->identifier == WORD)
 		{
 			temp_for_swap = next_token->text[next_token->length];
 			next_token->text[next_token->length] = '\0';
-			token->text = getenv(next_token->text);
+			variable_name = next_token->text;
 			next_token->text[next_token->length] = temp_for_swap;
-			//token->length = ft_strlen(token->text);
+			token->text = getenv(variable_name);
+			token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
 		}
+		ft_lst_remove(&next_node, free_data);
 	}
 	return (0);
+}
+
+// cleanly remove node form list
+void	ft_lst_remove(t_list **node_to_remove, void (*del)(void *content))
+{
+	t_list	*next_node;
+
+	if (!node_to_remove)
+		return ;
+	next_node = node_to_remove->next;
+	ft_lstdelone(*node_to_remove, del);
+	*node_to_remove = next_node;
 }
 
 int	parse_single_quotes(t_list **current_node)

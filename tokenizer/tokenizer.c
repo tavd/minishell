@@ -28,7 +28,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 		return ((t_token){.text = NULL, .length = 0, .identifier = 0});
 	str = tokenizer->input;
 	token.text = str;
-	token.identifier = (enum e_identifiers)*str;
+	token.identifier = (enum e_token_identifier)*str;
 	token.length = 0;
 	while (ft_strchr(WHITE_SPACE, str[token.length]))
 		++token.length;

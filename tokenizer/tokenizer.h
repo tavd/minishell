@@ -3,16 +3,17 @@
 //#include "libft/lst.h"
 
 /*
-*	An enum for more readable code. "ENV_VAR" is not an accurate name for '$',
+*	An enum of all possible tokens. "ENV_VAR" is not an accurate name for '$',
 *	but in the case of minishell it is exhaustive of the chars function. Right?
 */
-// TODO: make it possible for heredoc to set a word as END delimiter...
+
+// TODO: make it possible for heredoc to set a word as END or use HEREDOC_END as delimiter...
 // TODO: INVESTIGATE:
 //	 x echo= ="hello = wi"
 //	=hello = wi: command not found
-enum e_identifiers
+enum e_token_identifier
 {
-	END,
+	END = '\0',
 	WORD,
 	SPACE = ' ',
 	NEW_LINE = '\n',
@@ -27,9 +28,7 @@ enum e_identifiers
 	DOUBLE_QUOTE = '\"',
 	OPEN_BRACE = '{',
 	CLOSE_BRACE = '}',
-
-	// ... not sure about these yet
-	HEREDOC_END,
+	HEREDOC_END, // ... not sure about these yet
 };
 
 // NOTE: Whitespace should only be reduced while or after all subtitutions?
@@ -64,7 +63,7 @@ struct s_tokenizer {
 typedef struct s_token {
 	char			*text;
 	ssize_t			length; // size_t?
-	enum e_identifiers	identifier;
+	enum e_token_identifier	identifier;
 }	t_token;
 
 void	init_tokenizer(struct s_tokenizer *tokenizer, char *str_to_tokenize);
