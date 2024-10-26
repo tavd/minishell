@@ -92,7 +92,7 @@ void	expand_env_var(t_list **current_node)
 {
 	t_token	*token;
 	t_token	*next_token;
-	char	charswap_tmp;
+	char	temp_for_char_swap;
 	char	*variable_name;
 
 	if (!(*current_node)->next)
@@ -106,12 +106,12 @@ void	expand_env_var(t_list **current_node)
 	}
 	else if (next_token->identifier == WORD)
 	{
-		charswap_tmp = next_token->text[next_token->length];
+		temp_for_char_swap = next_token->text[next_token->length];
 		next_token->text[next_token->length] = '\0';
 		variable_name = next_token->text;
 		token->text = getenv(variable_name);
 		token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
-		next_token->text[next_token->length] = charswap_tmp;
+		next_token->text[next_token->length] = temp_for_char_swap;
 		ft_lst_remove(&(*current_node)->next, free_data); // NOTE: This can not be next_node, WHY?
 	}
 	else
