@@ -38,37 +38,95 @@ enum e_parser_context
 	EXIT_STATUS = 256,
 	HEREDOC_EOF = 257,
 
-}
+};
 // ================================================================================
+
+// cleanly remove node form list
+void	ft_lst_remove(t_list **node_to_remove, void (*del)(void *content))
+{
+	t_list	*next_node;
+
+	if (!node_to_remove)
+		return ;
+	next_node = (*node_to_remove)->next;
+	ft_lstdelone(*node_to_remove, del);
+	*node_to_remove = next_node;
+}
 
 void	free_data(void *data)
 {
 	free(data);
 }
 
-// BUG: why did this not work with **lst
-bool	single_q_parser(t_linked_list *lst)
+void	expand_env_var(t_list **current_node)
 {
-	static bool	in_single_quotes = false;
-	t_list		**lst_address;
-	t_list		*next_node;
+	t_token	*token;
+	t_token	*next_token;
+	char	temp_for_swap;
+	char	*variable_name;
+
+	if (!(*current_node)->next)
+		return ;
+	token = (t_token *)(*current_node)->content;
+	next_token = (t_token *)(*current_node)->next->content;
+	if (next_token->identifier == QUESTION_MARK)
+	{
+		token->identifier = PARSER_EXIT_STATUS; // TODO: how to identify EXIT_STATUS_LEN in next step?
+		ft_lst_remove(&(*current_node)->next, free_data); // NOTE: This can not be next_node, WHY?
+	}
+	else if (next_token->identifier == WORD)
+	{
+		temp_for_swap = next_token->text[next_token->length];
+		next_token->text[next_token->length] = '\0';
+		variable_name = next_token->text;
+		token->text = getenv(variable_name);
+		token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
+		next_token->text[next_token->length] = temp_for_swap;
+		ft_lst_remove(&(*current_node)->next, free_data); // NOTE: This can not be next_node, WHY?
+	}
+}
+
+bool	double_q_parse(t_list **current_node)
+{
+	static bool	in_double_quotes = false;
 	t_token		*token;
 
-	lst_address = &lst->head;
-	while (*lst_address != NULL)
+	while (*current_node != NULL)
 	{
-		token = (t_token *)(*lst_address)->content;
+		token = (t_token *)(*current_node)->content;
+		if (token->identifier == DOUBLE_QUOTE)
+		{
+			ft_lst_remove(current_node, free_data);
+			in_double_quotes = !in_double_quotes;
+			continue;
+		}
+		else if (in_double_quotes && token->identifier == ENV_VAR)
+			expand_env_var(current_node);
+		else if (in_double_quotes)
+			token->identifier = WORD;
+		current_node = &(*current_node)->next;
+	}
+	return (in_double_quotes);
+}
+
+// BUG: why did this not work with **lst
+bool	single_q_parser(t_list **current_node)
+{
+	static bool	in_single_quotes = false;
+	t_token		*token;
+
+	while (*current_node != NULL)
+	{
+		token = (t_token *)(*current_node)->content;
 		if (token->identifier == SINGLE_QUOTE)
 		{
-			next_node = (*lst_address)->next;
-			ft_lstdelone(*lst_address, free_data);
-			*lst_address = next_node;
+			ft_lst_remove(current_node, free_data);
 			in_single_quotes = !in_single_quotes;
 			continue;
 		}
 		else if (in_single_quotes)
 			token->identifier = WORD;
-		lst_address = &(*lst_address)->next;
+		current_node = &(*current_node)->next;
 	}
 	return (in_single_quotes);
 }
@@ -88,7 +146,8 @@ int	ft_lstiter_mod(t_list **lst, int (*mod_fn)(t_list **))
 	while (*lst_item != NULL)
 	{
 		fn_return = mod_fn(lst_item);
-		lst_item = &(*lst_item)->next;
+		if (*lst_item)
+			lst_item = &(*lst_item)->next;
 	}
 	return (fn_return);
 }
@@ -101,62 +160,16 @@ ssize_t	ft_secure_strlen(char *str)
 		return ((ssize_t)ft_strlen(str));
 }
 
-	//NOTE: maybe add more context to list_item for whether a var is expanded
-int	expand_env_var(t_list **current_node) // How to acces exit_status?
-{
-	t_list	*next_node;
-	t_token	*token;
-	t_token	*next_token;
-	char	temp_for_swap;
-
-	next_node = (*current_node)->next;
-	token = (t_token *)(*current_node)->content;
-	if (token->identifier == ENV_VAR)
-	{
-		token->text = NULL;
-		if (!next_node)
-			return (0);
-		next_token = (t_token *)next_node->content;
-		if (next_token->identifier == QUESTION_MARK)
-			token->identifier = EXIT_STATUS;
-		else if (next_token->identifier == WORD)
-		{
-			temp_for_swap = next_token->text[next_token->length];
-			next_token->text[next_token->length] = '\0';
-			variable_name = next_token->text;
-			next_token->text[next_token->length] = temp_for_swap;
-			token->text = getenv(variable_name);
-			token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
-		}
-		ft_lst_remove(&next_node, free_data);
-	}
-	return (0);
-}
-
-// cleanly remove node form list
-void	ft_lst_remove(t_list **node_to_remove, void (*del)(void *content))
-{
-	t_list	*next_node;
-
-	if (!node_to_remove)
-		return ;
-	next_node = node_to_remove->next;
-	ft_lstdelone(*node_to_remove, del);
-	*node_to_remove = next_node;
-}
 
 int	parse_single_quotes(t_list **current_node)
 {
 	static bool	in_single_quotes = false;
 	t_token *token;
-	t_list	*next_node;
 	
 	token = (t_token *)(*current_node)->content;
 	if (token->identifier == SINGLE_QUOTE)
 	{
-		next_node = (*current_node)->next;
-		ft_lstdelone(*current_node, free_data);
-		*current_node = next_node;
+		ft_lst_remove(current_node, free_data);
 		in_single_quotes = !in_single_quotes;
 	}
 	else if (in_single_quotes)
@@ -164,17 +177,21 @@ int	parse_single_quotes(t_list **current_node)
 	return (in_single_quotes);
 }
 
-
+// NOTE: We expand env_vars in this order: Double quotes, single quotes, no quotes
 int	parser_simple(t_list **lst)
 {
 	char	*parsed_str;
 	t_token	*token;
 
 	parsed_str = "";
-	if (ft_lstiter_mod(lst, &parse_single_quotes))
-		return (UNCLOSED_QUOTE_ERROR);
-	if (ft_lstiter_mod(lst, &expand_env_var))
-		return (MALLOC_FAIL_ENV_EXPANSION);
+	double_q_parse(lst);
+	single_q_parser(lst);
+
+	//ft_lstiter_mod(lst, &prase_double_quotes)
+	// if (ft_lstiter_mod(lst, &parse_single_quotes))
+	// 	return (UNCLOSED_QUOTE_ERROR);
+	//ft_lstiter_mod(lst, &expand_env_var);
+		
 
 	return (0);
 }
@@ -217,6 +234,7 @@ int main(int argc, char **argv)
 	printf("unparsed: %s\n", buf);
 	printf("after parsing pass: \n");
 	lst = tokenize_all_tokens(&tokenizer);
+
 	parser_simple(&lst);
 
 	token.identifier = 1;

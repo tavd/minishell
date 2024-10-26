@@ -11,6 +11,8 @@
 // TODO: INVESTIGATE:
 //	 x echo= ="hello = wi"
 //	=hello = wi: command not found
+
+// These are both the identifiers that the tokenizer and parser creates...
 enum e_token_identifier
 {
 	END = '\0',
@@ -28,7 +30,8 @@ enum e_token_identifier
 	DOUBLE_QUOTE = '\"',
 	OPEN_BRACE = '{',
 	CLOSE_BRACE = '}',
-	HEREDOC_END, // ... not sure about these yet
+	PARSER_EXIT_STATUS,
+	PARSER_HEREDOC_END,
 };
 
 // NOTE: Whitespace should only be reduced while or after all subtitutions?
