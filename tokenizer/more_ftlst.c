@@ -1,6 +1,6 @@
 #include "libft/libft.h"
 
-t_list	*ft_node_at_count(t_list *lst, int	count)
+t_list	*ft_node_at_count(t_list *lst, int count)
 {
 	if (!lst || count < 0)
 		return(NULL);

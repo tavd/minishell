@@ -1,10 +1,11 @@
-CFLAGS = -g
+CFLAGS = -g -Wall -Werror -Wextra
 CC = cc
 INCLUDE_FLAGS = -I. -Iinclude
 LIB_FLAGS = -L. -lft
 
 
-SRC = tokenizer.c parser.c
+SRC = tokenizer.c
+# parser.c
 OBJ = $(SRC:.c=.o)
 
 NAME = main

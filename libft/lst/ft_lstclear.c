@@ -25,9 +25,10 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 	t_list	*tmp_for_free;
 
 	traverse_lst_ptr = *lst;
-	while (traverse_lst_ptr != NULL && del != NULL)
+	while (traverse_lst_ptr != NULL)
 	{
-		del((traverse_lst_ptr)->content);
+		if (del)
+			del((traverse_lst_ptr)->content);
 		tmp_for_free = traverse_lst_ptr;
 		traverse_lst_ptr = (traverse_lst_ptr)->next;
 		free(tmp_for_free);

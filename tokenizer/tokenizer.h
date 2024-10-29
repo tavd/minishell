@@ -1,5 +1,8 @@
 #include "libft/libft.h"
 
+// #include "libft/embedded_lst.h"
+// #include "libft/generic_lst.h"
+
 //#include "libft/lst.h"
 
 /*
@@ -37,7 +40,7 @@ enum e_token_identifier
 // NOTE: Whitespace should only be reduced while or after all subtitutions?
 #define WHITE_SPACE_CHARS SPACE, TAB, NEW_LINE
 
-const static char	WHITE_SPACE[4] = {
+static const char	WHITE_SPACE[4] = {
 	WHITE_SPACE_CHARS, '\0'
 };
 
@@ -46,12 +49,12 @@ const static char	WHITE_SPACE[4] = {
 	OPEN_BRACE, CLOSE_BRACE, REDIRECT_IN, REDIRECT_OUT, \
 	PIPE, ENV_VAR, SET_ENV_VAR, QUESTION_MARK
 
-const static char	SINGLE_TOKENS[11] = {
+static const char	SINGLE_TOKENS[11] = {
 	  SINGLE_TOKEN_CHARS, '\0'
 };
 
 // Maybe combining is too inflexible for some cases?
-const static char	WORD_DELIMITERS[14] = {
+static const char	WORD_DELIMITERS[14] = {
 	WHITE_SPACE_CHARS, SINGLE_TOKEN_CHARS, '\0'
 };
 	// SPACE, TAB, NEW_LINE,
@@ -63,14 +66,28 @@ struct s_tokenizer {
 	char	*input;
 };
 
+// TODO: add to libft with new functions...
+typedef struct s_lst_embed
+{
+	struct s_lst_embed	*prev;
+	struct s_lst_embed	*next;
+}	t_lst_embed;
+
+// NOTE: the member: "struct s_lst_embed" has to importantly be the first
+// as this allows for easy casting from lst_embed to t_token.
 typedef struct s_token {
+	struct s_lst_embed	lst_info;
+	enum e_token_identifier	identifier;
 	char			*text;
 	ssize_t			length; // size_t?
-	enum e_token_identifier	identifier;
 }	t_token;
+// NOTE: Ideally you wouldn't need to worry about casting to t_token from
+// t_lste_embed to acces the members you want, since good code abstract's away
+// this kind of mental overhead + its dependent one the struct's memory layout.
+// But since we can't use macro functions (Norm) its the second best thing
 
 void	init_tokenizer(struct s_tokenizer *tokenizer, char *str_to_tokenize);
 
 t_token	tokenize_one_token(struct s_tokenizer *tokenizer);
-t_list	*tokenize_all_tokens(struct s_tokenizer *tokenizer);
+t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer);
 
