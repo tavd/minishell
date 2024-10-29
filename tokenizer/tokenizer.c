@@ -86,41 +86,28 @@ void	ft_sll_addback(t_lst_embed **head, t_lst_embed *new_node)
 	new_node->prev = NULL;
 }
 
-// void	ft_dlladd_back(t_lst_embed **head, t_lst_embed *new_node)
+// #include <stdio.h>
+// int	main()
 // {
 //
+// 	t_lst_embed	*head;
+// 	t_token		*new;
+//
+// 	head = NULL;
+//
+// 	new = lst_new_token((struct s_token){.identifier = 1});
+// 	ft_sll_addback(&head, &new->lst_info);
+// 	new = lst_new_token((struct s_token){.identifier = 2});
+// 	ft_sll_addback(&head, &new->lst_info);
+//
+// 	t_token	*tok = (t_token *)head;
+// 	
+// 	tok = (t_token *)tok->lst_info.next;
+//
+// 	printf("%i\n", tok->identifier);
+//
+// 	return 0;
 // }
-
-
-// macro ..
-
-#include <stdio.h>
-int	main()
-{
-
-	t_lst_embed	*head;
-	t_token		*new;
-
-	new = lst_new_token((struct s_token){.identifier = 1});
-	ft_sll_addback(&head, &new->lst_info);
-	new = lst_new_token((struct s_token){.identifier = 2});
-	ft_sll_addback(&head, &new->lst_info);
-
-	t_token	*tok = (t_token *)head;
-	
-	tok = (t_token *)tok->lst_info.next;
-
-	printf("%i\n", tok->identifier);
-
-	return 0;
-}
-
-//ft_dlladd_back()
-
-void	free_token(void *data)
-{
-	free(data);
-}
 
 // NOTE:  since the t_lst_embed struct is the first member of
 // the struct t_token, it can be savely casted to a t_token.
@@ -141,6 +128,8 @@ t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 			return (NULL);
 		}
 		token = tokenize_one_token(tokenizer);
+		token.lst_info.prev = NULL;
+		token.lst_info.next = NULL;
 		*new_token = token;// BUG:Does this copy all of the data correctly?
 		ft_sll_addback(&head, &new_token->lst_info);
 	}

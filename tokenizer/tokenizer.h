@@ -61,7 +61,6 @@ static const char	WORD_DELIMITERS[14] = {
 	// SINGLE_QUOTE, DOUBLE_QUOTE, REDIRECT_IN, REDIRECT_OUT,
 	// PIPE, SET_ENV, ENV_VAR, END
 
-
 struct s_tokenizer {
 	char	*input;
 };

@@ -223,12 +223,12 @@ char	*simple_word_unifier(int argc, char **argv)
 // NOTE : optoions is to  Tokenize once, get the count, then malloc for that count
 int main(int argc, char **argv)
 {
-	struct s_tokenizer tokenizer;
-	t_token		token;
-	int		token_count;
-	t_list	*lst_item;
 	char	*buf;
-	t_list	*lst;
+	struct s_tokenizer tokenizer;
+	t_token	*lst;
+	t_token	*lst_token;
+	int		token_count;
+	t_token		token;
 	//t_linked_list	lst;
 
 	buf = simple_word_unifier(argc, argv);
@@ -237,19 +237,18 @@ int main(int argc, char **argv)
 	printf("after parsing pass: \n");
 	lst = tokenize_all_tokens(&tokenizer);
 
-	parser_simple(&lst);
-	ft_lstclear(&lst, NULL);
+	//parser_simple(&lst);
+	//ft_lstclear(&lst, NULL);
 
-	return 0;
 
 	token.identifier = 1;
 	token_count = 0;
-	lst_item = lst;
-	while (lst_item != NULL)
+	lst_token = lst;
+	while (lst_token != NULL)
 	{
-		token = *((t_token *)lst_item->content);
+		token = *(lst_token);
  		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
-		lst_item = lst_item->next;
+		lst_token = (t_token *)lst_token->lst_info.next;
 		++token_count;
 	}
 	printf("Total Token count:%i\n", token_count);
