@@ -67,7 +67,7 @@ ssize_t	ft_secure_strlen(char *str)
 		return ((ssize_t)ft_strlen(str));
 }
 
-// NOTE: This does not yet expand exit status. it only marks it existence
+// This does not yet expand exit status. it only marks it existence
 void	expand_env_var(t_lst_embed **env_var_node)
 {
 	t_token	*token;
@@ -151,9 +151,9 @@ enum e_parsing_errors	parser_simple(t_token **lst)
 	//
 	// parsed_str = "";
 	//parse_double_quotes(lst);
-	if (parse_single_quotes((t_lst_embed **)lst))
-		return (UNCLOSED_SINGLE_QUOTE_ERROR);
 	if (parse_double_quotes((t_lst_embed **)lst))
+		return (UNCLOSED_SINGLE_QUOTE_ERROR);
+	if (parse_single_quotes((t_lst_embed **)lst))
 		return (UNCLOSED_SINGLE_QUOTE_ERROR);
 
 
