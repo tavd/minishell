@@ -79,7 +79,7 @@ void	expand_env_var(t_lst_embed **env_var_node)
 
 	token = (t_token *)(*env_var_node);
 	next_token = (t_token *)(*env_var_node)->next;
-	// if (next_token == NULL || \
+	// if (next_token == NULL || 
 	// 	(next_token->identifier != WORD && next_token->identifier != QUESTION_MARK))
 	if (next_token && next_token->identifier == WORD)
 	{
