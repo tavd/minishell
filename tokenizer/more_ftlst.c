@@ -25,3 +25,35 @@ t_list	*ft_lstfind(t_list *lst, bool (*compare_fn)(void *content))
 	return (NULL);
 }
 
+// cleanly remove node form list
+void	ft_lst_remove(t_list **node_to_remove, void (*del_content_fn)(void *content))
+{
+	t_list	*next_node;
+
+	if (!node_to_remove || !*node_to_remove)
+		return ;
+	next_node = (*node_to_remove)->next;
+	ft_lstdelone(*node_to_remove, del_content_fn);
+	*node_to_remove = next_node;
+}
+
+// iterates over linked list and applies a fn to every linked list node.
+// the fn gets passed an indirect pointer of a node to allow for easy modification
+// of the linked list itself. (it makes it so you dont need a ptr to previous node ).
+int	ft_lstiter_mod(t_list **lst, int (*mod_fn)(t_list **))
+{
+	t_list	**lst_item;
+	int	fn_return;
+
+	if (!lst || !mod_fn)
+		return 0;
+	fn_return = 0;
+	lst_item = lst;
+	while (*lst_item)
+	{
+		fn_return = mod_fn(lst_item);
+		if (*lst_item)
+			lst_item = &(*lst_item)->next;
+	}
+	return (fn_return);
+}
