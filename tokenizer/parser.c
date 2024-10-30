@@ -30,7 +30,9 @@ typedef struct	s_linked_list {
 // error occured
 enum	e_parsing_errors
 {
-	UNCLOSED_SINGLE_QUOTE_ERROR,
+	OK,
+	UNCLOSED_SINGLE_QUOTES,
+	UNCLOSED_DOUBLE_QUOTES,
 };
 
 enum e_parser_context
@@ -72,22 +74,14 @@ void	expand_env_var(t_lst_embed **env_var_node)
 {
 	t_token	*token;
 	t_token	*next_token;
-	char	charswap_tmp;
 	char	*variable_name;
+	char	charswap_tmp;
 
 	token = (t_token *)(*env_var_node);
 	next_token = (t_token *)(*env_var_node)->next;
-	if (next_token == NULL)
-	{
-		token->identifier = WORD;
-		return ;
-	}
-	if (next_token->identifier == QUESTION_MARK)
-	{
-		token->identifier = SET_EXIT_STATUS;
-		ft_sll_remove_node(&(*env_var_node)->next, NULL);
-	}
-	else if (next_token->identifier == WORD)
+	// if (next_token == NULL || \
+	// 	(next_token->identifier != WORD && next_token->identifier != QUESTION_MARK))
+	if (next_token && next_token->identifier == WORD)
 	{
 		charswap_tmp = next_token->text[next_token->length];
 		next_token->text[next_token->length] = '\0';
@@ -95,6 +89,11 @@ void	expand_env_var(t_lst_embed **env_var_node)
 		token->text = getenv(variable_name);
 		token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
 		next_token->text[next_token->length] = charswap_tmp;
+		ft_sll_remove_node(&(*env_var_node)->next, NULL);
+	}
+	else if (next_token && next_token->identifier == QUESTION_MARK)
+	{
+		token->identifier = SET_EXIT_STATUS;
 		ft_sll_remove_node(&(*env_var_node)->next, NULL);
 	}
 	else
@@ -152,17 +151,16 @@ enum e_parsing_errors	parser_simple(t_token **lst)
 	// parsed_str = "";
 	//parse_double_quotes(lst);
 	if (parse_double_quotes((t_lst_embed **)lst))
-		return (UNCLOSED_SINGLE_QUOTE_ERROR);
+		return (UNCLOSED_SINGLE_QUOTES);
 	if (parse_single_quotes((t_lst_embed **)lst))
-		return (UNCLOSED_SINGLE_QUOTE_ERROR);
+		return (UNCLOSED_DOUBLE_QUOTES);
 
 
-	//ft_lstiter_mod(lst, &prase_double_quotes)
 	// if (ft_lstiter_mod(lst, &parse_single_quotes))
 	// 	return (UNCLOSED_QUOTE_ERROR);
 	//ft_lstiter_mod(lst, &expand_env_var);
 	
-	return 0;
+	return (OK);
 }
 
 // char	**tokens_to_str_array(struct s_lst_embed *head)

@@ -112,9 +112,9 @@ STDIO_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STDIO_SRC))
 INCLUDE_FLAGS = $(addprefix -I, $(INCLUDE_PATHS))
 CFLAGS += $(INCLUDE_FLAGS)
 
-# This does NOT create, but lists the names of the dependency files which 'Make' uses to know
-# when an obj dpending on a header needs to be rebuild, when that header file has changed.
+# This sums up all the variables names ending in _OBJ into a single variable
 ALL_OBJ_VARS := $(filter %_OBJ, $(.VARIABLES))
+# This creates a single variable containing
 ALL_DEPS := $(patsubst %.o, %.d, $(foreach var, $(ALL_OBJ_VARS), $($(var))))
 # -------------------------------------------------------------------------
 
