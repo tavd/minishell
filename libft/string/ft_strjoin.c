@@ -11,25 +11,23 @@
 /* ************************************************************************** */
 
 #include "libft/libft.h"
+//#include "libft/string.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	const size_t	s1_len = ft_strlen(s1);
-	const size_t	s2_len = ft_strlen(s2);
-	const size_t	addition_of_lens = s1_len + s2_len + 1;
 	char			*joined_str;
+	size_t			s1_len;
+	size_t			s2_len;
 
-	if (addition_of_lens < s1_len
-		|| addition_of_lens < s2_len
-		|| !s1
-		|| !s2)
+	if (!s1 || !s2)
 		return (NULL);
-	joined_str = (char *)malloc(addition_of_lens);
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	joined_str = (char *)ft_calloc(s1_len + s2_len + 1, sizeof(char));
 	if (!joined_str)
 		return (NULL);
-	ft_memcpy(joined_str, s1, s1_len);
-	ft_memcpy(joined_str + s1_len, s2, s2_len);
-	joined_str[addition_of_lens - 1] = '\0';
+	ft_strlcpy(joined_str, s1, s1_len + 1);
+	ft_strlcat(joined_str, s2, s1_len + s2_len + 1);
 	return (joined_str);
 }
 

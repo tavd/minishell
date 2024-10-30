@@ -49,7 +49,6 @@ STRING_SRC := \
     ft_strnstr.c \
     ft_strdup.c \
     ft_substr.c \
-    ft_strjoin.c \
     ft_strtrim.c \
     ft_striteri.c \
     ft_strmapi.c \
@@ -59,6 +58,7 @@ STRING_SRC := \
     ft_memcmp.c \
     ft_memmove.c \
     ft_memchr.c \
+    ft_strjoin.c \
 
 STRING_SRC := $(addprefix string/, $(STRING_SRC))
 STRING_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STRING_SRC))

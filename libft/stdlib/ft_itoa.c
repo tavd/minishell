@@ -12,44 +12,57 @@
 
 #include "libft/libft.h"
 
-static char	*reverse_strndup(char *str, int str_len)
+// negative ?
+static int	count_digits(int n)
 {
-	char	*str_cpy;
+	int	count;
 
-	str_cpy = (char *)malloc((size_t)str_len + 1);
-	if (!str_cpy)
+	count = 0;
+	while (n != 0)
+	{
+		n /= 10;
+		++count;
+	}
+	return (count);
+}
+
+char	*ft_itoa(int n)
+{
+	int		num_len;
+	char	*buf;
+	bool	is_negative;
+
+	is_negative = false;
+	if (n < 0)
+		is_negative = true;
+	num_len = count_digits(n);
+	buf = malloc(num_len + is_negative + 1);
+	if (!buf)
 		return (NULL);
-	str_cpy[str_len] = '\0';
-	while (--str_len > -1)
+	buf[num_len + is_negative] = '\0';
+	while (n != 0)
 	{
-		str_cpy[str_len] = *str;
-		str++;
+		buf[num_len + is_negative - 1] = (n % 10) * (1 - is_negative * 2) + '0';
+		n /= 10;
+		--num_len;
 	}
-	return (str_cpy);
+	if (is_negative)
+		buf[0] = '-';
+	return (buf);
 }
 
-char	*ft_itoa(int unmodified_number)
-{
-	char		*int_str;
-	int			str_len;
-	char		tmp_str[12];
-	long int	number;
-
-	number = unmodified_number;
-	str_len = 0;
-	if (number < 0)
-		number *= -1;
-	while (number >= 10)
-	{
-		tmp_str[str_len++] = (number % 10) + '0';
-		number /= 10;
-	}
-	tmp_str[str_len++] = number + '0';
-	if (unmodified_number < 0)
-		tmp_str[str_len++] = '-';
-	int_str = reverse_strndup(tmp_str, str_len);
-	return (int_str);
-}
+// #include <stdio.h>
+// int main()
+// {
+// 	int	n = 321;
+//
+// 	char *str = ft_itoa(n);
+//
+// 	printf("%s", str);
+//
+//
+// 		return 0;
+// }
 
 /*
 int main ()
