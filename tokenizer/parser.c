@@ -41,68 +41,6 @@ enum e_parser_context
 };
 // ================================================================================
 
-ssize_t	ft_secure_strlen(char *str)
-{
-	if (!str)
-		return (-1);
-	else
-		return ((ssize_t)ft_strlen(str));
-}
-
-// // NOTE: This does not yet expand exit status. it only marks it existence
-// void	expand_env_var(t_list **current)
-// {
-// 	t_token	*token;
-// 	t_token	*next_token;
-// 	char	charswap_tmp;
-// 	char	*variable_name;
-//
-// 	if (!(*current)->next)
-// 		return ;
-// 	token = (t_token *)(*current)->content;
-// 	next_token = (t_token *)(*current)->next->content;
-// 	if (next_token->identifier == QUESTION_MARK)
-// 	{
-// 		token->identifier = PARSER_EXIT_STATUS; // TODO: how to identify EXIT_STATUS_LEN in next step?
-// 		ft_lst_remove(&(*current)->next, free_data); // NOTE: This can not be next_node, WHY?
-// 	}
-// 	else if (next_token->identifier == WORD)
-// 	{
-// 		charswap_tmp = next_token->text[next_token->length];
-// 		next_token->text[next_token->length] = '\0';
-// 		variable_name = next_token->text;
-// 		token->text = getenv(variable_name);
-// 		token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
-// 		next_token->text[next_token->length] = charswap_tmp;
-// 		ft_lst_remove(&(*current)->next, free_data); // NOTE: This can not be next_node, WHY?
-// 	}
-// 	else
-// 		token->identifier = WORD;
-// }
-//
-// bool	parse_double_quotes(t_list **current)
-// {
-// 	static bool	in_double_quotes = false;
-// 	t_token		*token;
-//
-// 	while (*current != NULL)
-// 	{
-// 		token = (t_token *)(*current)->content;
-// 		if (token->identifier == DOUBLE_QUOTE)
-// 		{
-// 			ft_lst_remove(current, free_data);
-// 			in_double_quotes = !in_double_quotes;
-// 			continue;
-// 		}
-// 		else if (in_double_quotes && token->identifier == ENV_VAR)
-// 			expand_env_var(current);
-// 		else if (in_double_quotes)
-// 			token->identifier = WORD;
-// 		current = &(*current)->next;
-// 	}
-// 	return (in_double_quotes);
-// }
-
 void	ft_sll_remove_node(t_lst_embed **node_to_remove,
 	void (*free_content_fn)(void *content_after_lst_embed))
 {
@@ -121,7 +59,71 @@ void	ft_sll_remove_node(t_lst_embed **node_to_remove,
 	*node_to_remove = next_node;
 }
 
-// BUG: why did this not work with **lst
+ssize_t	ft_secure_strlen(char *str)
+{
+	if (!str)
+		return (-1);
+	else
+		return ((ssize_t)ft_strlen(str));
+}
+
+// NOTE: This does not yet expand exit status. it only marks it existence
+void	expand_env_var(t_lst_embed **env_var_node)
+{
+	t_token	*token;
+	t_token	*next_token;
+	char	charswap_tmp;
+	char	*variable_name;
+
+	token = (t_token *)(*env_var_node);
+	next_token = (t_token *)(*env_var_node)->next;
+	if (next_token == NULL)
+	{
+		token->identifier = WORD;
+		return ;
+	}
+	if (next_token->identifier == QUESTION_MARK)
+	{
+		token->identifier = SET_EXIT_STATUS;
+		ft_sll_remove_node(&(*env_var_node)->next, NULL);
+	}
+	else if (next_token->identifier == WORD)
+	{
+		charswap_tmp = next_token->text[next_token->length];
+		next_token->text[next_token->length] = '\0';
+		variable_name = next_token->text;
+		token->text = getenv(variable_name);
+		token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
+		next_token->text[next_token->length] = charswap_tmp;
+		ft_sll_remove_node(&(*env_var_node)->next, NULL);
+	}
+	else
+		token->identifier = WORD;
+}
+
+bool	parse_double_quotes(t_lst_embed **lst)
+{
+	static bool	in_double_quotes = false;
+	t_token		*token;
+
+	while (*lst != NULL)
+	{
+		token = (t_token *)*lst;
+		if (token->identifier == DOUBLE_QUOTE)
+		{
+			ft_sll_remove_node(lst, NULL);
+			in_double_quotes = !in_double_quotes;
+			continue;
+		}
+		else if (in_double_quotes && token->identifier == ENV_VAR)
+			expand_env_var(lst);
+		else if (in_double_quotes)
+			token->identifier = WORD;
+		lst = &(*lst)->next;
+	}
+	return (in_double_quotes);
+}
+
 bool	parse_single_quotes(t_lst_embed **lst)
 {
 	static bool	in_single_quotes = false;
@@ -151,6 +153,9 @@ enum e_parsing_errors	parser_simple(t_token **lst)
 	//parse_double_quotes(lst);
 	if (parse_single_quotes((t_lst_embed **)lst))
 		return (UNCLOSED_SINGLE_QUOTE_ERROR);
+	if (parse_double_quotes((t_lst_embed **)lst))
+		return (UNCLOSED_SINGLE_QUOTE_ERROR);
+
 
 	//ft_lstiter_mod(lst, &prase_double_quotes)
 	// if (ft_lstiter_mod(lst, &parse_single_quotes))

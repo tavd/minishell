@@ -33,7 +33,7 @@ enum e_token_identifier
 	DOUBLE_QUOTE = '\"',
 	OPEN_BRACE = '{',
 	CLOSE_BRACE = '}',
-	PARSER_EXIT_STATUS,
+	SET_EXIT_STATUS,
 	PARSER_HEREDOC_END,
 };
 
