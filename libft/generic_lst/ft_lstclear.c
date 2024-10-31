@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-
+#include "libft/generic_lst.h"
+#include <stdlib.h>
 /*
 void	wl(void *content)
 {

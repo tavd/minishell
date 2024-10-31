@@ -9,7 +9,7 @@
 /*   Updated: 2024/02/27 16:14:49 by mzwart           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "ft_printf.h"
+#include "libft/ft_printf.h"
 
 static void	vec_initialize(t_vector *vec, size_t size)
 {

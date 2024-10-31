@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-//#include "libft/string.h"
+#include "libft/string.h"
+#include "libft/stdlib.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {

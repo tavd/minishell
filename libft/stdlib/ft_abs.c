@@ -1,25 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bool.h                                          :+:      :+:    :+:   */
+/*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzwart <mzwart@student.codam.nl>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/08 16:06:51 by mzwart            #+#    #+#             */
-/*   Updated: 2024/08/08 16:09:32 by mzwart           ###   ########.fr       */
+/*   Created: 2024/10/31 14:28:53 by mzwart            #+#    #+#             */
+/*   Updated: 2024/10/31 14:28:53 by mzwart           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdbool.h>
-#include <limits.h>
+int	ft_abs(int j)
+{
+	if (j >= 0)
+		return (j);
+	else
+		return (-j);
+}
 
-// TODO: REMOVE STDBOOL DEPENDS
+// #include <stdlib.h>
+// #include <stdio.h>
+// #include <limits.h>
+//
+// int main()
+// {
+// 	// NOTE: REAL FUNCTION also return's the overflown number
 
-int		ft_isalnum(int c);
-int		ft_isalpha(int c);
-int		ft_isdigit(int c);
-int		ft_isascii(int c);
-int		ft_isprint(int c);
-bool	ft_is_int(char *str);
-bool	ft_is_int32(char *str);
-int		ft_isdecimal(const char *str);
+// 	printf("%i", abs(INT_MIN));
+// }

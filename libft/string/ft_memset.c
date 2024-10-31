@@ -10,20 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include <stddef.h>
 
 void	*ft_memset(void *block, int c, size_t size)
 {
 	const unsigned char	value = (unsigned char)c;
-	unsigned char		*ptr;
+	const void	*block_origin = block;
 
-	ptr = block;
 	while (size--)
-	{
-		*ptr++ = value;
-	}
-	return (block);
+		*(unsigned char *)block++ = value;
+	return ((void *)block_origin);
 }
+
 	//if (!block)
 	//	return (block);
 // sloW!

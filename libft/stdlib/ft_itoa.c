@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "libft/stdlib.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
 static int	count_digits(int n)
 {
@@ -41,7 +43,7 @@ char	*ft_itoa(int n)
 	buf[num_len + is_negative] = '\0';
 	while (n != 0)
 	{
-		buf[num_len + is_negative - 1] = (n % 10) * (1 - is_negative * 2) + '0';
+		buf[num_len + is_negative - 1] = ft_abs(n % 10) + '0';
 		n /= 10;
 		--num_len;
 	}
@@ -54,26 +56,13 @@ char	*ft_itoa(int n)
 // #include <stdint.h>
 // int main()
 // {
-// 	int	n = -321;
+// 	int	n = INT_MIN;
 //
 // 	char *str = ft_itoa(n);
 //
-// 	n = (uint16_t)n;
-// 	printf("%u", n);
+// 	printf("%i\n", n);
+// 	printf("%i", -1 * n);
 //
 //
 // 		return 0;
 // }
-
-/*
-int main ()
-{
-	char *s;
-	s = ft_itoa(2);
-	printf("%s", s);
-	free(s);
-
-
-	return 0;
-}
-*/

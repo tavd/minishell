@@ -15,26 +15,21 @@ BUILD_PATH = ./build
 ARFLAGS = rcU
 NAME := libft.a
 
-LIBFT_MODULES ?= bool string stdio stdlib
+LIBFT_MODULES ?= string generic_lst
 # use 'export' in other makefile to set this. or use flag: -e SUB_MODULES="list of sub modules here ..."
 # This can be used to change the module make will compile when recursively calling this Makefile.
 
 # ---------------------------------- Files --------------------------------------
-BOOL_SRC := \
+CTYPE_SRC := \
     ft_isalnum.c \
     ft_isalpha.c \
     ft_isdigit.c \
     ft_isprint.c \
     ft_isascii.c \
-    ft_is_int.c \
     ft_isdecimal.c \
-
-BOOL_SRC := $(addprefix bool/, $(BOOL_SRC))
-BOOL_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(BOOL_SRC))
-
-CTYPE_SRC := \
     ft_tolower.c \
     ft_toupper.c \
+    ft_is_int.c \
 
 CTYPE_SRC := $(addprefix ctype/, $(CTYPE_SRC))
 CTYPE_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(CTYPE_SRC))
@@ -69,6 +64,7 @@ STDLIB_SRC := \
     ft_calloc.c \
     ft_atof.c \
     ft_split.c \
+    ft_abs.c \
 
 STDLIB_SRC := $(addprefix stdlib/, $(STDLIB_SRC))
 STDLIB_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STDLIB_SRC))
@@ -76,7 +72,7 @@ STDLIB_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(STDLIB_SRC))
 MORE_STUFF = \
     ft_split.c \
 
-LST_SRC := \
+GENERIC_LST_SRC := \
     ft_lstnew.c \
     ft_lstadd_front.c \
     ft_lstlast.c \
@@ -87,8 +83,8 @@ LST_SRC := \
     ft_lstiter.c \
     ft_lstmap.c \
 
-LST_SRC := $(addprefix lst/, $(LST_SRC))
-LST_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(LST_SRC))
+GENERIC_LST_SRC := $(addprefix generic_lst/, $(GENERIC_LST_SRC))
+GENERIC_LST_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(GENERIC_LST_SRC))
 
 PRINTF_SRC  := \
     char_specifiers.c \
@@ -130,27 +126,24 @@ $(BUILD_PATH)/%.o: %.c
 	$(CC) $(DEP_FLAGS) $(CFLAGS) -c $< -o $@
 	@echo -n $(CYAN)
 
-bool: $(BOOL_OBJ) $(NAME)($(BOOL_OBJ))
-	@echo $(YELLOW)bool.h module done. $(GREEN)
-
-ctype: bool $(CTYPE_OBJ) $(NAME)($(CTYPE_OBJ))
+ctype: $(CTYPE_OBJ) $(NAME)($(CTYPE_OBJ))
 	@echo $(YELLOW)ctype.h module done. $(GREEN)
 
-string: $(STRING_OBJ) $(NAME)($(STRING_OBJ))
+string: stdlib $(STRING_OBJ) $(NAME)($(STRING_OBJ))
 	@echo $(YELLOW)string.h module done. $(GREEN)
 
-printf: bool $(PRINTF_OBJ) $(NAME)($(PRINTF_OBJ))
+printf: CTYPE $(PRINTF_OBJ) $(NAME)($(PRINTF_OBJ))
 	@echo $(YELLOW)ft_printf.h module done. $(GREEN)
 
 stdio: printf $(STDIO_OBJ) $(NAME)($(STDIO_OBJ))
 	@echo $(YELLOW)stdio.h module done. $(GREEN)
 
 # TODO: add more subdivisions to stdlib
-stdlib: bool $(STDLIB_OBJ) $(NAME)($(STDLIB_OBJ))
+stdlib: ctype $(STDLIB_OBJ) $(NAME)($(STDLIB_OBJ))
 	@echo $(YELLOW)stdlib.h module done. $(GREEN)
 
-lst: $(LST_OBJ) $(NAME)($(LST_OBJ))
-	@echo $(YELLOW)lst.h module done. $(GREEN)
+generic_lst: $(GENERIC_LST_OBJ) $(NAME)($(GENERIC_LST_OBJ))
+	@echo $(YELLOW)generic_lst.h module done. $(GREEN)
 
 clean:
 	@echo -n $(RED)

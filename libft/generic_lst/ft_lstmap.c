@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "libft/generic_lst.h"
 /*
 void	*foo(void *c)
 {

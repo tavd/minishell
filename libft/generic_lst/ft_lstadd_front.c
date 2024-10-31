@@ -1,39 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzwart <mzwart@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/20 16:39:04 by mzwart            #+#    #+#             */
-/*   Updated: 2023/11/20 16:39:10 by mzwart           ###   ########.fr       */
+/*   Created: 2023/11/20 16:38:42 by mzwart            #+#    #+#             */
+/*   Updated: 2023/11/20 16:38:43 by mzwart           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "libft/generic_lst.h"
 
-t_list	*ft_lstnew(void *content)
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	t_list	*new_node;
-
-	new_node = (t_list *)malloc(sizeof(t_list));
-	if (!new_node)
-		return (NULL);
-	new_node->content = content;
-	new_node->next = NULL;
-	return (new_node);
+	if (!new)
+		return ;
+	new->next = *lst;
+	*lst = new;
 }
 
 /*
-int main()
+int main(void)
 {
-	t_list * head;
-	head = ft_lstnew("str");
-	if (head == NULL)
-		printf("%s", "NULL");
-	printf("%s", (char *)head->content);
-	free(head);
-	return 0;
+	t_list *head;
+	t_list *new;
+	head = NULL;
 
+	new = ft_lstnew("str");
+	ft_lstadd_front(&head, new);
+	ft_lstadd_front(&head, ft_lstnew("andere str"));
+	printf("%s\n", (char *)head->content);
 }
 */

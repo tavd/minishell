@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/bool.h"
-
 // NOTE: Does not detect errors
-// TODO: add whitespace
+// TODO: add whitespace ???
 double	ft_atof(const char *str)
 {
 	const int	neg = 1 - (2 * (*str == '-'));

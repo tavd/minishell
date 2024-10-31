@@ -1,27 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_toupper.c                                       :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mzwart <mzwart@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 19:26:31 by mzwart            #+#    #+#             */
-/*   Updated: 2023/11/15 19:26:39 by mzwart           ###   ########.fr       */
+/*   Created: 2023/11/20 16:39:04 by mzwart            #+#    #+#             */
+/*   Updated: 2023/11/20 16:39:10 by mzwart           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_toupper(int c)
+#include "libft/generic_lst.h"
+#include <stdlib.h>
+
+t_list	*ft_lstnew(void *content)
 {
-	return (c - 32 * (c >= 'a' && c <= 'z'));
+	t_list	*new_node;
+
+	new_node = (t_list *)malloc(sizeof(t_list));
+	if (!new_node)
+		return (NULL);
+	new_node->content = content;
+	new_node->next = NULL;
+	return (new_node);
 }
 
 /*
 int main()
 {
-	printf("%c", ft_toupper('A'));
-	printf("%c", ft_toupper('Z'));
-	printf("%c", ft_toupper('9'));
-	printf("%c", ft_toupper('a'));
+	t_list * head;
+	head = ft_lstnew("str");
+	if (head == NULL)
+		printf("%s", "NULL");
+	printf("%s", (char *)head->content);
+	free(head);
 	return 0;
+
 }
 */

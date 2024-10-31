@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "libft/string.h"
 
 char	*ft_strnstr(const char *hay, const char *needle, size_t len)
 {

@@ -12,11 +12,13 @@
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
+
 # include <stdarg.h>
-# include <unistd.h>
-# include <stddef.h>
 # include <stdint.h>
-# include <stdlib.h>
+# include <unistd.h>
+
+# include "libft/string.h"
+# include "libft/stdlib.h"
 
 # define VEC_SIZE 42
 
@@ -29,7 +31,7 @@ typedef struct s_vector
 
 typedef char	*(*t_va_function)(va_list);
 
-// COMPILER ATTRIBUTE FOR FORMATTING WARNINGS
+// COMPILER ATTRIBUTE FOR INCORRECT FORMATTING WARNINGS
 int			ft_printf(const char *format, ...)
 			__attribute__ ((format (printf, 1, 2)));
 
@@ -45,9 +47,6 @@ char		*capital_hex(va_list format_args);
 char		*void_ptr(va_list format_args);
 
 //helper
-size_t		ft_strlen(const char *str);
-void		*ft_memset(void *block, int c, size_t n);
-void		*ft_memcpy(void *dest, const void *src, size_t n);
 char		*uint_to_str(uint64_t value, char *buffer, char *base);
 
 #endif
