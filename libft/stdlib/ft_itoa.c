@@ -12,7 +12,6 @@
 
 #include "libft/libft.h"
 
-// negative ?
 static int	count_digits(int n)
 {
 	int	count;
@@ -52,13 +51,15 @@ char	*ft_itoa(int n)
 }
 
 // #include <stdio.h>
+// #include <stdint.h>
 // int main()
 // {
-// 	int	n = 321;
+// 	int	n = -321;
 //
 // 	char *str = ft_itoa(n);
 //
-// 	printf("%s", str);
+// 	n = (uint16_t)n;
+// 	printf("%u", n);
 //
 //
 // 		return 0;

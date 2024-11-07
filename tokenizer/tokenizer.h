@@ -34,7 +34,9 @@ enum e_token_identifier
 	OPEN_BRACE = '{',
 	CLOSE_BRACE = '}',
 	SET_EXIT_STATUS,
-	PARSER_HEREDOC_END,
+	HEREDOC,
+	HEREDOC_UNQUOTED_DELIMTER,
+	APPEND_MODE,
 };
 
 // NOTE: Whitespace should only be reduced while or after all subtitutions?

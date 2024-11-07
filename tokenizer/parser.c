@@ -43,23 +43,22 @@ enum e_parser_context
 };
 // ================================================================================
 
+// Free's the node and switches its address out for address of the next node
+// Returns if no current node.
 void	ft_sll_remove_node(t_lst_embed **node_to_remove,
 	void (*free_content_fn)(void *content_after_lst_embed))
 {
 	t_lst_embed	*next_node;
-	void		*content;
 	
 	if (node_to_remove == NULL || *node_to_remove == NULL)
 		return ;
 	next_node = (*node_to_remove)->next;
 	if (free_content_fn)
-	{
-		content = (void *)*node_to_remove + sizeof(t_lst_embed);
-		free_content_fn(content);
-	}
+		free_content_fn((void *)*node_to_remove);
 	free(*node_to_remove);
 	*node_to_remove = next_node;
 }
+	//content = (void *)*node_to_remove; // + sizeof(t_lst_embed);
 
 ssize_t	ft_secure_strlen(char *str)
 {
@@ -69,7 +68,7 @@ ssize_t	ft_secure_strlen(char *str)
 		return ((ssize_t)ft_strlen(str));
 }
 
-// This does not yet expand exit status. it only marks it existence
+// NOTE: This does not yet expand the exit status! It only marks it's place
 void	expand_env_var(t_lst_embed **env_var_node)
 {
 	t_token	*token;
@@ -87,7 +86,8 @@ void	expand_env_var(t_lst_embed **env_var_node)
 		next_token->text[next_token->length] = '\0';
 		variable_name = next_token->text;
 		token->text = getenv(variable_name);
-		token->length = ft_strlen(token->text); // BUG: NULL safe strlen needed
+		if (token->text)
+			token->length = ft_strlen(token->text);
 		next_token->text[next_token->length] = charswap_tmp;
 		ft_sll_remove_node(&(*env_var_node)->next, NULL);
 	}
@@ -144,12 +144,63 @@ bool	parse_single_quotes(t_lst_embed **lst)
 	return (in_single_quotes);
 }
 
+void	construct_heredoc_and_append_tokens(t_lst_embed **lst)
+{
+	t_token	*token;
+	t_token	*next_token;
+
+	while (*lst && (*lst)->next)
+	{
+		token = (t_token *)*lst;
+		next_token = (t_token *)(*lst)->next;
+		if (token->identifier == REDIRECT_IN && \
+			next_token->identifier == REDIRECT_IN)
+		{
+			token->identifier = HEREDOC_DELIM;
+			ft_sll_remove_node(&(*lst)->next, NULL);
+		}
+		else if (token->identifier == REDIRECT_OUT && \
+			next_token->identifier == REDIRECT_OUT)
+		{
+			token->identifier = APPEND_MODE;
+			ft_sll_remove_node(&(*lst)->next, NULL);
+		}
+		lst = &(*lst)->next;
+	}
+}
+
+void	construct(t_token **lst)
+{
+	t_token *token;
+
+	while (*lst)
+	{
+		token = *lst;
+		if (!token->next
+		if (token->next && token->identifier == REDIRECT_OUT && \
+			token->next->identifier == REDIRECT_OUT)
+		{
+			ft_sll_remove_node((t_lst_embed *)next_token, NULL);
+			token->identifier = HEREDOC_DEIM;
+		}
+		else if (token->next && token->identifier == REDIRECT_OUT && \
+			token->next->identifier == REDIRECT_OUT)
+		{
+			ft_sll_remove_node((t_lst_embed *)next_token, NULL);
+			token->identifier = HEREDOC_DEIM;
+		}
+	}
+}
+
 enum e_parsing_errors	parser_simple(t_token **lst)
 {
 	// char	*parsed_str;
 	//
 	// parsed_str = "";
 	//parse_double_quotes(lst);
+	pre_parse((t_lst_embed **)lst)
+
+		
 	if (parse_double_quotes((t_lst_embed **)lst))
 		return (UNCLOSED_SINGLE_QUOTES);
 	if (parse_single_quotes((t_lst_embed **)lst))
