@@ -33,10 +33,10 @@ enum e_token_identifier
 	DOUBLE_QUOTE = '\"',
 	OPEN_BRACE = '{',
 	CLOSE_BRACE = '}',
-	SET_EXIT_STATUS,
-	HEREDOC,
-	HEREDOC_UNQUOTED_DELIMTER,
 	APPEND_MODE,
+	HEREDOC_MODE,
+	SET_EXIT_STATUS,
+	HEREDOC_UNQUOTED_DELIMITER,
 };
 
 // NOTE: Whitespace should only be reduced while or after all subtitutions?

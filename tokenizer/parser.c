@@ -68,36 +68,47 @@ ssize_t	ft_secure_strlen(char *str)
 		return ((ssize_t)ft_strlen(str));
 }
 
+char	*get_environment_variable_from_token(t_token *token)
+{
+	char	*variable;
+	char	charswap_tmp;
+
+	charswap_tmp = token->text[token->length];
+	token->text[token->length] = '\0';
+	variable = getenv(token->text);
+	token->text[token->length] = charswap_tmp;
+	return (variable);
+}
+
 // NOTE: This does not yet expand the exit status! It only marks it's place
-void	expand_env_var(t_lst_embed **env_var_node)
+void	expand_env_var(t_lst_embed **dollar_sign_node)
 {
 	t_token	*token;
 	t_token	*next_token;
-	char	*variable_name;
-	char	charswap_tmp;
 
-	token = (t_token *)(*env_var_node);
-	next_token = (t_token *)(*env_var_node)->next;
-	// if (next_token == NULL || 
-	// 	(next_token->identifier != WORD && next_token->identifier != QUESTION_MARK))
-	if (next_token && next_token->identifier == WORD)
+	token = (t_token *)(*dollar_sign_node);
+	next_token = (t_token *)(*dollar_sign_node)->next;
+	if (!next_token)
+		token->identifier = WORD;
+	else if (next_token->identifier == WORD)
 	{
-		charswap_tmp = next_token->text[next_token->length];
-		next_token->text[next_token->length] = '\0';
-		variable_name = next_token->text;
-		token->text = getenv(variable_name);
+		token->text = get_environment_variable_from_token(next_token);
 		if (token->text)
-			token->length = ft_strlen(token->text);
-		next_token->text[next_token->length] = charswap_tmp;
-		ft_sll_remove_node(&(*env_var_node)->next, NULL);
+			token->length = ft_strlen(token->text); // TODO: find an overall safer design for token's that contain NULL as the string they point to? or nah...
+		ft_sll_remove_node(&(*dollar_sign_node)->next, NULL);
 	}
-	else if (next_token && next_token->identifier == QUESTION_MARK)
+	else if (next_token->identifier == QUESTION_MARK)
 	{
 		token->identifier = SET_EXIT_STATUS;
-		ft_sll_remove_node(&(*env_var_node)->next, NULL);
+		ft_sll_remove_node(&(*dollar_sign_node)->next, NULL);
 	}
 	else
 		token->identifier = WORD;
+}
+
+void	remove_token(t_token **lst_token)
+{
+	ft_sll_remove_node((t_lst_embed **)lst_token, NULL);
 }
 
 bool	parse_double_quotes(t_lst_embed **lst)
@@ -105,14 +116,23 @@ bool	parse_double_quotes(t_lst_embed **lst)
 	static bool	in_double_quotes = false;
 	t_token		*token;
 
+	t_lst_embed **adr;
+
 	while (*lst != NULL)
 	{
 		token = (t_token *)*lst;
 		if (token->identifier == DOUBLE_QUOTE)
 		{
-			ft_sll_remove_node(lst, NULL);
+			//remove_token(&token);
+			adr = (t_lst_embed **)&(*lst);
+			ft_sll_remove_node((t_lst_embed **)adr, NULL);
 			in_double_quotes = !in_double_quotes;
 			continue;
+		}
+		else if (in_double_quotes)
+{
+			if (token->identifier == ENV_VAR)
+				expand_env_var(lst);
 		}
 		else if (in_double_quotes && token->identifier == ENV_VAR)
 			expand_env_var(lst);
@@ -122,6 +142,10 @@ bool	parse_double_quotes(t_lst_embed **lst)
 	}
 	return (in_double_quotes);
 }
+
+/// find quote token, delete it , make all words between quote token WORD, 
+
+
 
 bool	parse_single_quotes(t_lst_embed **lst)
 {
@@ -144,6 +168,46 @@ bool	parse_single_quotes(t_lst_embed **lst)
 	return (in_single_quotes);
 }
 
+int	lst_iter(t_lst_embed **lst, int	(*func_ptr)(t_lst_embed **lst_node, int fn_return))
+{
+	int	fn_return;
+
+	fn_return = 0;
+	if (!lst)
+		return (-1);
+	while (*lst != NULL)
+	{
+		fn_return = func_ptr(lst, fn_return);
+		lst = &(*lst)->next;
+	}
+	return (fn_return);
+}
+
+// t_lst_embed *ft_lstfind(t_lst_embed **lst,
+// 	int (*compare_fn)(void *lst_node, void *comparison_data), void *comparison_data)
+// {
+// 	t_lst_embed	*found_tok;
+//
+// 	return (found_tok);
+// }
+
+
+// int	single_quotes(t_lst_embed **lst_node, int in_single_quotes)
+// {
+// 	t_token	*token;
+//
+// 	token = (t_token *)*lst_node;
+// 	if (token->identifier == SINGLE_QUOTE)
+// 	{
+// 		in_single_quotes = !in_single_quotes; //...
+// 		ft_sll_remove_node(lst_node, NULL);
+// 	}
+// 	else if (in_single_quotes == true)
+// 		token->identifier = WORD;
+// 	return (in_single_quotes);
+// }
+
+// TODO: Make tokenizer do this... (maybe, eventually)
 void	construct_heredoc_and_append_tokens(t_lst_embed **lst)
 {
 	t_token	*token;
@@ -156,12 +220,14 @@ void	construct_heredoc_and_append_tokens(t_lst_embed **lst)
 		if (token->identifier == REDIRECT_IN && \
 			next_token->identifier == REDIRECT_IN)
 		{
-			token->identifier = HEREDOC_DELIM;
+			token->length = 2;
+			token->identifier = HEREDOC_MODE;
 			ft_sll_remove_node(&(*lst)->next, NULL);
 		}
 		else if (token->identifier == REDIRECT_OUT && \
 			next_token->identifier == REDIRECT_OUT)
 		{
+			token->length = 2;
 			token->identifier = APPEND_MODE;
 			ft_sll_remove_node(&(*lst)->next, NULL);
 		}
@@ -169,28 +235,46 @@ void	construct_heredoc_and_append_tokens(t_lst_embed **lst)
 	}
 }
 
-void	construct(t_token **lst)
-{
-	t_token *token;
+//					:: is this better/ good enough??
+// void	construct(t_token **lst)
+// {
+// 	t_token *token;
+//
+// 	while (*lst && (*lst)->next)
+// 	{
+// 		token = *lst;
+// 		if (token->identifier == REDIRECT_OUT && \
+// 			token->next->identifier == REDIRECT_OUT)
+// 		{
+// 			ft_sll_remove_node((t_lst_embed *)next_token, NULL);
+// 			token->identifier = HEREDOC_DEIM;
+// 		}
+// 		else if (token->identifier == REDIRECT_OUT && \
+// 			token->next->identifier == REDIRECT_OUT)
+// 		{
+// 			ft_sll_remove_node((t_lst_embed *)next_token, NULL);
+// 			token->identifier = HEREDOC_DEIM;
+// 		}
+// 	}
+// }
 
+int	parse_heredoc_delimiter(t_lst_embed **lst)
+{
+	t_token	*token;
+
+	token = (t_token *)*lst;
+
+	//lst = (t_token *)ft_lstfind(lst, is_identifier, (void *)HEREDOC_MODE);
+	//next_token = (*lst)->next;
+	// if (next_token->identifier = WORD)
+	// 	next_token->identifier = UNQUOTE
 	while (*lst)
 	{
-		token = *lst;
-		if (!token->next
-		if (token->next && token->identifier == REDIRECT_OUT && \
-			token->next->identifier == REDIRECT_OUT)
-		{
-			ft_sll_remove_node((t_lst_embed *)next_token, NULL);
-			token->identifier = HEREDOC_DEIM;
-		}
-		else if (token->next && token->identifier == REDIRECT_OUT && \
-			token->next->identifier == REDIRECT_OUT)
-		{
-			ft_sll_remove_node((t_lst_embed *)next_token, NULL);
-			token->identifier = HEREDOC_DEIM;
-		}
+		return (0);
 	}
+	return (0);
 }
+
 
 enum e_parsing_errors	parser_simple(t_token **lst)
 {
@@ -198,13 +282,14 @@ enum e_parsing_errors	parser_simple(t_token **lst)
 	//
 	// parsed_str = "";
 	//parse_double_quotes(lst);
-	pre_parse((t_lst_embed **)lst)
+	construct_heredoc_and_append_tokens((t_lst_embed **)lst);
 
-		
 	if (parse_double_quotes((t_lst_embed **)lst))
-		return (UNCLOSED_SINGLE_QUOTES);
-	if (parse_single_quotes((t_lst_embed **)lst))
 		return (UNCLOSED_DOUBLE_QUOTES);
+	if (parse_single_quotes((t_lst_embed **)lst))
+		return (UNCLOSED_SINGLE_QUOTES);
+	// if (parse_single_quotes((t_lst_embed **)lst))
+	// 	return (UNCLOSED_DOUBLE_QUOTES);
 
 
 	// if (ft_lstiter_mod(lst, &parse_single_quotes))
