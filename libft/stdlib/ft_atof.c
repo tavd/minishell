@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// NOTE: Does not detect errors
 // TODO: add whitespace ???
 double	ft_atof(const char *str)
 {

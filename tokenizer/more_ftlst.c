@@ -25,8 +25,8 @@ t_list	*ft_lstfind(t_list *lst, bool (*compare_fn)(void *content))
 	return (NULL);
 }
 
-// cleanly remove node form list
-void	ft_lst_remove(t_list **node_to_remove, void (*del_content_fn)(void *content))
+// CLEANLY remove node form list
+void	ft_lst_remove_node(t_list **node_to_remove, void (*del_content_fn)(void *content))
 {
 	t_list	*next_node;
 
