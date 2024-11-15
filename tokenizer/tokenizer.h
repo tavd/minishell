@@ -36,7 +36,7 @@ enum e_token_identifier
 	APPEND_MODE,
 	HEREDOC_MODE,
 	SET_EXIT_STATUS,
-	HEREDOC_UNQUOTED_DELIMITER,
+	HEREDOC_UNQUOTED_WORD,
 };
 
 // NOTE: Whitespace should only be reduced while or after all subtitutions?

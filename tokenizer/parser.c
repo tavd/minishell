@@ -33,6 +33,7 @@ enum	e_parsing_errors
 	OK,
 	UNCLOSED_SINGLE_QUOTES,
 	UNCLOSED_DOUBLE_QUOTES,
+	UNEXPECTED_TOKEN,
 };
 
 enum e_parser_context
@@ -59,14 +60,6 @@ void	ft_sll_remove_node(t_lst_embed **node_to_remove,
 	*node_to_remove = next_node;
 }
 	//content = (void *)*node_to_remove; // + sizeof(t_lst_embed);
-
-ssize_t	ft_secure_strlen(char *str)
-{
-	if (!str)
-		return (-1);
-	else
-		return ((ssize_t)ft_strlen(str));
-}
 
 char	*get_environment_variable_from_token(t_token *token)
 {
@@ -106,26 +99,23 @@ void	expand_env_var(t_lst_embed **dollar_sign_node)
 		token->identifier = WORD;
 }
 
-void	remove_token(t_token **lst_token)
+void	remove_token(t_lst_embed **lst_token)
 {
 	ft_sll_remove_node((t_lst_embed **)lst_token, NULL);
 }
 
+/// find quote token, delete it , make all words between quote token WORD, 
 bool	parse_double_quotes(t_lst_embed **lst)
 {
 	static bool	in_double_quotes = false;
 	t_token		*token;
-
-	t_lst_embed **adr;
 
 	while (*lst != NULL)
 	{
 		token = (t_token *)*lst;
 		if (token->identifier == DOUBLE_QUOTE)
 		{
-			//remove_token(&token);
-			adr = (t_lst_embed **)&(*lst);
-			ft_sll_remove_node((t_lst_embed **)adr, NULL);
+			remove_token(lst);
 			in_double_quotes = !in_double_quotes;
 			continue;
 		}
@@ -143,27 +133,23 @@ bool	parse_double_quotes(t_lst_embed **lst)
 	return (in_double_quotes);
 }
 
-/// find quote token, delete it , make all words between quote token WORD, 
-
-
-
-bool	parse_single_quotes(t_lst_embed **lst)
+bool	parse_single_quotes(t_lst_embed **lst_token)
 {
 	static bool	in_single_quotes = false;
 	t_token		*token;
 
-	while (*lst != NULL)
+	while (*lst_token != NULL)
 	{
-		token = (t_token *)*lst;
+		token = (t_token *)*lst_token;
 		if (token->identifier == SINGLE_QUOTE)
 		{
-			ft_sll_remove_node(lst, NULL);
+			remove_token(lst_token);
 			in_single_quotes = !in_single_quotes;
 			continue;
 		}
 		else if (in_single_quotes)
 			token->identifier = WORD;
-		lst = &(*lst)->next;
+		lst_token = &(*lst_token)->next;
 	}
 	return (in_single_quotes);
 }
@@ -182,15 +168,6 @@ int	lst_iter(t_lst_embed **lst, int	(*func_ptr)(t_lst_embed **lst_node, int fn_r
 	}
 	return (fn_return);
 }
-
-// t_lst_embed *ft_lstfind(t_lst_embed **lst,
-// 	int (*compare_fn)(void *lst_node, void *comparison_data), void *comparison_data)
-// {
-// 	t_lst_embed	*found_tok;
-//
-// 	return (found_tok);
-// }
-
 
 // int	single_quotes(t_lst_embed **lst_node, int in_single_quotes)
 // {
@@ -213,8 +190,12 @@ void	construct_heredoc_and_append_tokens(t_lst_embed **lst)
 	t_token	*token;
 	t_token	*next_token;
 
+	//lst_embed	**redirect_in;
+	// redirect_in = ft_lstfind(lst, has_identifier, (void *)REDIRECT_IN);
+	// redirect_out = ft_lstfind(lst, has_identifier, (void *)REDIRECT_OUT);
 	while (*lst && (*lst)->next)
 	{
+		
 		token = (t_token *)*lst;
 		next_token = (t_token *)(*lst)->next;
 		if (token->identifier == REDIRECT_IN && \
@@ -258,39 +239,80 @@ void	construct_heredoc_and_append_tokens(t_lst_embed **lst)
 // 	}
 // }
 
-int	parse_heredoc_delimiter(t_lst_embed **lst)
+t_lst_embed	**ft_lstfind(t_lst_embed **lst,
+	int (*compare_fn)(t_lst_embed *lst_node, void *target), void *target)
+{
+	while (*lst != NULL)
+	{
+		if (compare_fn(*lst, target))
+			return (lst);
+		lst = &(*lst)->next;
+	}
+	return (NULL);
+}
+
+int	has_identifier(t_lst_embed *node, void *target_identifier)
 {
 	t_token	*token;
 
-	token = (t_token *)*lst;
-
-	//lst = (t_token *)ft_lstfind(lst, is_identifier, (void *)HEREDOC_MODE);
-	//next_token = (*lst)->next;
-	// if (next_token->identifier = WORD)
-	// 	next_token->identifier = UNQUOTE
-	while (*lst)
-	{
-		return (0);
-	}
-	return (0);
+	token = (t_token *)node;
+	if (token->identifier == (intptr_t)target_identifier)
+		return (true);
+	else
+		return (false);
 }
 
+t_token *token_after_space(t_lst_embed *node)
+{
+	t_token	*token;
+
+	if (!node->next || !node->next->next)
+		return (NULL);
+	token = (t_token *)node->next;
+	if (token->identifier != SPACE)
+		return (NULL);
+	// token = (t_token *)node->next->next;
+	 return (token);
+}
+
+int	parse_heredoc_delimiter(t_lst_embed **lst)
+{
+	t_token		*next_token;
+
+	lst = ft_lstfind(lst, has_identifier, (void *)HEREDOC_MODE);
+	while (*lst)
+	{
+		next_token = token_after_space(*lst);
+		if (!next_token)
+			return (UNEXPECTED_TOKEN);
+		else if (next_token->identifier == WORD)
+			next_token->identifier = HEREDOC_UNQUOTED_WORD;
+		else if (next_token->identifier == SINGLE_QUOTE \
+			|| next_token->identifier == DOUBLE_QUOTE)
+		{
+			///....
+			return (UNEXPECTED_TOKEN);
+		}
+		else
+			return (UNEXPECTED_TOKEN);
+		lst = ft_lstfind(&(*lst)->next, has_identifier, (void *)HEREDOC_MODE);
+	}
+	return (OK);
+}
 
 enum e_parsing_errors	parser_simple(t_token **lst)
 {
-	// char	*parsed_str;
-	//
-	// parsed_str = "";
-	//parse_double_quotes(lst);
-	construct_heredoc_and_append_tokens((t_lst_embed **)lst);
+//	int	error_status;
 
-	if (parse_double_quotes((t_lst_embed **)lst))
-		return (UNCLOSED_DOUBLE_QUOTES);
-	if (parse_single_quotes((t_lst_embed **)lst))
-		return (UNCLOSED_SINGLE_QUOTES);
-	// if (parse_single_quotes((t_lst_embed **)lst))
+	construct_heredoc_and_append_tokens((t_lst_embed **)lst); // Should be done by tokenizer in future
+	// if (parse_heredoc_delimiter((t_lst_embed **)lst))
+	// 	return (UNEXPECTED_TOKEN);
+	// if (parse_double_quotes((t_lst_embed **)lst))
 	// 	return (UNCLOSED_DOUBLE_QUOTES);
+	// if (parse_single_quotes((t_lst_embed **)lst))
+	// 	return (UNCLOSED_SINGLE_QUOTES);
 
+	
 
 	// if (ft_lstiter_mod(lst, &parse_single_quotes))
 	// 	return (UNCLOSED_QUOTE_ERROR);
@@ -350,13 +372,18 @@ int main(int argc, char **argv)
 	t_token		token;
 	//t_linked_list	lst;
 
-	buf = simple_word_unifier(argc, argv);
+	//buf = simple_word_unifier(argc, argv);
+	if (argc < 2)
+		return 0;
+
+	buf = argv[1];
 	init_tokenizer(&tokenizer, buf);
 	printf("unparsed: %s\n", buf);
 	printf("after parsing pass: \n");
 	lst = tokenize_all_tokens(&tokenizer);
+	if (parser_simple(&lst))
+		printf("ERROR\n");
 
-	parser_simple(&lst);
 	//ft_lstclear(&lst, NULL);
 
 

@@ -32,7 +32,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	token.length = 0;
 	while (ft_strchr(WHITE_SPACE, str[token.length]))
 		++token.length;
-	if (str[token.length] == END || token.length > 0)
+	if (token.length > 0 || *str == END)
 	{
 		tokenizer->input += token.length;
 		return (token);
@@ -50,23 +50,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	return (token);
 }
 
-// malloc's space for token lst struct and initializes it IF a valid ptr is psdlfkjdffassed in
-struct s_token	*lst_new_token(struct s_token token)
-{
-	struct s_token	*token_mem;
-
-	token_mem = (struct s_token *)malloc(sizeof(struct s_token));
-	if (!token_mem)
-		return (NULL);
-	*token_mem = token;
-	// Should this be done or poses risk of losing important data?
-	// token_mem->list.prev = NULL;
-	// token_mem->list.next = NULL;
-	return (token_mem);
-}
-
-
-// embed ...
+// NOTE: LIBFT...
 void	ft_sll_addback(t_lst_embed **head, t_lst_embed *new_node)
 {
 	t_lst_embed	*current;
@@ -98,7 +82,7 @@ t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 	token.identifier = 1;
 	while (token.identifier != END)
 	{
-		new_token = (t_token *)malloc(sizeof(t_token)); 
+		new_token = (t_token *)malloc(sizeof(t_token));
 		if (!new_token)
 		{
 			//ft_lstclear(&head, &free_token);
@@ -107,10 +91,25 @@ t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 		token = tokenize_one_token(tokenizer);
 		token.lst_info.prev = NULL;
 		token.lst_info.next = NULL;
-		*new_token = token;// BUG:Does this copy all of the data correctly?
-		ft_sll_addback(&head, &new_token->lst_info);
+		*new_token = token;// BUG:Does this copy all of the data correctly? no memcpy required?
+		ft_sll_addback(&head, (t_lst_embed *)new_token);
 	}
 	return ((t_token *)head);
+}
+
+// malloc's space for token lst struct and initializes it IF a valid ptr is psdlfkjdffassed in
+struct s_token	*lst_new_token(struct s_token token)
+{
+	struct s_token	*token_mem;
+
+	token_mem = (struct s_token *)malloc(sizeof(struct s_token));
+	if (!token_mem)
+		return (NULL);
+	*token_mem = token;
+	// Should this be done or poses risk of losing important data?
+	// token_mem->list.prev = NULL;
+	// token_mem->list.next = NULL;
+	return (token_mem);
 }
 
 // #include <stdio.h>
