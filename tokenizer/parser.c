@@ -123,36 +123,76 @@ bool	parse_double_quotes(t_lst_embed **lst)
 {
 			if (token->identifier == ENV_VAR)
 				expand_env_var(lst);
+			else
+				token->identifier = WORD;
 		}
-		else if (in_double_quotes && token->identifier == ENV_VAR)
-			expand_env_var(lst);
-		else if (in_double_quotes)
-			token->identifier = WORD;
 		lst = &(*lst)->next;
 	}
 	return (in_double_quotes);
 }
 
-// Make a function that ends either at END or when the second quote is found, then repeat this fn...
-bool	parse_single_quotes(t_lst_embed **lst_token)
+void	token_lst_iter(t_lst_embed **lst, void (*generic_fn)(t_lst_embed **, int *exit_state), int *exit_status)
 {
-	static bool	in_single_quotes = false;
-	t_token		*token;
-
-	while (*lst_token != NULL)
+	while (*lst && ((t_token *)*lst)->identifier != END)
 	{
-		token = (t_token *)*lst_token;
-		if (token->identifier == SINGLE_QUOTE)
-		{
-			remove_token(lst_token);
-			in_single_quotes = !in_single_quotes;
-			continue;
-		}
-		else if (in_single_quotes)
-			token->identifier = WORD;
-		lst_token = &(*lst_token)->next;
+		generic_fn(lst, exit_status);
+		lst = &(*lst)->next;
 	}
-	return (in_single_quotes);
+}
+
+// Make a function that ends either at END or when the second quote is found, then repeat this fn...
+// bool	parse_single_quotes(t_lst_embed **lst_token)
+// {
+// 	static bool	in_single_quotes = false;
+// 	t_token		*token;
+//
+// 	while (*lst_token != NULL)
+// 	{
+// 		token = (t_token *)*lst_token;
+// 		if (token->identifier == SINGLE_QUOTE)
+// 		{
+// 			remove_token(lst_token);
+// 			in_single_quotes = !in_single_quotes;
+// 			continue;
+// 		}
+// 		else if (in_single_quotes)
+// 			token->identifier = WORD;
+// 		lst_token = &(*lst_token)->next;
+// 	}
+// 	return (in_single_quotes);
+// }
+
+bool	complete_single_quotes(t_token *token)
+{
+	t_token		*token;
+	t_lst_embed	**lst;
+
+	while (token && token->identifier != END && token->identifier != SINGLE_QUOTE)
+		token->identifier = WORD;
+	if (token->identifier == END)
+		return (NULL);
+	else
+		return (token);
+}
+
+// Make a function that ends either at END or when the second quote is found, then repeat this fn...
+int	parse_single_quotes(t_lst_embed **lst)
+{
+	t_lst_embed	**single_quote;
+
+	while (*lst)
+	{
+		single_quote = ft_lstfind(lst, has_identifier, (void *)SINGLE_QUOTE);
+		if (!single_quote)
+			return (OK);
+		remove_token(single_quote);
+		single_quote = complete_single_quotes(single_quote);
+		if (!single_quote)
+			return (UNCLOSED_SINGLE_QUOTES);
+		remove_token(single_quote);
+		lst = single_quote;
+	}
+	
 }
 
 int	lst_iter(t_lst_embed **lst, int	(*func_ptr)(t_lst_embed **lst_node, int fn_return))
