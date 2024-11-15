@@ -271,7 +271,7 @@ t_token *token_after_space(t_lst_embed *node)
 	token = (t_token *)node->next;
 	if (token->identifier != SPACE)
 		return (NULL);
-	// token = (t_token *)node->next->next;
+	token = (t_token *)node->next->next;
 	 return (token);
 }
 
@@ -280,7 +280,7 @@ int	parse_heredoc_delimiter(t_lst_embed **lst)
 	t_token		*next_token;
 
 	lst = ft_lstfind(lst, has_identifier, (void *)HEREDOC_MODE);
-	while (*lst)
+	while (lst && *lst)
 	{
 		next_token = token_after_space(*lst);
 		if (!next_token)
@@ -305,12 +305,12 @@ enum e_parsing_errors	parser_simple(t_token **lst)
 //	int	error_status;
 
 	construct_heredoc_and_append_tokens((t_lst_embed **)lst); // Should be done by tokenizer in future
-	// if (parse_heredoc_delimiter((t_lst_embed **)lst))
-	// 	return (UNEXPECTED_TOKEN);
-	// if (parse_double_quotes((t_lst_embed **)lst))
-	// 	return (UNCLOSED_DOUBLE_QUOTES);
-	// if (parse_single_quotes((t_lst_embed **)lst))
-	// 	return (UNCLOSED_SINGLE_QUOTES);
+	if (parse_heredoc_delimiter((t_lst_embed **)lst))
+		return (UNEXPECTED_TOKEN);
+	if (parse_double_quotes((t_lst_embed **)lst))
+		return (UNCLOSED_DOUBLE_QUOTES);
+	if (parse_single_quotes((t_lst_embed **)lst))
+		return (UNCLOSED_SINGLE_QUOTES);
 
 	
 
@@ -376,7 +376,7 @@ int main(int argc, char **argv)
 	if (argc < 2)
 		return 0;
 
-	buf = argv[1];
+	buf = ft_strdup(argv[1]);
 	init_tokenizer(&tokenizer, buf);
 	printf("unparsed: %s\n", buf);
 	printf("after parsing pass: \n");

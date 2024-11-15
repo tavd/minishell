@@ -43,7 +43,7 @@ enum e_token_identifier
 #define WHITE_SPACE_CHARS SPACE, TAB, NEW_LINE
 
 static const char	WHITE_SPACE[4] = {
-	WHITE_SPACE_CHARS, '\0'
+	WHITE_SPACE_CHARS
 };
 
 # define SINGLE_TOKEN_CHARS \

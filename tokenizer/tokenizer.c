@@ -30,7 +30,7 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	token.text = str;
 	token.identifier = (enum e_token_identifier)*str;
 	token.length = 0;
-	while (ft_strchr(WHITE_SPACE, str[token.length]))
+	while (str[token.length] != END && ft_strchr(WHITE_SPACE, str[token.length]))
 		++token.length;
 	if (token.length > 0 || *str == END)
 	{
