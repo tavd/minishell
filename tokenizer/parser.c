@@ -133,6 +133,7 @@ bool	parse_double_quotes(t_lst_embed **lst)
 	return (in_double_quotes);
 }
 
+// Make a function that ends either at END or when the second quote is found, then repeat this fn...
 bool	parse_single_quotes(t_lst_embed **lst_token)
 {
 	static bool	in_single_quotes = false;
@@ -275,6 +276,12 @@ t_token *token_after_space(t_lst_embed *node)
 	 return (token);
 }
 
+void	*quote_removal(t_lst_embed **node)
+{
+
+	return (node);
+}
+
 int	parse_heredoc_delimiter(t_lst_embed **lst)
 {
 	t_token		*next_token;
@@ -287,11 +294,15 @@ int	parse_heredoc_delimiter(t_lst_embed **lst)
 			return (UNEXPECTED_TOKEN);
 		else if (next_token->identifier == WORD)
 			next_token->identifier = HEREDOC_UNQUOTED_WORD;
-		else if (next_token->identifier == SINGLE_QUOTE \
-			|| next_token->identifier == DOUBLE_QUOTE)
+		else if (next_token->identifier == SINGLE_QUOTE)
 		{
+			quote_removal(&(*lst)->next->next);
 			///....
 			return (UNEXPECTED_TOKEN);
+		}
+		else if (next_token->identifier == DOUBLE_QUOTE)
+		{
+
 		}
 		else
 			return (UNEXPECTED_TOKEN);
