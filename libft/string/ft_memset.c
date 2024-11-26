@@ -15,7 +15,7 @@
 void	*ft_memset(void *block, int c, size_t size)
 {
 	const unsigned char	value = (unsigned char)c;
-	const void	*block_origin = block;
+	const void			*block_origin = block;
 
 	while (size--)
 		*(unsigned char *)block++ = value;

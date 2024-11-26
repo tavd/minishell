@@ -12,38 +12,47 @@
 
 #include "libft/string.h"
 
-char	*ft_strnstr(const char *hay, const char *needle, size_t len)
-{
-	const size_t	needle_len = ft_strlen(needle);
-	const size_t	hay_len = len * (ft_strlen(hay) > len)
-		+ ft_strlen(hay) * (ft_strlen(hay) <= len);
-	char			*end_hay;
+/*
+ @needle: null terminated string
+ @haystack: string
+ @len: length of the haystack that is being searched for
 
-	if (!needle_len)
-		return ((char *)hay);
-	end_hay = (char *)hay + hay_len - needle_len;
-	while (hay <= end_hay)
+ function returns:
+	- haystack if length of needle is 0.
+	- first occurence of needle in haystack if it is found.
+	- NULL if needle is not found
+*/
+
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
+{
+	const size_t	needle_len = ft_strnlen(needle, len);
+	const char		*end_haystack = ft_strnlen(haystack, len) - needle_len);
+
+	if (needle_len == 0)
+		return ((char *)haystack);
+	while (*haystack && haystack <= end_haystack)
 	{
-		if (*hay == *needle && ft_strncmp(hay, needle, needle_len) == 0)
-			return ((char *)hay);
+		if (haystack[0] == needle[0] && \
+			(needle_len == 1 || ft_strncmp(haystack, needle, needle_len) == 0))
+			return ((char *)haystack);
 		else
-			hay++;
+			++haystack;
 	}
 	return (NULL);
 }
 
-/*
- int main()
- {
-	char hay[30] = "aaabcabcd";
-	char needle[10] = "aabc";
- 	char *ptr;
-	int len = -1;
- 	ptr = strnstr(hay, needle, len);
- 	printf("real:%s\n", ptr);
- 	ptr = ft_strnstr(hay, needle, len);
- 	printf("mine:%s", ptr);
-
- 	return 0;
- }
-*/
+// #include <stdio.h>
+//
+//  int main()
+//  {
+// 	char haystack[30] = "aaabcabcd";
+// 	char needle[10] = "aabc";
+//  	char *ptr;
+// 	int len = -1;
+//  	ptr = strnstr(haystack, needle, len);
+//  	printf("real:%s\n", ptr);
+//  	ptr = ft_strnstr(haystack, needle, len);
+//  	printf("mine:%s", ptr);
+//
+//  	return 0;
+//  }

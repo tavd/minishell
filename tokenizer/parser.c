@@ -21,13 +21,10 @@
 //#include "libft/string.h"
 #include "libft/libft.h"
 
-// NOTE: WHY does this make it possible for indirect pointer to change head node?
-typedef struct	s_linked_list {
-	t_list	*head;
-}	t_linked_list;
-
-// If there is a good way to handle errors we could also return ptr to place where
-// error occured
+/* NOTE: If any point in the parsing fails the following will NOT happen:
+ - environment variables will not be set
+ - ...
+*/
 enum	e_parsing_errors
 {
 	OK,
@@ -35,6 +32,8 @@ enum	e_parsing_errors
 	UNCLOSED_DOUBLE_QUOTES,
 	UNEXPECTED_TOKEN,
 };
+// If there is a good way to handle errors we could also return ptr to place where
+// error occured
 
 enum e_parser_context
 {
@@ -44,32 +43,28 @@ enum e_parser_context
 };
 // ================================================================================
 
-// Free's the node and switches its address out for address of the next node
-// Returns if no current node.
-void	ft_sll_remove_node(t_lst_embed **node_to_remove,
-	void (*free_content_fn)(void *content_after_lst_embed))
+t_token	get_next_token()
 {
-	t_lst_embed	*next_node;
-	
-	if (node_to_remove == NULL || *node_to_remove == NULL)
-		return ;
-	next_node = (*node_to_remove)->next;
-	if (free_content_fn)
-		free_content_fn((void *)*node_to_remove);
-	free(*node_to_remove);
-	*node_to_remove = next_node;
 }
-	//content = (void *)*node_to_remove; // + sizeof(t_lst_embed);
 
-char	*get_environment_variable_from_token(t_token *token)
+t_token	get_next_token_incl_whitespace()
+{
+}
+
+void	remove_token(t_lst_embed **lst_token)
+{
+	ft_sll_remove_node((t_lst_embed **)lst_token, NULL);
+}
+
+static char	*get_environment_variable_from_token(t_token *token)
 {
 	char	*variable;
-	char	charswap_tmp;
+	char	tmp;
 
-	charswap_tmp = token->text[token->length];
-	token->text[token->length] = '\0';
-	variable = getenv(token->text);
-	token->text[token->length] = charswap_tmp;
+	tmp = *(token->end + 1);
+	*(token->end + 1) = '\0';
+	variable = getenv(token->begin);
+	*(token->end + 1) = tmp;
 	return (variable);
 }
 
@@ -88,20 +83,15 @@ void	expand_env_var(t_lst_embed **dollar_sign_node)
 		token->text = get_environment_variable_from_token(next_token);
 		if (token->text)
 			token->length = ft_strlen(token->text); // TODO: find an overall safer design for token's that contain NULL as the string they point to? or nah...
-		ft_sll_remove_node(&(*dollar_sign_node)->next, NULL);
+		remove_token(token->next);
 	}
 	else if (next_token->identifier == QUESTION_MARK)
 	{
 		token->identifier = SET_EXIT_STATUS;
-		ft_sll_remove_node(&(*dollar_sign_node)->next, NULL);
+		remove_token(token->next);
 	}
 	else
 		token->identifier = WORD;
-}
-
-void	remove_token(t_lst_embed **lst_token)
-{
-	ft_sll_remove_node((t_lst_embed **)lst_token, NULL);
 }
 
 /// find quote token, delete it , make all words between quote token WORD, 
@@ -428,7 +418,7 @@ int main(int argc, char **argv)
 		return 0;
 
 	buf = ft_strdup(argv[1]);
-	init_tokenizer(&tokenizer, buf);
+	tokenizer = create_tokenizer(buf);
 	printf("unparsed: %s\n", buf);
 	printf("after parsing pass: \n");
 	lst = tokenize_all_tokens(&tokenizer);
@@ -445,7 +435,7 @@ int main(int argc, char **argv)
 	{
 		token = *(lst_token);
  		printf("[%.*s]:%zi,%i\n", (int)token.length, token.text, token.length, token.identifier);
-		lst_token = (t_token *)lst_token->lst_info.next;
+		lst_token = (t_token *)lst_token->lst_data.next;
 		++token_count;
 	}
 	printf("Total Token count:%i\n", token_count);

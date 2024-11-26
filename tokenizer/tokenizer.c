@@ -10,12 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "tokenizer.h"
 
-void	init_tokenizer(struct s_tokenizer *tokenizer, char *data)
+t_tokenizer	create_tokenizer(const char *input_string)
 {
-	tokenizer->input = data;
+	return (t_tokenizer) {
+		.begin = input_string;
+		.cur = 0;
+		.line_number = 0;
+	};
 }
 
 // NOTE: Is it needed to add identifier for double character token_count?
@@ -24,8 +27,6 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	char		*str;
 	t_token		token;
 
-	if (!tokenizer->input)
-		return ((t_token){.text = NULL, .length = 0, .identifier = 0});
 	str = tokenizer->input;
 	token.text = str;
 	token.identifier = (enum e_token_identifier)*str;
@@ -50,24 +51,96 @@ t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
 	return (token);
 }
 
-// NOTE: LIBFT...
-void	ft_sll_addback(t_lst_embed **head, t_lst_embed *new_node)
+bool	is_default_word(char c)
 {
-	t_lst_embed	*current;
+	return (ft_isalpha(c) || ft_isdigit(c) || c == '_');
+}
 
-	if (!head || !new_node)
-		return ;
-	if (*head == NULL)
+bool	is_token_id(int target_id, t_token *tok);
+uint64_t	has_one_of_token_id(uint64_t *target_ids, size_t count_ids, t_token *tok);
+
+bool	tokenize_one_token(char *str)
+{
+	char	*(*tokenize_fn)(const char *, const char *);
+	int	tok_id;
+	t_token	tok;
+
+	tok_id = 0;
+	tok.begin = t->begin;
+	while (tok_id < SYMBOL_COUNT)
 	{
-		*head = new_node;
-		return ;
+		tokenize_fn = SYMBOL_TABLE[tok_id][1];
+		tok.end = tokenize_fn(tok.begin, SYMBOL_TABLE[tok_id][0]);
+		if (tok.end > tok.begin)
+			break ;
+		else
+			++tok_id;
 	}
-	current = *head;
-	while (current->next != NULL)
-		current = current->next;
-	current->next = new_node;
-	new_node->next = NULL;
-	new_node->prev = NULL;
+	if (expect_token_id(WHITESPACE, 3, tok.id) != -1)
+}
+
+bool	get_next_token(t_tokenizer *t, t_token *token)
+{
+	char	*(*tokenize)(const char *, const char *);
+	int	id;
+
+	token->begin = t->begin;
+	id = 0;
+	while (id < SYMBOL_COUNT)
+	{
+		token = tokenize(token->begin, SYMBOL_TABLE[id], ft_strlen(SYMBOL_TABLE[id]) == 0)
+
+
+
+		
+		else
+			++tok_id;
+	}
+	if (id == SYMBOL_COUNT)
+		return (0);
+	return (1);
+}
+
+int	main()
+{
+
+
+	while (get_next_token(&t, &token))
+	{
+		token
+
+
+	}
+
+}
+
+bool	get_next_token_incl_whitespace(t_tokenizer *t, t_token *tok)
+{
+
+}
+
+t_token	tokenize_one(struct s_tokenizer *t)
+{
+	t_token	token;
+	uin64_t	tok_id;
+
+	token.begin = t->input[t->cur];
+	token.end = t->input[t->cur];
+	tok_id = 0;
+	while (tok_id < SYMBOL_COUNT)
+	{
+		if (ft_strncmp(token.begin, SYMBOLS[tok_id]) == 0)
+		{
+			token.id = tok_id;
+			break ;
+		}
+		
+		++tok_id;
+	}
+	if (tok_id == SYMBOL_COUNT)
+	{
+
+	}
 }
 
 // NOTE:  since the t_lst_embed struct is the first member of
@@ -89,8 +162,8 @@ t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
 			return (NULL);
 		}
 		token = tokenize_one_token(tokenizer);
-		token.lst_info.prev = NULL;
-		token.lst_info.next = NULL;
+		token.lst_data.prev = NULL;
+		token.lst_data.next = NULL;
 		*new_token = token;// BUG:Does this copy all of the data correctly? no memcpy required?
 		ft_sll_addback(&head, (t_lst_embed *)new_token);
 	}
@@ -106,31 +179,5 @@ struct s_token	*lst_new_token(struct s_token token)
 	if (!token_mem)
 		return (NULL);
 	*token_mem = token;
-	// Should this be done or poses risk of losing important data?
-	// token_mem->list.prev = NULL;
-	// token_mem->list.next = NULL;
 	return (token_mem);
 }
-
-// #include <stdio.h>
-// int	main()
-// {
-//
-// 	t_lst_embed	*head;
-// 	t_token		*new;
-//
-// 	head = NULL;
-//
-// 	new = lst_new_token((struct s_token){.identifier = 1});
-// 	ft_sll_addback(&head, &new->lst_info);
-// 	new = lst_new_token((struct s_token){.identifier = 2});
-// 	ft_sll_addback(&head, &new->lst_info);
-//
-// 	t_token	*tok = (t_token *)head;
-// 	
-// 	tok = (t_token *)tok->lst_info.next;
-//
-// 	printf("%i\n", tok->identifier);
-//
-// 	return 0;
-// }

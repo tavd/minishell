@@ -36,6 +36,7 @@ CTYPE_OBJ := $(patsubst %.c, $(BUILD_PATH)/%.o, $(CTYPE_SRC))
 
 STRING_SRC := \
     ft_strlen.c \
+    ft_strnlen.c \
     ft_strrchr.c \
     ft_strchr.c \
     ft_strlcat.c \

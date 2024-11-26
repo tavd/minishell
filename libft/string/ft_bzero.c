@@ -18,24 +18,23 @@ void	ft_bzero(void *block, size_t n)
 		*(unsigned char *)block++ = 0;
 }
 
-#include <stdio.h>
-
-#include "libft/stdlib.h"
-
-int main()
-{
-
-	char *s = ft_strdup("hello world");
-	int n = 1;
-
-	ft_bzero(s, n);
-
-	while (n-- > -1)
-	{
-		printf("%i ", (int) *s++);
-	}
-}
-
+// #include <stdio.h>
+//
+// #include "libft/stdlib.h"
+//
+// int main()
+// {
+//
+// 	char *s = ft_strdup("hello world");
+// 	int n = 1;
+//
+// 	ft_bzero(s, n);
+//
+// 	while (n-- > -1)
+// 	{
+// 		printf("%i ", (int) *s++);
+// 	}
+// }
 
 /*
 int main()

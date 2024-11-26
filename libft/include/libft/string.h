@@ -16,6 +16,7 @@
 # include <stddef.h>
 
 size_t		ft_strlen(const char *str);
+size_t		ft_strnlen(const char *str, size_t max_len);
 char		*ft_strchr(const char *str, int c);
 char		*ft_strrchr(const char *str, int c);
 void		*ft_memchr(const void *str, int c, size_t n);
