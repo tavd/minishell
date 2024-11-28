@@ -100,7 +100,7 @@ t_token	tokenize_one(t_lexer *lexer)
 			.id = id,
 			.begin = lexer_start,
 			.end = lexer_start + symbol_len,
-			}
+			};
 		}
 		++id;
 	}
@@ -122,7 +122,7 @@ bool	get_next_token(t_lexer *lexer, t_token *token)
 	token = tokenize_one(lexer);
 	if (token->id == UNHANDELD_SYMBOL || token->id == END)
 		return (false);
-	if (matching_token_id(WHITESPACE, 3, token))
+	if (matching_token_id(WHITESPACE, 3, token) != 0)
 		return (get_next_token(lexer, token));
 	return (true);
 
@@ -141,7 +141,7 @@ int	main(int argc, char **argv)
 	l = create_tokenizer(str, str + ft_strlen(str));
 	while (get_next_token(&l, &t))
 	{
-		printf("(%s:%.*s) at [%i]\n", (char *)SYMBOL_TABLE[t.id][0], (int)(t.end - t.begin), t.begin, l.cur);
+		printf("(%s:%.*s) at lexer[%i]\n", (char *)SYMBOL_TABLE[t.id][0], (int)(t.end - t.begin), t.begin, l.cur);
 		t = (t_token){0};
 	}
 }

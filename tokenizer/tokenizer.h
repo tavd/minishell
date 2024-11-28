@@ -25,16 +25,28 @@ typedef struct s_tokenizer {
 
 typedef struct s_tokenizer t_lexer;
 
-// NOTE: the member: "struct s_lst_embed" has to importantly be the first
-// as this allows for easy casting from lst_embed to t_token.
 typedef struct s_token {
-	struct s_lst_embed	lst_data;
 	uint64_t		id;
 	char			*begin;
 	char			*end;
 }	t_token;
-// NOTE: Ideally you wouldn't need to worry about casting to t_token from
-// t_lste_embed to acces the members you want, since good code abstract's away
+
+/*
+ * NOTE: "struct s_lst_embed" has to be the first member of the struct
+ * to allow for casting between t_lst_embed to t_lst_token, without offsets
+ */
+typedef struct s_lst_token {
+	struct s_lst_embed	lst_data;
+	uint64_t		id;
+	char			*begin;
+	char			*end;
+}	t_lst_token;
+/*
+ * NOTE: Ideally to access a struct within a struct you would abstract this
+ * away using a macro function(linux kernel: container_of), as this would
+ * remove the need for the lst_embed being the first member of the struct
+ */
+
 // this kind of mental overhead + its dependent one the struct's memory layout.
 // But since we can't use macro functions (Norm) its the second best thing
 
@@ -69,21 +81,21 @@ size_t	_fallback(const char *str, const char *symbol_from_table);
 _Static_assert(SYMBOL_ID_COUNT == 14, "symbol count has changed");
 static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 {
-	[END] =			{"\0", _symbol},
-	[SPACE] =		{" ", _whitespace},
-	[TAB] =			{"\t", _whitespace},
-	[NEW_LINE] =		{"\n", _symbol},
-	[PIPE] =		{"|", _symbol},
-	[DOLLAR_SIGN] =		{"$", _symbol},
-	[EQUAL_SIGN] =		{"=", _symbol},
-	[SINGLE_QUOTE] =	{"\'", _symbol},
-	[DOUBLE_QUOTE] =	{"\"", _symbol},
-	[HEREDOC] =		{"<<", _symbol},
-	[APPEND_MODE]		{">>", _symbol},
-	[REDIRECT_IN] =		{"<", _symbol},
-	[REDIRECT_OUT] =	{">", _symbol},
-	[WORD] =		{"WORD", _word},
-	[DEFAULT_FALLBACK] =	{"other", _fallback},
+	[END] =			{"\0", _compare_symbol, 0},
+	[SPACE] =		{" ", _compare_symbol, _count_whitespace},
+	[TAB] =			{"\t", _whitespace, _count_whitespace },
+	[NEW_LINE] =		{"\n", _symbol, 1},
+	[PIPE] =		{"|", _symbol, 1},
+	[DOLLAR_SIGN] =		{"$", _symbol, 1},
+	[EQUAL_SIGN] =		{"=", _symbol, 1},
+	[SINGLE_QUOTE] =	{"\'", _symbol, 1},
+	[DOUBLE_QUOTE] =	{"\"", _symbol, 1},
+	[HEREDOC] =		{"<<", _symbol, 2},
+	[APPEND_MODE]		{">>", _symbol, 2},
+	[REDIRECT_IN] =		{"<", _symbol, 1},
+	[REDIRECT_OUT] =	{">", _symbol, 1},
+	[WORD] =		{"WORD", _word, _count_wordlen},
+	//[DEFAULT_FALLBACK] =	{"other", _fallback, _fallback_len},
 };
 
 #define SYMBOL 0

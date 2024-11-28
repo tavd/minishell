@@ -36,3 +36,21 @@ void	ft_lst_embed_addback(t_lst_embed **head, t_lst_embed *new_node)
  */
 
 void	ft_lst_for_each_entry(
+
+
+
+int main()
+{
+	t_lst_embed	lst;
+	t_lst_token	tok;
+	
+	tok = (t_lst_token)lst;
+
+	lst = (t_lst_embed)tok;
+
+
+
+
+
+
+}
