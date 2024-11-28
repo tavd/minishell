@@ -24,9 +24,9 @@ t_tokenizer	create_tokenizer(const char *start_input, const char *end_input)
 	};
 }
 
-int	matching_token_id(const uint64_t *target_ids, size_t count_ids, t_token *tok)
+int	matching_token_id(const t_symbol_id *target_ids, size_t count_target, t_token *tok)
 {
-	size_t	i;
+	t_symbol_id	i;
 
 	i = 0;
 	while (i < count_ids)
@@ -42,74 +42,71 @@ size_t	symbol(const char *str, uin64_t id, int *new_len)
 {
 	const size_t	symbol_len = ft_strlen(symbol_from_table) || _isnullterm(*str);
 
+	*new_len = 0;
 	if (ft_strncmp(str, SYMBOL_TABLE[id][SYMBOL], symbol_len) == 0)
-		return (SYMBOL_TABLE[id][SYMBOL_LEN]);
-	return (0);
+		*new_len = symbol_len;
+	return ((bool)*new_len);
 }
 
-bool	whitespace(const char *str, uin64_t id, int *new_len)
+bool	count_consecutive_symbols(const char *str, uin64_t id, int *newlen)
 {
 	const char	*ws = (const char *)SYMBOL_TABLE[id][SYMBOL];
-	int	len;
 	
-	len = 0;
-	while(*str++ == *ws)
-		++len;
-	*new_len = len;
-	return ((bool)len);
+	*newlen = 0;
+	while(str[*newlen] == ws[0])
+		++(*newlen);
+	return ((bool)*newlen);
 
 }
 
-bool	count_until_prev_symbols(const char *str, uin64_t id, int *new_len)
+bool	count_until_prev_symbol_match(const char *str, uin64_t id, int *new_len)
 {
-	int	UNUSED;
+	int	unused;
 	bool	stopped;
-	int	len;
 	int	i;
 
 	stopped = false;
-	len = 0;
+	*newlen = 0;
 	while (!stopped)
 	{
-		++len;
+		++(*newlen);
 		i = 0;
 		while (i < id)
 		{
 			symbol_fn = SYMBOL_TABLE[i][FN_PTR];
-			if (match_symbol_fn(str + len, i, (int)))
+			if (match_symbol_fn(str + *newlen, i, unused))
 			{
 				stopped = true;
 				break ;
 			}
 		}
 	}
-	*new_len = len;
-	return ((bool)len);
+	return ((bool)*newlen);
 }
 
 // tokenizes lexer input, and increments lexer ptr...
 t_token	tokenize_one(t_lexer *lexer)
 {
 	const char	*lexer_start = lexer->begin + lexer->cur;
-	bool		(*matching_symbol_fn)(const char *lexer_start, int *newlen);
-	int		newlen;
+	t_toklen	(*matching_symbol_fn)(const char *, t_symbol_id);
+	t_toklen	new_len;
 	t_symbol_id	id;
 
-	newlen = 0;
 	id = 0;
 	while (id < SYMBOL_ID_COUNT)
 	{
 		matching_symbol_fn = SYMBOL_TABLE[id][FN_PTR];
-		if (matching_symbol_fn && matching_symbol_fn(lexer_start, id, &newlen))
+		new_len = matching_symbol_fn(lexer_start, id);
+		if (new_len != -1)
 		{
 			assert(("Lexer will be incremented past it's end", \
 				lexer->begin + lexer->cur + new_tok_len <= lexer->end));
-			lexer->cur += newlen;
+			lexer->cur += new_len;
 			return (t_token)
 			{
 				.id = id,
 				.begin = lexer_start,
-				.end = lexer_start + newlen,
+				.end = lexer_start + new_len,
 			};
 		}
 		++id;
@@ -127,12 +124,12 @@ bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
 
 bool	get_next_token(t_lexer *lexer, t_token *token)
 {
-	const uint64_t	WHITESPACE[3] = {SPACE, TAB, NEW_LINE};
+	const t_symbol_id	WHITESPACE[3] = {SPACE, TAB, NEW_LINE};
 
 	token = tokenize_one(lexer);
 	if (token->id == UNHANDLED_SYMBOL || token->id == END)
 		return (false);
-	if (matching_token_id(WHITESPACE, 3, token) != 0)
+	if (matching_token_id(WHITESPACE, 3, token) == true)
 		return (get_next_token(lexer, token));
 	return (true);
 

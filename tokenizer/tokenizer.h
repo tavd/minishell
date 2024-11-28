@@ -68,13 +68,15 @@ typedef enum e_tokenizer_symbol_id
 	SYMBOL_ID_COUNT,
 }	t_symbol_id;
 
-#define UNHANDELED_SYMBOL -1
+#define UNHANDLED_SYMBOL -1
 
-bool	is_nullterm(const char *str, t_symbol_id id, size_t *newlen);
-bool	symbol(const char *str, t_symbol_id id, size_t *newlen);
-bool	whitespace(const char *str, t_symbol_id id, size_t *newlen);
-bool	word(const char *str, t_symbol_id id, size_t *newlen);
-bool	fallback(const char *str, t_symbol_id id, size_t *newlen);
+typedef int	t_toklen;
+
+t_toklen	is_nullterm(const char *str, t_symbol_id id);
+t_toklen	symbol(const char *str, t_symbol_id id);
+t_toklen	count_consecutive_symbols(const char *str, t_symbol_id id);
+t_toklen	word(const char *str, t_symbol_id id);
+t_toklen	fallback(const char *str, t_symbol_id id);
 
 // NOTE: longer strings should come before shorter strings
 // if they share the same characters. (for example "<<" and "<")
@@ -82,8 +84,8 @@ _Static_assert(SYMBOL_ID_COUNT == 14, "symbol count has changed");
 static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 {
 	[END] =			{"\0", symbol},
-	[SPACE] =		{" ", whitespace},
-	[TAB] =			{"\t", whitespace},
+	[SPACE] =		{" ", count_consecutive_symbols},
+	[TAB] =			{"\t", count_consecutive_symbols},
 	[NEW_LINE] =		{"\n", symbol},
 	[PIPE] =		{"|", symbol},
 	[DOLLAR_SIGN] =		{"$", symbol},
@@ -104,10 +106,6 @@ static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 t_lexer	create_tokenizer(const char *input_begin, const char *input_end);
 // t_token	tokenize_one_token(struct s_tokenizer *tokenizer);
 // t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer);
-
-
-#define UNHANDELED_SYMBOLS false
-#define SUCCESS true
 
 bool	get_next_token(t_lexer *lexer, t_token *token);
 bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token);
