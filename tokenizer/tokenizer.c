@@ -77,48 +77,58 @@ size_t	_word(const char *str, const char*)
 	return (0);
 }
 
-// NOTE: at the moment it is possible for lexer->end to
-bool	get_next_token(t_lexer *lexer, t_token *token)
+// tokenizes lexer input, and increments lexer ptr...
+bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
 {
-	const uint64_t	WHITESPACE_IDS[3] = {SPACE, TAB, NEW_LINE};
-	size_t		(*matching_symbol_len_fn)(const char *, const char *);
+	size_t		(*matching_symbol_fn)(const char *, const char *);
 	int		id;
-
-	token->begin = lexer->begin + lexer->cur;
-	token->end = token->begin;
+	char		*lexer_input;
+ 
+	lexer_input = lexer->begin + lexer->cur;
 	id = 0;
-	while (id < SYMBOL_COUNT)
+	while (id < SYMBOL_ID_COUNT)
 	{
-		matching_symbol_len_fn = SYMBOL_TABLE[id][1];
-		token->end += matching_symbol_len_fn(token->begin, SYMBOL_TABLE[id][0]);
-		if (token->end > token->begin)
+		matching_symbol_fn = SYMBOL_TABLE[symbol_id][FN_PTR];
+		if (matching_symbol(lexer_input, SYMBOL_TABLE[symbol_id][0]))
 		{
 			token->id = id;
+			token->begin = lexer_input;
+			token->end = lexer_input + matching_symbol(lexer_input, SYMBOL_TABLE[symbol_id][0]);
 			break ;
 		}
 		++id;
 	}
-	if (id == END || id == SYMBOL_COUNT)
+	if (id == LEXER_END || id == SYMBOL_ID_COUNT)
 		return (false);
-	lexer->cur += (token->end - token->begin);
-	assert(lexer->begin + lexer->cur <= lexer->end && "Lexer overstept end");
-	if (matching_token_id(WHITESPACE_IDS, 3, token))
-		return (get_next_token(lexer, token));
+	assert(("Lexer is incremented past the lexer.end", lexer->begin + lexer->cur + (token->end - token->begin) <= lexer->end));
+	lexer->cur += (token->end - token->begin); // The length of END is 0 so no increment needed...
 	return (true);
 }
 
+bool	get_next_token(t_lexer *lexer, t_token *token)
+{
+	const uint64_t	WHITESPACE[3] = {SPACE, TAB, NEW_LINE};
+	bool	fn_state;
+
+	fn_state = get_next_token_incl_whitespace(lexer, token);
+	if (matching_token_id(WHITESPACE, 3, token))
+		return (get_next_token_incl_whitespace(lexer, token));
+	return (fn_state);
+}
+
+
 bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
 {
-	size_t		(*matching_symbol_len_fn)(const char *, const char *);
+	size_t		(*matching_symbol_len)(const char *, const char *);
 	int		id;
 
 	token->begin = lexer->begin + lexer->cur;
 	token->end = token->begin;
 	id = 0;
-	while (id < SYMBOL_COUNT)
+	while (id < SYMBOL_ID_COUNT)
 	{
 		matching_symbol_len_fn = SYMBOL_TABLE[id][1];
-		token->end += matching_symbol_len_fn(token->begin, SYMBOL_TABLE[id][0]);
+		token->end += matching_symbol_len(token->begin, SYMBOL_TABLE[id][0]);
 		if (token->end > token->begin)
 		{
 			token->id = id;
@@ -126,7 +136,7 @@ bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
 		}
 		++id;
 	}
-	if (id == END || id == SYMBOL_COUNT) // IMPROVE RIGHT NOW!!!
+	if (id == END || id == SYMBOL_ID_COUNT) // IMPROVE RIGHT NOW!!!
 		return (false);
 	lexer->cur += (token->end - token->begin);
 	assert(lexer->begin + lexer->cur <= lexer->end && "Lexer overstept end");
@@ -146,7 +156,7 @@ int	main(int argc, char **argv)
 	l = create_tokenizer(str, str + ft_strlen(str));
 	while (get_next_token(&l, &t))
 	{
-		printf("(%s:%.*s)\n", (char *)SYMBOL_TABLE[t.id][0], (int)(t.end - t.begin), t.begin);
+		printf("(%s:%.*s) at [%i]\n", (char *)SYMBOL_TABLE[t.id][0], (int)(t.end - t.begin), t.begin, l.cur);
 		t = (t_token){0};
 	}
 }

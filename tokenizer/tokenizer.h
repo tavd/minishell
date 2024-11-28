@@ -12,7 +12,6 @@
 
 #include "libft/libft.h"
 # include "lst_embed.h"
-#include <stdlib.h>
 
 #ifndef TOKENIZER_H_
 # define TOKENIZER_H_
@@ -55,18 +54,18 @@ typedef enum e_token_symbol_id
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	WORD,
-	SYMBOL_COUNT,
+	SYMBOL_ID_COUNT,
 }	t_token_symbol_id;
-
 
 size_t	_symbol(const char *str, const char *symbol_from_table);
 size_t	_word(const char *str, const char *nothing);
 size_t	_whitespace(const char *str, const char *symbol_from_table);
+size_t	_fallback(const char *str, const char *symbol_from_table);
 
 // NOTE: longer strings should come before shorter strings
 // if they share the same characters. (for example "<<" and "<")
-_Static_assert(SYMBOL_COUNT == 14, "symbol count has changed");
-static const void	*SYMBOL_TABLE[SYMBOL_COUNT][2] =
+_Static_assert(SYMBOL_ID_COUNT == 14, "symbol count has changed");
+static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 {
 	[END] =			{"\0", _symbol},
 	[SPACE] =		{" ", _whitespace},
@@ -82,7 +81,11 @@ static const void	*SYMBOL_TABLE[SYMBOL_COUNT][2] =
 	[REDIRECT_IN] =		{"<", _symbol},
 	[REDIRECT_OUT] =	{">", _symbol},
 	[WORD] =		{"WORD", _word},
+	[DEFAULT_FALLBACK] =	{"other", _fallback},
 };
+
+#define SYMBOL 0
+#define FN_PTR 1
 
 t_lexer	create_tokenizer(const char *input_begin, const char *input_end);
 // t_token	tokenize_one_token(struct s_tokenizer *tokenizer);
