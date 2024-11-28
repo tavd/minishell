@@ -12,137 +12,146 @@
 
 #include "tokenizer.h"
 
-t_tokenizer	create_tokenizer(const char *input_string)
+#include <assert.h>
+
+t_tokenizer	create_tokenizer(const char *start_input, const char *end_input)
 {
-	return (t_tokenizer) {
-		.begin = input_string;
-		.cur = 0;
-		.line_number = 0;
+	return (t_tokenizer)
+	{
+		.begin = (char *)start_input,
+		.end = (char *)end_input,
+		.cur = 0,
 	};
 }
 
-// NOTE: Is it needed to add identifier for double character token_count?
-t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
+int	matching_token_id(const uint64_t *target_ids, size_t count_ids, t_token *tok)
 {
-	char		*str;
-	t_token		token;
+	size_t	i;
 
-	str = tokenizer->input;
-	token.text = str;
-	token.identifier = (enum e_token_identifier)*str;
-	token.length = 0;
-	while (str[token.length] != END && ft_strchr(WHITE_SPACE, str[token.length]))
-		++token.length;
-	if (token.length > 0 || *str == END)
+	i = 0;
+	while (i < count_ids)
 	{
-		tokenizer->input += token.length;
-		return (token);
+		if (target_ids[i] == tok->id)
+			return (target_ids[i]);
+		++i;
 	}
-	if (ft_strchr(SINGLE_TOKENS, token.identifier))
-	{
-		token.length += 1;
-		tokenizer->input += 1;
-		return (token);
-	}
-	token.identifier = WORD;
-	while (ft_strchr(WORD_DELIMITERS, str[token.length]) == NULL)
-		++token.length;
-	tokenizer->input += token.length;
-	return (token);
+	return (0);
 }
 
-bool	is_default_word(char c)
+size_t	_symbol(const char *str, const char *symbol_from_table)
 {
-	return (ft_isalpha(c) || ft_isdigit(c) || c == '_');
+	const size_t	symbol_len = ft_strlen(symbol_from_table);
+
+	if (ft_strncmp(str, symbol_from_table, symbol_len) == 0)
+		return (symbol_len);
+	return (0);
 }
 
-bool	is_token_id(int target_id, t_token *tok);
-uint64_t	has_one_of_token_id(uint64_t *target_ids, size_t count_ids, t_token *tok);
-
-bool	tokenize_one_token(char *str)
+size_t	_whitespace(const char *str, const char *symbol_from_table)
 {
-	char	*(*tokenize_fn)(const char *, const char *);
-	int	tok_id;
-	t_token	tok;
+	size_t	len;
 
-	tok_id = 0;
-	tok.begin = t->begin;
-	while (tok_id < SYMBOL_COUNT)
+	len = 0;
+	while(str[len] == *symbol_from_table)
+		++len;
+	return (len);
+}
+
+size_t	_word(const char *str, const char*)
+{
+	size_t	len;
+	int	i;
+	
+	len = 0;
+	while (true)
 	{
-		tokenize_fn = SYMBOL_TABLE[tok_id][1];
-		tok.end = tokenize_fn(tok.begin, SYMBOL_TABLE[tok_id][0]);
-		if (tok.end > tok.begin)
-			break ;
-		else
-			++tok_id;
+		i = 0;
+		while (i < WORD)
+		{
+			if (str[len] == *((char *)SYMBOL_TABLE[i][0]))
+				return (len);
+			++i;
+		}
+		++len;
 	}
-	if (expect_token_id(WHITESPACE, 3, tok.id) != -1)
+	return (0);
 }
 
-bool	get_next_token(t_tokenizer *t, t_token *token)
+// NOTE: at the moment it is possible for lexer->end to
+bool	get_next_token(t_lexer *lexer, t_token *token)
 {
-	char	*(*tokenize)(const char *, const char *);
-	int	id;
+	const uint64_t	WHITESPACE_IDS[3] = {SPACE, TAB, NEW_LINE};
+	size_t		(*matching_symbol_len_fn)(const char *, const char *);
+	int		id;
 
-	token->begin = t->begin;
+	token->begin = lexer->begin + lexer->cur;
+	token->end = token->begin;
 	id = 0;
 	while (id < SYMBOL_COUNT)
 	{
-		token = tokenize(token->begin, SYMBOL_TABLE[id], ft_strlen(SYMBOL_TABLE[id]) == 0)
-
-
-
-		
-		else
-			++tok_id;
-	}
-	if (id == SYMBOL_COUNT)
-		return (0);
-	return (1);
-}
-
-int	main()
-{
-
-
-	while (get_next_token(&t, &token))
-	{
-		token
-
-
-	}
-
-}
-
-bool	get_next_token_incl_whitespace(t_tokenizer *t, t_token *tok)
-{
-
-}
-
-t_token	tokenize_one(struct s_tokenizer *t)
-{
-	t_token	token;
-	uin64_t	tok_id;
-
-	token.begin = t->input[t->cur];
-	token.end = t->input[t->cur];
-	tok_id = 0;
-	while (tok_id < SYMBOL_COUNT)
-	{
-		if (ft_strncmp(token.begin, SYMBOLS[tok_id]) == 0)
+		matching_symbol_len_fn = SYMBOL_TABLE[id][1];
+		token->end += matching_symbol_len_fn(token->begin, SYMBOL_TABLE[id][0]);
+		if (token->end > token->begin)
 		{
-			token.id = tok_id;
+			token->id = id;
 			break ;
 		}
-		
-		++tok_id;
+		++id;
 	}
-	if (tok_id == SYMBOL_COUNT)
-	{
+	if (id == END || id == SYMBOL_COUNT)
+		return (false);
+	lexer->cur += (token->end - token->begin);
+	assert(lexer->begin + lexer->cur <= lexer->end && "Lexer overstept end");
+	if (matching_token_id(WHITESPACE_IDS, 3, token))
+		return (get_next_token(lexer, token));
+	return (true);
+}
 
+bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
+{
+	size_t		(*matching_symbol_len_fn)(const char *, const char *);
+	int		id;
+
+	token->begin = lexer->begin + lexer->cur;
+	token->end = token->begin;
+	id = 0;
+	while (id < SYMBOL_COUNT)
+	{
+		matching_symbol_len_fn = SYMBOL_TABLE[id][1];
+		token->end += matching_symbol_len_fn(token->begin, SYMBOL_TABLE[id][0]);
+		if (token->end > token->begin)
+		{
+			token->id = id;
+			break ;
+		}
+		++id;
+	}
+	if (id == END || id == SYMBOL_COUNT) // IMPROVE RIGHT NOW!!!
+		return (false);
+	lexer->cur += (token->end - token->begin);
+	assert(lexer->begin + lexer->cur <= lexer->end && "Lexer overstept end");
+	return (true);
+}
+
+#include <stdio.h>
+
+int	main(int argc, char **argv)
+{
+	t_lexer l;
+	t_token	t;
+	
+	if (argc != 2)
+		return 0;
+	char	*str = argv[1];
+	l = create_tokenizer(str, str + ft_strlen(str));
+	while (get_next_token(&l, &t))
+	{
+		printf("(%s:%.*s)\n", (char *)SYMBOL_TABLE[t.id][0], (int)(t.end - t.begin), t.begin);
+		t = (t_token){0};
 	}
 }
 
+/*
 // NOTE:  since the t_lst_embed struct is the first member of
 // the struct t_token, it can be savely casted to a t_token.
 t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
@@ -181,3 +190,34 @@ struct s_token	*lst_new_token(struct s_token token)
 	*token_mem = token;
 	return (token_mem);
 }
+
+// NOTE: Is it needed to add identifier for double character token_count?
+t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
+{
+	char		*str;
+	t_token		token;
+
+	str = tokenizer->input;
+	token.text = str;
+	token.identifier = (enum e_token_identifier)*str;
+	token.length = 0;
+	while (str[token.length] != END && ft_strchr(WHITE_SPACE, str[token.length]))
+		++token.length;
+	if (token.length > 0 || *str == END)
+	{
+		tokenizer->input += token.length;
+		return (token);
+	}
+	if (ft_strchr(SINGLE_TOKENS, token.identifier))
+	{
+		token.length += 1;
+		tokenizer->input += 1;
+		return (token);
+	}
+	token.identifier = WORD;
+	while (ft_strchr(WORD_DELIMITERS, str[token.length]) == NULL)
+		++token.length;
+	tokenizer->input += token.length;
+	return (token);
+}
+*/
