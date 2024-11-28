@@ -4,6 +4,13 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+
+
+bool	deref(int *i)
+{
+	*i = 2;
+}
 
 int main()
 {
@@ -17,4 +24,6 @@ int main()
 	printf("%i", sizeof(c));
 	
 	assert(("wtf", x < 10));
+	int	hi;
+	deref((int *)0);
 }

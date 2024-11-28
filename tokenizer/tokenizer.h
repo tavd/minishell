@@ -22,7 +22,6 @@ typedef struct s_tokenizer {
 	size_t	cur;
 }	t_tokenizer;
 	//int	line_number;
-
 typedef struct s_tokenizer t_lexer;
 
 typedef struct s_token {
@@ -67,35 +66,36 @@ typedef enum e_tokenizer_symbol_id
 	REDIRECT_OUT,
 	WORD,
 	SYMBOL_ID_COUNT,
-}	t_tokenizer_symbol_id;
+}	t_symbol_id;
 
 #define UNHANDELED_SYMBOL -1
 
-size_t	_symbol(const char *str, const char *symbol_from_table);
-size_t	_word(const char *str, const char *nothing);
-size_t	_whitespace(const char *str, const char *symbol_from_table);
-size_t	_fallback(const char *str, const char *symbol_from_table);
+bool	is_nullterm(const char *str, t_symbol_id id, size_t *newlen);
+bool	symbol(const char *str, t_symbol_id id, size_t *newlen);
+bool	whitespace(const char *str, t_symbol_id id, size_t *newlen);
+bool	word(const char *str, t_symbol_id id, size_t *newlen);
+bool	fallback(const char *str, t_symbol_id id, size_t *newlen);
 
 // NOTE: longer strings should come before shorter strings
 // if they share the same characters. (for example "<<" and "<")
 _Static_assert(SYMBOL_ID_COUNT == 14, "symbol count has changed");
 static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 {
-	[END] =			{"\0", _compare_symbol, 0},
-	[SPACE] =		{" ", _compare_symbol, _count_whitespace},
-	[TAB] =			{"\t", _whitespace, _count_whitespace },
-	[NEW_LINE] =		{"\n", _symbol, 1},
-	[PIPE] =		{"|", _symbol, 1},
-	[DOLLAR_SIGN] =		{"$", _symbol, 1},
-	[EQUAL_SIGN] =		{"=", _symbol, 1},
-	[SINGLE_QUOTE] =	{"\'", _symbol, 1},
-	[DOUBLE_QUOTE] =	{"\"", _symbol, 1},
-	[HEREDOC] =		{"<<", _symbol, 2},
-	[APPEND_MODE]		{">>", _symbol, 2},
-	[REDIRECT_IN] =		{"<", _symbol, 1},
-	[REDIRECT_OUT] =	{">", _symbol, 1},
-	[WORD] =		{"WORD", _word, _count_wordlen},
-	//[DEFAULT_FALLBACK] =	{"other", _fallback, _fallback_len},
+	[END] =			{"\0", symbol},
+	[SPACE] =		{" ", whitespace},
+	[TAB] =			{"\t", whitespace},
+	[NEW_LINE] =		{"\n", symbol},
+	[PIPE] =		{"|", symbol},
+	[DOLLAR_SIGN] =		{"$", symbol},
+	[EQUAL_SIGN] =		{"=", symbol},
+	[SINGLE_QUOTE] =	{"\'", symbol},
+	[DOUBLE_QUOTE] =	{"\"", symbol},
+	[HEREDOC] =		{"<<", symbol},
+	[APPEND_MODE]		{">>", symbol},
+	[REDIRECT_IN] =		{"<", symbol},
+	[REDIRECT_OUT] =	{">", symbol},
+	[WORD] =		{"WORD", word},
+	[DEFAULT_FALLBACK] =	{"other", fallback},
 };
 
 #define SYMBOL 0

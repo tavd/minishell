@@ -47,10 +47,4 @@ int main()
 	tok = (t_lst_token)lst;
 
 	lst = (t_lst_embed)tok;
-
-
-
-
-
-
 }
