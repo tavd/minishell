@@ -78,32 +78,70 @@ size_t	_word(const char *str, const char*)
 }
 
 // tokenizes lexer input, and increments lexer ptr...
-bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
+t_token	tokenize_one(t_lexer *lexer)
 {
+	const char	*lexer_start = lexer->begin + lexer->cur;
 	size_t		(*matching_symbol_fn)(const char *, const char *);
+	size_t		symbol_len;
 	int		id;
-	char		*lexer_input;
- 
-	lexer_input = lexer->begin + lexer->cur;
+
 	id = 0;
 	while (id < SYMBOL_ID_COUNT)
 	{
-		matching_symbol_fn = SYMBOL_TABLE[symbol_id][FN_PTR];
-		if (matching_symbol(lexer_input, SYMBOL_TABLE[symbol_id][0]))
+		matching_symbol_fn = SYMBOL_TABLE[id][FN_PTR];
+		symbol_len = matching_symbol_fn(lexer_start, SYMBOL_TABLE[id][SYMBOL]);
+		if (symbol_len > 0)
 		{
-			token->id = id;
-			token->begin = lexer_input;
-			token->end = lexer_input + matching_symbol(lexer_input, SYMBOL_TABLE[symbol_id][0]);
-			break ;
+			lexer->cur += symbol_len;
+			return (t_token)
+			{
+			.id = id,
+			.begin = lexer_start,
+			.end = lexer_start + symbol_len,
+			}
 		}
 		++id;
 	}
+	return (t_token) { .id = UNHANDELD_SYMBOL, .begin = NULL, .end = NULL};
+}
+
 	if (id == LEXER_END || id == SYMBOL_ID_COUNT)
 		return (false);
 	assert(("Lexer is incremented past the lexer.end", lexer->begin + lexer->cur + (token->end - token->begin) <= lexer->end));
 	lexer->cur += (token->end - token->begin); // The length of END is 0 so no increment needed...
 	return (true);
 }
+
+bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
+{
+	token = tokenize_one(lexer);
+	if (token == (t_token){0} || token->id == END)
+		return (false);
+	assert(("Lexer is incremented past the lexer.end", lexer->begin + lexer->cur + (token->end - token->begin) <= lexer->end));
+	lexer->cur += (token->end - token->begin); // The length of END is 0 so no increment needed...
+	return (true);
+
+}
+
+bool	get_next_token(t_lexer *lexer, t_token *token)
+{
+	const uint64_t	WHITESPACE[3] = {SPACE, TAB, NEW_LINE};
+
+	token = tokenize_one(lexer);
+	if (token == (t_token){0} || token->id == END)
+		return (false);
+	if (matching_token_id(WHITESPACE, 3, token))
+		return (get_next_token(lexer, token));
+	return (true);
+
+}
+
+
+token	tokenize_one(t_lexer *lexer)
+{
+
+}
+
 
 bool	get_next_token(t_lexer *lexer, t_token *token)
 {

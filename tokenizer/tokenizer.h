@@ -38,7 +38,7 @@ typedef struct s_token {
 // this kind of mental overhead + its dependent one the struct's memory layout.
 // But since we can't use macro functions (Norm) its the second best thing
 
-typedef enum e_token_symbol_id
+typedef enum e_tokenizer_symbol_id
 {
 	END,
 	SPACE,
@@ -55,7 +55,9 @@ typedef enum e_token_symbol_id
 	REDIRECT_OUT,
 	WORD,
 	SYMBOL_ID_COUNT,
-}	t_token_symbol_id;
+}	t_tokenizer_symbol_id;
+
+#define UNHANDELED_SYMBOL -1
 
 size_t	_symbol(const char *str, const char *symbol_from_table);
 size_t	_word(const char *str, const char *nothing);
