@@ -26,8 +26,8 @@ typedef struct s_tokenizer t_lexer;
 
 typedef struct s_token {
 	uint64_t		id;
-	char			*begin;
-	char			*end;
+	const char		*begin;
+	const char		*end;
 }	t_token;
 
 /*
@@ -36,9 +36,9 @@ typedef struct s_token {
  */
 typedef struct s_lst_token {
 	struct s_lst_embed	lst_data;
-	uint64_t		id;
-	char			*begin;
-	char			*end;
+	const uint64_t		id;
+	const char		*begin;
+	const char		*end;
 }	t_lst_token;
 /*
  * NOTE: Ideally to access a struct within a struct you would abstract this
@@ -68,14 +68,14 @@ typedef enum e_tokenizer_symbol_id
 	SYMBOL_ID_COUNT,
 }	t_symbol_id;
 
-#define UNHANDLED_SYMBOL -1
+#define UNHANDLED_SYMBOL (uint64_t)-1
 
 typedef int	t_toklen;
 
 t_toklen	is_nullterm(const char *str, t_symbol_id id);
 t_toklen	symbol(const char *str, t_symbol_id id);
 t_toklen	count_consecutive_symbols(const char *str, t_symbol_id id);
-t_toklen	word(const char *str, t_symbol_id id);
+t_toklen	word_len(const char *str, t_symbol_id id);
 t_toklen	fallback(const char *str, t_symbol_id id);
 
 // NOTE: longer strings should come before shorter strings
@@ -96,8 +96,8 @@ static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 	[APPEND_MODE]		{">>", symbol},
 	[REDIRECT_IN] =		{"<", symbol},
 	[REDIRECT_OUT] =	{">", symbol},
-	[WORD] =		{"WORD", word},
-	[DEFAULT_FALLBACK] =	{"other", fallback},
+	[WORD] =		{"WORD", word_len},
+	//[DEFAULT_FALLBACK] =	{"other", fallback},
 };
 
 #define SYMBOL 0
@@ -109,7 +109,6 @@ t_lexer	create_tokenizer(const char *input_begin, const char *input_end);
 
 bool	get_next_token(t_lexer *lexer, t_token *token);
 bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token);
-
 
 #endif
 /*================================================================================*/
