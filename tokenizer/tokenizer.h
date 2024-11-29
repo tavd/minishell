@@ -29,14 +29,14 @@ typedef struct s_tokenizer {
 typedef struct s_tokenizer t_lexer;
 
 typedef struct s_token {
-	const uint64_t		id;
+	uint64_t		id;
 	const char		*begin;
 	const char		*end;
 }	t_token;
 
 typedef struct s_lst_token {
 	struct s_lst_embed	lst_data;
-	const uint64_t		id;
+	uint64_t		id;
 	const char		*begin;
 	const char		*end;
 }	t_lst_token;

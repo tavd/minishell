@@ -3,7 +3,7 @@ CC = cc
 INCLUDE_FLAGS = -I. -Iinclude
 LIB_FLAGS = -L. -lft
 
-SRC = tokenizer.c
+SRC = tokenizer.c main.c
 OBJ = $(SRC:.c=.o)
 
 NAME = main
