@@ -24,20 +24,28 @@ t_tokenizer	create_tokenizer(const char *start_input, const char *end_input)
 	};
 }
 
-t_symbol_id	matching_token_id(const t_symbol_id *target_ids, size_t count_target, t_token *tok)
+t_symbol_id	matching_token_id(const t_symbol_id *target_ids, t_symbol_id target_count, t_token *tok)
 {
 	t_symbol_id	i;
 
 	i = 0;
-	while (i < count_target)
+	while (i < target_count)
 	{
 		if (target_ids[i] == tok->id)
 			return (target_ids[i]);
 		++i;
 	}
-	return (0);
+	return (-1);
 }
 
+t_toklen	is_nullterm(const char *str, t_symbol_id id)
+{
+	if (ft_strncmp(str, SYMBOL_TABLE[id][SYMBOL], 1) == 0)
+		return (0);
+	return (-1);
+}
+
+// TODO: merge is_nullterm into fn below
 t_toklen	symbol(const char *str, t_symbol_id id)
 {
 	const size_t	symbol_len = ft_strlen(SYMBOL_TABLE[id][SYMBOL]);
@@ -82,6 +90,7 @@ t_toklen	word_len(const char *str, t_symbol_id id)
 				stopped = true;
 				break ;
 			}
+			++i;
 		}
 	}
 	return (len);
@@ -116,29 +125,37 @@ t_token	tokenize_one(t_lexer *lexer)
 	return (t_token) { .id = UNHANDLED_SYMBOL, .begin = NULL, .end = NULL};
 }
 
-bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
+bool	is_one_of_ids(t_token *token, const uint64_t *ids, size_t count_ids)
 {
-	t_token	tok;
-	tok = tokenize_one(lexer);
-	ft_memcpy(token, &tok, sizeof(t_token));
-	if (token->id == UNHANDLED_SYMBOL || token->id == END)
-		return (false);
-	return (true);
+	while (count_ids--)
+	{
+		if (*ids == token->id)
+			return (true);
+		++ids;
+	}
+	return (false);
+}
+
+bool	has_id(t_token *token, const uint64_t id)
+{
+	is_one_of_ids(token, &id, 1);
 }
 
 bool	get_next_token(t_lexer *lexer, t_token *token)
 {
-	const t_symbol_id	WHITESPACE[3] = {SPACE, TAB, NEW_LINE};
+	const uint64_t	WHITESPACE[3] = {SPACE, TAB, NEW_LINE};
 
-	t_token	tok;
-	tok = tokenize_one(lexer);
-	ft_memcpy(token, &tok, sizeof(t_token));
-	if (token->id == UNHANDLED_SYMBOL || token->id == END)
-		return (false);
-	if (matching_token_id(WHITESPACE, 3, token) == true)
+	*token = tokenize_one(lexer);
+	if (is_one_of_ids(token, WHITESPACE, 3))
 		return (get_next_token(lexer, token));
-	return (true);
+	return (is_one_of_ids(token, (uint64_t [2]){END, UNHANDLED_SYMBOL}, 2));
 
+}
+
+bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
+{
+	*token = tokenize_one(lexer);
+	return (is_one_of_ids(token , (uint64_t [2]){END, UNHANDLED_SYMBOL}, 2));
 }
 
 #include <stdio.h>
@@ -154,7 +171,7 @@ int	main(int argc, char **argv)
 	l = create_tokenizer(str, str + ft_strlen(str));
 	while (get_next_token(&l, &t))
 	{
-		printf("(%s:%.*s) at lexer[%li]\n", (char *)SYMBOL_TABLE[t.id][0], (int)(t.end - t.begin), t.begin, l.cur);
+		printf("(%s:%.*s) at lexer[%li]\n", (char *)SYMBOL_TABLE[t.id][SYMBOL], (int)(t.end - t.begin), t.begin, l.cur);
 		t = (t_token){0};
 	}
 }

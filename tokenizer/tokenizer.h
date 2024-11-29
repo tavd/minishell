@@ -10,11 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-# include "lst_embed.h"
-
 #ifndef TOKENIZER_H_
 # define TOKENIZER_H_
+
+# include <stdint.h>
+//TODO: specify libft modules
+# include "lst_embed.h"
+//# include "libft/lst_embed.h"
+# include "libft/libft.h"
+
 
 typedef struct s_tokenizer {
 	char	*begin;
@@ -25,26 +29,22 @@ typedef struct s_tokenizer {
 typedef struct s_tokenizer t_lexer;
 
 typedef struct s_token {
-	uint64_t		id;
+	const uint64_t		id;
 	const char		*begin;
 	const char		*end;
 }	t_token;
 
-/*
- * NOTE: "struct s_lst_embed" has to be the first member of the struct
- * to allow for casting between t_lst_embed to t_lst_token, without offsets
- */
 typedef struct s_lst_token {
 	struct s_lst_embed	lst_data;
 	const uint64_t		id;
 	const char		*begin;
 	const char		*end;
 }	t_lst_token;
-/*
- * NOTE: Ideally to access a struct within a struct you would abstract this
+/* NOTE: "struct s_lst_embed" has to be the first member of the struct
+ * to allow for casting between t_lst_embed to t_lst_token, without offsets.
+ * Ideally to access a struct within a struct you would abstract this
  * away using a macro function(linux kernel: container_of), as this would
- * remove the need for the lst_embed being the first member of the struct
- */
+ * remove the need for the lst_embed being the first member of the struct */
 
 // this kind of mental overhead + its dependent one the struct's memory layout.
 // But since we can't use macro functions (Norm) its the second best thing
@@ -68,7 +68,7 @@ typedef enum e_tokenizer_symbol_id
 	SYMBOL_ID_COUNT,
 }	t_symbol_id;
 
-#define UNHANDLED_SYMBOL (uint64_t)-1
+#define UNHANDLED_SYMBOL UINT_MAX
 
 typedef int	t_toklen;
 
@@ -83,7 +83,7 @@ t_toklen	fallback(const char *str, t_symbol_id id);
 _Static_assert(SYMBOL_ID_COUNT == 14, "symbol count has changed");
 static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 {
-	[END] =			{"\0", symbol},
+	[END] =			{"\0", is_nullterm},
 	[SPACE] =		{" ", count_consecutive_symbols},
 	[TAB] =			{"\t", count_consecutive_symbols},
 	[NEW_LINE] =		{"\n", symbol},
@@ -106,7 +106,8 @@ static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 t_lexer	create_tokenizer(const char *input_begin, const char *input_end);
 // t_token	tokenize_one_token(struct s_tokenizer *tokenizer);
 // t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer);
-
+bool	is_one_of_ids(t_token *token, const uint64_t *ids, size_t count_ids);
+bool	has_id(t_token *token, const uint64_t id);
 bool	get_next_token(t_lexer *lexer, t_token *token);
 bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token);
 
