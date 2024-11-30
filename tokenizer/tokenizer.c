@@ -113,13 +113,12 @@ t_token	tokenize_one(t_lexer *lexer)
 
 bool	is_one_of_ids(t_token *token, const uint64_t *ids, size_t count_ids)
 {
+	bool	found_matching_id;
+
+	found_matching_id = false;
 	while (count_ids--)
-	{
-		if (*ids == token->id)
-			return (true);
-		++ids;
-	}
-	return (false);
+		found_matching_id |= (*ids++ == token->id);
+	return (found_matching_id);
 }
 
 bool	has_id(t_token *token, const uint64_t id)
@@ -138,80 +137,8 @@ bool	get_next_token(t_lexer *lexer, t_token *token)
 
 }
 
-
 bool	get_next_token_incl_whitespace(t_lexer *lexer, t_token *token)
 {
 	*token = tokenize_one(lexer);
 	return (!is_one_of_ids(token, (uint64_t[]){END, UNHANDLED_SYMBOL}, 2));
 }
-
-/*
-// NOTE:  since the t_lst_embed struct is the first member of
-// the struct t_token, it can be savely casted to a t_token.
-t_token	*tokenize_all_tokens(struct s_tokenizer *tokenizer)
-{
-	t_lst_embed	*head;
-	t_token		token;
-	t_token		*new_token;
-
-	head = NULL;
-	token.identifier = 1;
-	while (token.identifier != END)
-	{
-		new_token = (t_token *)malloc(sizeof(t_token));
-		if (!new_token)
-		{
-			//ft_lstclear(&head, &free_token);
-			return (NULL);
-		}
-		token = tokenize_one_token(tokenizer);
-		token.lst_data.prev = NULL;
-		token.lst_data.next = NULL;
-		*new_token = token;// BUG:Does this copy all of the data correctly? no memcpy required?
-		ft_sll_addback(&head, (t_lst_embed *)new_token);
-	}
-	return ((t_token *)head);
-}
-
-// malloc's space for token lst struct and initializes it IF a valid ptr is psdlfkjdffassed in
-struct s_token	*lst_new_token(struct s_token token)
-{
-	struct s_token	*token_mem;
-
-	token_mem = (struct s_token *)malloc(sizeof(struct s_token));
-	if (!token_mem)
-		return (NULL);
-	*token_mem = token;
-	return (token_mem);
-}
-
-// NOTE: Is it needed to add identifier for double character token_count?
-t_token	tokenize_one_token(struct s_tokenizer *tokenizer)
-{
-	char		*str;
-	t_token		token;
-
-	str = tokenizer->input;
-	token.text = str;
-	token.identifier = (enum e_token_identifier)*str;
-	token.length = 0;
-	while (str[token.length] != END && ft_strchr(WHITE_SPACE, str[token.length]))
-		++token.length;
-	if (token.length > 0 || *str == END)
-	{
-		tokenizer->input += token.length;
-		return (token);
-	}
-	if (ft_strchr(SINGLE_TOKENS, token.identifier))
-	{
-		token.length += 1;
-		tokenizer->input += 1;
-		return (token);
-	}
-	token.identifier = WORD;
-	while (ft_strchr(WORD_DELIMITERS, str[token.length]) == NULL)
-		++token.length;
-	tokenizer->input += token.length;
-	return (token);
-}
-*/
