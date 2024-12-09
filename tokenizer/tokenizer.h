@@ -93,7 +93,7 @@ static const void	*SYMBOL_TABLE[SYMBOL_ID_COUNT][2] =
 	[SINGLE_QUOTE] =	{"\'", symbol},
 	[DOUBLE_QUOTE] =	{"\"", symbol},
 	[HEREDOC] =		{"<<", symbol},
-	[APPEND_MODE]		{">>", symbol},
+	[APPEND_MODE] =		{">>", symbol},
 	[REDIRECT_IN] =		{"<", symbol},
 	[REDIRECT_OUT] =	{">", symbol},
 	[WORD] =		{"WORD", word_len},
